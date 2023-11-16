@@ -4,7 +4,6 @@ title = 'A price comparison site for the Swedish market'
 description = 'A price comparison site for the Swedish market'
 url = 'https://panso.se/'
 copyright = "Joakim Hellsén | CC BY-NC-SA 4.0"
-enableGitInfo = true
 disableHugoGeneratorInject = true
 defaultContentLanguage = "se"
 timeZone = "Europe/Stockholm"
