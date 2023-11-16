@@ -1,0 +1,32 @@
+baseURL = 'https://panso.se/'
+languageCode = 'en-us'
+title = 'A price comparison site for the Swedish market'
+description = 'A price comparison site for the Swedish market'
+url = 'https://panso.se/'
+copyright = "Joakim Hellsén | CC BY-NC-SA 4.0"
+enableGitInfo = true
+disableHugoGeneratorInject = true
+defaultContentLanguage = "se"
+timeZone = "Europe/Stockholm"
+buildStats = true
+
+[[menu.main]]
+name = 'Home'
+pageRef = '/'
+weight = 10
+[[menu.main]]
+name = 'Stores'
+pageRef = '/stores'
+weight = 20
+[[menu.main]]
+name = 'About'
+pageRef = '/about'
+weight = 30
+[[menu.main]]
+name = 'Github'
+url = 'http://github.com/TheLovinator1/panso.se/'
+weight = 40
+[[menu.main]]
+name = 'Contact'
+pageRef = '/contact'
+weight = 50
