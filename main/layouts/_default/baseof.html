@@ -33,6 +33,7 @@
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
         {{ partial "navbar.html" . }}
+
         <!-- Content -->
         <div class="container-xl mt-3 mb-3">
             {{ block "main" . }}
@@ -40,6 +41,13 @@
             {{ end }}
         </div>
         <!-- Content end -->
+        <!-- RSS icon -->
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <a href="{{ "index.xml" | relURL }}">
+                <img src="{{ "rss.svg" | relURL }}" alt="RSS" width="32" height="32">
+            </a>
+        </div>
+        <!-- RSS icon end -->
         <!-- Footer -->
         {{ partial "footer.html" . }}
         <!-- Footer end -->

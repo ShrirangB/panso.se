@@ -29,3 +29,14 @@ weight = 40
 name = 'Contact'
 pageRef = '/contact'
 weight = 50
+
+[params]
+[params.author]
+email = 'hello@panso.se'
+name = 'Joakim Hellsén'
+
+[outputs]
+home = ['html', 'rss']
+section = ['html', 'rss']
+taxonomy = ['html', 'rss']
+term = ['html', 'rss']
