@@ -1,18 +1,14 @@
 # panso.se
 
-Cloudflare Workers site for [panso.se](https://panso.se).
+The source code for [panso.se](https://panso.se).
 
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## Development
-
-This project uses [wrangler](https://developers.cloudflare.com/workers/wrangler/) to deploy to Cloudflare Workers.
-
 ### Directory structure
 
-- `pages/` - The panso.se site - [panso.se](https://panso.se) - Uses [Hugo](https://gohugo.io/) to generate static HTML.
+- `hugo/` - Uses [Hugo](https://gohugo.io/) to generate static HTML. This is where the content is stored.
 
 ## License
 
