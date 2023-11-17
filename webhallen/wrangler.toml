@@ -8,6 +8,9 @@ main = "src/index.ts"
 compatibility_date = "2023-10-30"
 route = "webhallen.panso.se/*"
 
+[limits]
+cpu_ms = 5
+
 [placement]
 mode = "smart"
 
