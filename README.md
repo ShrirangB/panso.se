@@ -8,7 +8,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ### Directory structure
 
-- `hugo/` - Uses [Hugo](https://gohugo.io/) to generate static HTML. This is where the content is stored.
+- `main/` - Uses [Hugo](https://gohugo.io/) to generate static HTML. This is where the content is stored.
 
 ## License
 
