@@ -1,49 +1,24 @@
 from __future__ import annotations
 
-from typing import Union
+import os
+from sqlite3 import IntegrityError
 
-from fastapi import FastAPI
+from dotenv import find_dotenv, load_dotenv
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from loguru import logger
+from sqlmodel import Session, SQLModel, create_engine, select
 
-description = """
-This is the API for the Panso project.
+from api.description import description
+from api.models import WebhallenProduct, WebhallenProductIn
 
-## Authentication
+load_dotenv(find_dotenv(), verbose=True)
 
-Only internal endpoints need authentication, the rest is open to the public.
+SQLITE_URL: str = os.getenv("SQLITE_URL", "sqlite:///database.db")
+DEBUG = bool(os.getenv("DEBUG", "False") == "True")
 
-## Rate limiting
-
-There is no rate limiting. Feel free to scrape the API as much as you want.
-
-## API versioning
-
-The API is versioned using the URL path. The current version is `v1`. The current version is also the default version.
-
-## API documentation
-
-The API documentation is available at [/api/v1/docs](/api/v1/docs) and [/api/v1/redoc](/api/v1/redoc).
-
-## API schema
-
-The API schema is available at [/api/v1/openapi.json](/api/v1/openapi.json).
-
-## License
-
-All the data is scraped from other websites. The data is not owned by me. The data is owned by the respective websites.
-The data is licensed under the respective licenses of the websites.
-
-The code is licensed under the GPL-3.0 License. See the
- [LICENSE](https://github.com/TheLovinator1/panso.se/blob/master/LICENSE) file for more information.
-
-## Contact
-
-If you have any questions, feel free to contact me at [api@panso.se](mailto:api@panso.se).
-
-## Source code
-
-The source code is available at [GitHub](https://github.com/TheLovinator1/panso.se/).
-"""
+engine = create_engine(SQLITE_URL, echo=DEBUG)
+SQLModel.metadata.create_all(engine)
 
 
 app = FastAPI(
@@ -89,3 +64,73 @@ def read_root() -> HTMLResponse:
     </html>
     """
     return HTMLResponse(content=html, status_code=200)
+
+
+@app.get("/api/webhallen/products")
+def get_webhallen_products() -> list[WebhallenProduct]:
+    """Get Webhallen products.
+
+    Returns:
+        str: Webhallen products.
+    """
+    with Session(engine) as session:
+        statement = select(WebhallenProduct)
+        products: list[WebhallenProduct] = session.exec(statement).all()
+        if products is None:
+            logger.debug("No products found")
+            raise HTTPException(status_code=404, detail="No products found in database")
+
+        logger.debug("products: {}", products)
+        return products
+
+
+@app.get("/api/webhallen/products/{product_id}")
+def get_webhallen_product(product_id: int) -> WebhallenProduct:
+    """Get Webhallen product.
+
+    Args:
+        product_id (int): Product ID.
+
+    Returns:
+        str: Webhallen product.
+    """
+    with Session(engine) as session:
+        statement = select(WebhallenProduct).where(WebhallenProduct.product_id == product_id)
+        product: WebhallenProduct | None = session.exec(statement).first()
+        if product is None:
+            logger.debug("No product found")
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        logger.debug("product: {}", product)
+        return product
+
+
+@app.post("/api/webhallen/products/")
+def post_webhallen_product(product: WebhallenProductIn) -> WebhallenProduct:
+    """Post Webhallen product.
+
+    Args:
+        product_id (int): Product ID.
+        product (WebhallenProduct): Product.
+
+    Returns:
+        str: Webhallen product.
+    """
+    product_id: int = product.product_id
+    product_json: str = product.product_json
+
+    if not product.product_json:
+        logger.warning("product_json is empty")
+
+    with Session(engine) as session:
+        p = WebhallenProduct(product_id=product_id, product_json=product_json)
+        try:
+            session.add(p)
+            session.commit()
+            logger.debug("product: {}", p)
+        except IntegrityError as e:
+            logger.error("IntegrityError: {}", e)
+            session.rollback()
+            raise HTTPException(status_code=400, detail="Product already exists") from e
+        else:
+            return p
