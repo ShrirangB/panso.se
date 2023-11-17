@@ -1,32 +1,27 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from 'hono';
+import { Context } from 'hono';
 
-export interface Env {
-	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	// MY_KV_NAMESPACE: KVNamespace;
-	//
-	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
-	// MY_DURABLE_OBJECT: DurableObjectNamespace;
-	//
-	// Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
-	// MY_BUCKET: R2Bucket;
-	//
-	// Example binding to a Service. Learn more at https://developers.cloudflare.com/workers/runtime-apis/service-bindings/
-	// MY_SERVICE: Fetcher;
-	//
-	// Example binding to a Queue. Learn more at https://developers.cloudflare.com/queues/javascript-apis/
-	// MY_QUEUE: Queue;
+
+// This ensures c.env.DB is correctly typed
+type Bindings = {
+	DB: D1Database
 }
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
-	},
-};
+const app = new Hono<{ Bindings: Bindings }>()
+app.get('/', (c) => c.text('Hello this is the Webhallen API!'));
+
+app.get('/api/webhallen/products/:product_id', async (c, env) => {
+	const product_id = c.req.param('product_id')
+
+	try {
+		let { results } = await c.env.DB.prepare("SELECT * FROM Products WHERE id = ?").bind(product_id).all()
+		console.log(results);
+		return c.json(results)
+	} catch (e) {
+		console.log(e);
+		return c.json({ err: e }, 500)
+	}
+})
+
+
+export default app;
