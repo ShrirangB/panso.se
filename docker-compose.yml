@@ -1,0 +1,14 @@
+services:
+  web:
+    container_name: web
+    image: ghcr.io/thelovinator1/panso:latest
+    tmpfs:
+      - /usr/share/nginx/html
+    restart: always
+  tunnel:
+    container_name: tunnel
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token $TUNNEL_TOKEN
+    restart: always
+    environment:
+      - TUNNEL_URL=http://web:80
