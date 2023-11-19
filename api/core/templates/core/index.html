@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="The API for panso.se">
+    <meta name="keywords"
+        content="price comparison, computer hardware, Sweden, Sverige, prisjämförelse, datorhårdvara, billigast, API, JSON">
+    <meta name="author" content="Panso">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Panso.se API</title>
+    <link rel="alternate" type="application/rss+xml" href="https://api.panso.se/index.xml" title="Panso.se API RSS">
+    <link rel="icon" href="https://panso.se/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="https://panso.se/apple-touch-icon.png">
+    <link rel="manifest" href="https://panso.se/manifest.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="A price comparison site for the Swedish market"
+        href="/index.xml">
+    <link rel="stylesheet" href="https://panso.se/bootstrap.min.css">
+    <link rel="stylesheet" href="https://panso.se/style.css">
+    <meta property="og:title" content="Panso.se">
+    <meta property="og:description" content="API for panso.se">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://api.panso.se/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Panso.se">
+    <meta name="twitter:description" content="API for panso.se">
+</head>
+
+<body class="d-flex flex-column vh-100">
+    <nav class="navbar navbar-expand-md border-bottom border-warning">
+        <div class="container-fluid"><button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseNavbar">
+                <span class="navbar-toggler-icon"></span></button>
+            <div class="navbar-collapse collapse" id="collapseNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item nav-link d-none d-md-block">|</li>
+                    <li class="nav-item"><a class="nav-link" href="https://panso.se/stores">Stores</a></li>
+                    <li class="nav-item nav-link d-none d-md-block">|</li>
+                    <li class="nav-item"><a class="nav-link" href="/api">API</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item d-none d-md-block"><a class="nav-link" href="/donate">Donate ❤️</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-xl mt-3 mb-3">
+        <div class="alert alert-dark mt-3" role="alert">
+            <h4 class="alert-heading">API</h4>
+            <p>This is the API for panso.se.</p>
+            <p>This API is still in development and is subject to change.</p>
+            <hr>
+            <p class="mb-0">
+            <h5>Endpoints</h5>
+            <ul>
+                <li><a href="#get-products">GET /api/v1/webhallen/products</a></li>
+                <li><a href="#get-product">GET /api/v1//webhallen/products/{id}</a></li>
+                <li><a href="#get-stores">GET /api/v1/stores</a></li>
+                <li><a href="#get-store">GET /api/v1/stores/{id}</a></li>
+            </ul>
+            <p>
+                If you are missing any endpoints or have any suggestions, please contact me at <a
+                    href="mailto:api@panso.se">api@panso.se</a>
+            </p>
+            </p>
+            <p class="mb-0">
+            <h5>Rate limit</h5>
+            <p>There is no rate limit for this API so feel free to use it as much as you want.</p>
+            <p class="mb-0">
+            <h5>Source code</h5>
+            <p>The source code for this API is available on <a
+                    href="https://github.com/TheLovinator1/panso.se">GitHub</a>.
+                Create an issue if you find any bugs or have any suggestions. Feel free to create a pull request if
+                you want to add a new feature or fix a bug. But please create an issue first so we can discuss the
+                changes if they are big.</p>
+            </p>
+        </div>
+
+        <section id=" get-products">
+            <h2>GET /api/v1/webhallen/products</h2> <span class="badge bg-primary">GET</span>
+            <span class="badge bg-success">/api/v1/webhallen/products</span>
+            <span class="badge bg-danger">application/json</span>
+            <p>Get all products from Webhallen.</p>
+            <h3>Parameters</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>page</td>
+                        <td>No</td>
+                        <td>Page number</td>
+                    </tr>
+                    <tr>
+                        <td>limit</td>
+                        <td>No</td>
+                        <td>Number of products per page</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Example</h3>
+            <pre><code class="language-bash">curl -X GET https://api.panso.se/api/v1/products</code></pre>
+            <h3>Response</h3>
+            <pre><code class="language-json">AAAA</code></pre>
+        </section>
+    </div>
+    <footer class="footer bg-body-tertiary mt-auto">
+        <div class="container">
+            <footer class="py-5">
+                <div class="row">
+                    <div class="col-6 col-md-2 mb-3">
+                        <h5>Site</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2"><a href="/about"
+                                    class="nav-link p-0 text-body-secondary">About</a></li>
+                            <li class="nav-item mb-2"><a href="/about"
+                                    class="nav-link p-0 text-body-secondary">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-md-2 mb-3">
+                        <h5>Stores</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2"><a href="/webhallen"
+                                    class="nav-link p-0 text-body-secondary">Webhallen</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-md-2 mb-3">
+                        <h5>Developers</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2"><a href="/sitemap.xml"
+                                    class="nav-link p-0 text-body-secondary">Sitemap</a></li>
+                            <li class="nav-item mb-2"><a href="https://github.com/TheLovinator1/panso.se"
+                                    class="nav-link p-0 text-body-secondary">GitHub</a></li>
+                            <li class="nav-item mb-2"><a href="/api" class="nav-link p-0 text-body-secondary">API</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-5 offset-md-1 mb-3">
+                        <form>
+                            <h5>Subscribe to our newsletter</h5>
+                            <p>Monthly digest of what's new and exciting from us.</p>
+                            <div class="d-flex flex-column flex-sm-row w-100 gap-2"><label for="newsletter1"
+                                    class="visually-hidden">Email address</label>
+                                <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                                <button class="btn btn-primary" type="button">Subscribe</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-12"><small><a href="https://panso.se/" class="text-decoration-none">Panso.se</a>
+                            by
+                            <a class="text-decoration-none" href="https://github.com/TheLovinator1">Joakim
+                                Hellsén</a></small></div>
+                </div>
+            </footer>
+        </div>
+    </footer>
+</body>
+
+</html>

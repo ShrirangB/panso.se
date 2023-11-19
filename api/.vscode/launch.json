@@ -5,15 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: FastAPI",
+            "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "module": "hypercorn",
+            "program": "${workspaceFolder}\\manage.py",
             "args": [
-                "api.main:app",
-                "--reload"
+                "runserver"
             ],
-            "jinja": true,
+            "django": true,
             "justMyCode": true
         }
     ]
