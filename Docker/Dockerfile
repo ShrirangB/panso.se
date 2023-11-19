@@ -9,6 +9,7 @@ RUN rm -rf ./*
 COPY public/ .
 
 # Copy nginx config
+COPY Docker/cf_real-ip.conf /etc/nginx/conf.d/cf_real-ip.conf
 COPY Docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80 443
