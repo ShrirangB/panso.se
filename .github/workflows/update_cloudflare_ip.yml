@@ -9,6 +9,8 @@ permissions:
 jobs:
     update_cloudflare_ips:
         runs-on: ubuntu-latest
+        env:
+            changed: false
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -26,7 +28,14 @@ jobs:
                     ip route | grep -v default | awk '{print $1}' | while IFS= read -r line; do
                         echo "set_real_ip_from ${line};" >>${GITHUB_WORKSPACE}/Docker/cf_real-ip.conf
                     done
-            - name: Commit
+
+            - name: Check for changes
+              id: git-check
+              run: |
+                    git diff --exit-code || echo "changed=true" >> $GITHUB_ENV
+
+            - name: Commit files if changes
+              if: env.changed == 'true'
               run: |
                     git config --local user.email "tlovinator@gmail.com"
                     git config --local user.name "Joakim Hellsén"
