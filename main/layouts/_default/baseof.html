@@ -1,27 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
+
     <head>
         <!-- Head start -->
         <meta charset="UTF-8">
         <meta name="description" content="{{ .Page.Description }}">
         {{ with .Keywords }}
-        <meta name="keywords"
-              content="{{ range $i, $e := . }}{{ if $i }}, {{ end }}{{ $e }}{{ end }}">
+        <meta name="keywords" content="{{ range $i, $e := . }}{{ if $i }}, {{ end }}{{ $e }}{{ end }}">
         {{ end }}
         <meta name="author" content="Panso">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ .Page.Title }}</title>
-        {{ with .OutputFormats.Get "rss" -}}
-        {{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
-        {{ end }}
         <link rel="icon" href="{{ "favicon.ico" | relURL }}">
         <link rel="icon" href="{{ "icon.svg" | relURL }}" type="image/svg+xml">
         <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
         <link rel="manifest" href="{{ "manifest.webmanifest" | relURL }}">
-        <link rel="alternate"
-              type="application/rss+xml"
-              title="{{ site.Title }}"
-              href="{{ "index.xml" | relURL }}">
+        <link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "index.xml" | relURL }}">
         <link rel="stylesheet" href="{{ "bootstrap.min.css" | relURL }}">
         <link rel="stylesheet" href="{{ "style.css" | relURL }}">
         <!-- Open Graph -->
@@ -30,6 +24,7 @@
         {{ template "_internal/twitter_cards.html" . }}
         <!-- Head end -->
     </head>
+
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
         {{ partial "navbar.html" . }}
@@ -53,4 +48,5 @@
         <!-- Footer end -->
         <!-- Body end -->
     </body>
+
 </html>
