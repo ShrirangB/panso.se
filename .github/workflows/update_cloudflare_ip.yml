@@ -1,0 +1,34 @@
+name: Update Cloudflare IPs for Nginx
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+    update_cloudflare_ips:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Update Cloudflare IPs
+              run: |
+                    echo "" >/Docker/nginx/cf_real-ip.conf
+                    curl -s "https://api.cloudflare.com/client/v4/ips" | jq -r '.result.ipv4_cidrs[]' | while IFS= read -r line; do
+                        echo "set_real_ip_from ${line};" >>/Docker/nginx/cf_real-ip.conf
+                    done
+
+                    curl -s "https://api.cloudflare.com/client/v4/ips" | jq -r '.result.ipv6_cidrs[]' | while IFS= read -r line; do
+                        echo "set_real_ip_from ${line};" >>/Docker/nginx/cf_real-ip.conf
+                    done
+
+                    ip route | grep -v default | awk '{print $1}' | while IFS= read -r line; do
+                        echo "set_real_ip_from ${line};" >>/Docker/nginx/cf_real-ip.conf
+                    done
+            - name: Commit
+              run: |
+                    git config --local user.email "tlovinator@gmail.com"
+                    git config --local user.name "Joakim Hellsén"
+                    git add /Docker/nginx/cf_real-ip.conf
+                    git commit -m "Update Cloudflare IPs"
+                    git push
