@@ -8,6 +8,7 @@ disableHugoGeneratorInject = true
 defaultContentLanguage = "se"
 timeZone = "Europe/Stockholm"
 buildStats = true
+enableGitInfo = true
 
 [[menu.main]]
 name = 'Home'
