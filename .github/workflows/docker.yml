@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cd main
       - run: sudo snap install hugo --channel=extended/stable
       - run: |
           hugo \
@@ -27,6 +26,7 @@ jobs:
             --printUnusedTemplates \
             --templateMetrics \
             --templateMetricsHints
+        working-directory: main
       - uses: actions/upload-artifact@v3
         with:
           name: public
