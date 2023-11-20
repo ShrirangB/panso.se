@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - run: sudo snap install hugo --channel=extended/stable
       - run: |
           hugo \
@@ -36,6 +38,7 @@ jobs:
     needs: build
     if: github.event_name != 'pull_request'
     steps:
+      - uses: actions/checkout@v4
       # Download the artifact from the build job
       - uses: actions/download-artifact@v3
         with:
