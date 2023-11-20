@@ -36,6 +36,7 @@ jobs:
         with:
           name: public
           path: main/public
+          if-no-files-found: error
   deploy:
     runs-on: ubuntu-latest
     needs: build
