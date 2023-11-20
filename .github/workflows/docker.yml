@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - "main/**"
+      - ".github/workflows/docker.yml"
   pull_request:
     branches: [master]
   workflow_dispatch:
