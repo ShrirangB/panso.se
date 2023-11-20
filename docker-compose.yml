@@ -2,8 +2,8 @@ services:
   web:
     container_name: web
     image: ghcr.io/thelovinator1/panso:latest
-    tmpfs:
-      - /usr/share/nginx/html
+    volumes:
+      - /mnt/Fourteen/Docker/Panso/panso/logs:/var/log/nginx/
     restart: always
   tunnel:
     container_name: tunnel
