@@ -5,10 +5,34 @@ services:
     volumes:
       - /mnt/Fourteen/Docker/Panso/panso/logs:/var/log/nginx/
     restart: always
+    networks:
+      - tunnel
   tunnel:
     container_name: tunnel
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run --token $TUNNEL_TOKEN
     restart: always
+    networks:
+      - tunnel
     environment:
       - TUNNEL_URL=http://web:80
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    user: "1000:1000"
+    ports:
+      - 6379:6379
+    command: /bin/sh -c 'redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes'
+    volumes:
+      - /mnt/Fourteen/Docker/Panso/Redis:/data
+    networks:
+      - redis
+
+networks:
+  tunnel:
+    driver: bridge
+  panso:
+    driver: bridge
+  redis:
+    driver: bridge

@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
-from loguru import logger
 
 load_dotenv(find_dotenv(), verbose=True)
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
@@ -40,18 +39,6 @@ WSGI_APPLICATION = "api.wsgi.application"
 INTERNAL_IPS: list[str] = ["127.0.0.1", "localhost"]
 if BOT_IP_LIST:
     INTERNAL_IPS.extend(BOT_IP_LIST)
-
-logger.debug(f"BASE_DIR: {BASE_DIR}")
-logger.debug(f"SECRET_KEY: {SECRET_KEY}")
-logger.debug(f"DEBUG: {DEBUG}")
-logger.debug(f"ADMINS: {ADMINS}")
-logger.debug(f"BOT_IP_LIST: {BOT_IP_LIST}")
-logger.debug(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
-logger.debug(f"EMAIL_HOST_USER: {EMAIL_HOST_USER}")
-logger.debug(f"EMAIL_HOST_PASSWORD: {EMAIL_HOST_PASSWORD}")
-logger.debug(f"DEFAULT_FROM_EMAIL: {DEFAULT_FROM_EMAIL}")
-logger.debug(f"SERVER_EMAIL: {SERVER_EMAIL}")
-logger.debug(f"INTERNAL_IPS: {INTERNAL_IPS}")
 
 INSTALLED_APPS: list[str] = [
     # First party
@@ -99,5 +86,14 @@ DATABASES: dict[str, dict[str, str]] = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": DATABASE_URL,
+    },
+}
+
+REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
+REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="192.168.1.2")
+CACHES: dict[str, dict[str, str]] = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379",
     },
 }
