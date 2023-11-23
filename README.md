@@ -1,6 +1,6 @@
 # panso.se
 
-The source code for [panso.se](https://panso.se).
+The source code for [panso.se](https://panso.se) and [api.panso.se](https://api.panso.se).
 
 ## Contributing
 
@@ -8,7 +8,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ### Directory structure
 
-- `main/` - Uses [Hugo](https://gohugo.io/) to generate static HTML. This is where the content is stored.
+- `api/` - [api.panso.se](https://api.panso.se)
+  - We use [Django](https://www.djangoproject.com/) to serve the API and store data that is used for generating Markdown files.
+- `main/` - [panso.se](https://panso.se)
+  - Uses [Hugo](https://gohugo.io/) to generate static HTML files from Markdown files.
 
 ## License
 
@@ -19,4 +22,4 @@ If you want to use this project with a different license, please contact me.
 ## Contact
 
 - Email: [hello@panso.se](mailto:hello@panso.se)
-- Send an issue: [panso.se/issues](https://github.com/TheLovinator1/panso.se/issues)
+- GitHub issues: [panso.se/issues](https://github.com/TheLovinator1/panso.se/issues)
