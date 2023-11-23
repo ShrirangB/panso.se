@@ -15,6 +15,10 @@ name = 'Home'
 pageRef = '/'
 weight = 10
 [[menu.main]]
+name = 'Products'
+pageRef = '/products'
+weight = 15
+[[menu.main]]
 name = 'Stores'
 pageRef = '/stores'
 weight = 20
@@ -41,3 +45,19 @@ home = ['html', 'rss']
 section = ['html', 'rss']
 taxonomy = ['html', 'rss']
 term = ['html', 'rss']
+
+[taxonomies]
+tag = 'tags'
+category = 'categories'
+ean = 'eans'
+manufacturer = 'manufacturers'
+section = 'sections'
+part_number = 'part-numbers'
+
+[module]
+[[module.mounts]]
+source = 'content'
+target = 'content'
+[[module.mounts]]
+source = 'prebuild/public/products/webhallen'
+target = 'content/products/webhallen'

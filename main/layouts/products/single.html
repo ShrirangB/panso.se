@@ -1,0 +1,15 @@
+{{ define "main" }}
+<h1>{{ .Params.name }}</h1>
+<sub>Price: {{ .Params.price.price }} kr</sub>
+<br>
+<sub>{{ .Params.subTitle}}</sub>
+<br>
+<small>id: {{ .Params.id }}</small>
+
+<h2>Product description</h2>
+<p>{{ .Params.description }}</p>
+
+<a href="https://www.webhallen.com/se/product/{{ .Params.id }}">View product</a>
+<br>
+<a href="/products">Back to products</a>
+{{ end }}

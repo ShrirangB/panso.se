@@ -1,0 +1,9 @@
+{{ with resources.GetRemote "http://127.0.0.1:8000/api/v1/webhallen/products" }}
+{{ $products := unmarshal .Content }}
+{{ range $products }}
+{{/* 1. */}} {{ $string := jsonify . }}
+{{/* 2. */}} {{ $filename := printf "products/webhallen/%s.md" (urlize .id) }}
+{{/* 3. */}} {{ $resource := resources.FromString $filename $string }}
+{{/* 4. */}} {{ $file := $resource.RelPermalink }}
+{{ end }}
+{{ end }}

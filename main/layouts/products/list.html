@@ -1,0 +1,11 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<ul class="list-group">
+    {{ range .Pages }}
+    <li class="list-group-item">
+        <a class="text-muted text-decoration-none" href="{{ .Permalink }}">{{ .Params.Name }} -
+            {{ .Params.Price.price }} kr</a>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}
