@@ -41,15 +41,14 @@ email = 'hello@panso.se'
 name = 'Joakim Hellsén'
 
 [outputs]
-home = ['html', 'rss']
-section = ['html', 'rss']
-taxonomy = ['html', 'rss']
-term = ['html', 'rss']
+home = ['html']
+section = ['html']
+taxonomy = ['html']
+term = ['html']
 
 [taxonomies]
 tag = 'tags'
 category = 'categories'
-ean = 'eans'
 manufacturer = 'manufacturers'
 section = 'sections'
 part_number = 'part-numbers'

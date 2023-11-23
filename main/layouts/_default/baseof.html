@@ -15,7 +15,6 @@
         <link rel="icon" href="{{ "icon.svg" | relURL }}" type="image/svg+xml">
         <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
         <link rel="manifest" href="{{ "manifest.webmanifest" | relURL }}">
-        <link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "index.xml" | relURL }}">
         <link rel="stylesheet" href="{{ "bootstrap.min.css" | relURL }}">
         <link rel="stylesheet" href="{{ "style.css" | relURL }}">
         <!-- Open Graph -->
@@ -27,7 +26,7 @@
 
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
-        {{ partial "navbar.html" . }}
+        {{ partialCached "navbar.html" . }}
 
         <!-- Content -->
         <div class="container-xl mt-3 mb-3">
@@ -36,15 +35,8 @@
             {{ end }}
         </div>
         <!-- Content end -->
-        <!-- RSS icon -->
-        <div class="position-fixed bottom-0 end-0 p-3">
-            <a href="{{ "index.xml" | relURL }}">
-                <img src="{{ "rss.svg" | relURL }}" alt="RSS" width="32" height="32">
-            </a>
-        </div>
-        <!-- RSS icon end -->
         <!-- Footer -->
-        {{ partial "footer.html" . }}
+        {{ partialCached "footer.html" . }}
         <!-- Footer end -->
         <!-- Body end -->
     </body>
