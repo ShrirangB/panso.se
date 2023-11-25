@@ -22,6 +22,175 @@ def make_thumbnail_url(url: str | None) -> str | None:
     return None
 
 
+def get_image_list_zoom(product_json: dict) -> str | None:
+    """Get a list of zoom images.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of zoom images
+    """
+    images: list = product_json.get("images", [])
+    images_list_zoom: str | None = ""
+    for image in images:
+        image: dict
+        zoom_url: str | None = image.get("zoom")
+        if zoom_url:
+            images_list_zoom += f"https://www.webhallen.com{zoom_url},"
+    return images_list_zoom.rstrip(",") or None
+
+
+def get_image_list_large(product_json: dict) -> str | None:
+    """Get a list of large images.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of large images
+    """
+    images: list = product_json.get("images", [])
+    images_list_large: str | None = ""
+    for image in images:
+        image: dict
+        large_url: str | None = image.get("large")
+        if large_url:
+            images_list_large += f"https://www.webhallen.com{large_url},"
+    return images_list_large.rstrip(",") or None
+
+
+def get_image_list_thumb(product_json: dict) -> str | None:
+    """Get a list of thumbnail images.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of thumbnail images
+    """
+    images: list = product_json.get("images", [])
+    images_list_thumb: str | None = ""
+    for image in images:
+        image: dict
+        thumb_url: str | None = image.get("thumb")
+        if thumb_url:
+            images_list_thumb += f"https://www.webhallen.com{thumb_url},"
+    return images_list_thumb.rstrip(",") or None
+
+
+def get_status_codes(product_json: dict) -> str | None:
+    """Get a list of status codes.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of status codes
+    """
+    status_codes_list: list = product_json.get("statusCodes", [])
+    status_codes: str | None = ""
+    for status_code in status_codes_list:
+        status_codes += f"{status_code},"
+    return status_codes.rstrip(",") or None
+
+
+def get_part_numbers(product_json: dict) -> str | None:
+    """Get a list of part numbers.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of part numbers
+    """
+    part_numbers_list: list = product_json.get("partNumbers", [])
+    part_numbers: str | None = ""
+    for part_number in part_numbers_list:
+        part_numbers += f"{part_number},"
+    return part_numbers.rstrip(",") or None
+
+
+def get_eans(product_json: dict) -> str | None:
+    """Get a list of EANs.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of EANs
+    """
+    eans_list: list = product_json.get("eans", [])
+    eans: str | None = ""
+    for ean in eans_list:
+        eans += f"{ean},"
+    return eans.rstrip(",") or None
+
+
+def get_main_category_path(product_json: dict) -> str | None:
+    """Get a list of main category paths.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of main category paths
+    """
+    main_category_path_list: list = product_json.get("mainCategoryPath", [])
+    main_category_path: str | None = ""
+    for main_category in main_category_path_list:
+        main_category_path += f"{main_category.get('id')},"
+    return main_category_path.rstrip(",") or None
+
+
+def get_possible_delivery_methods(product_json: dict) -> str | None:
+    """Get a list of possible delivery methods.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of possible delivery methods
+    """
+    possible_delivery_methods_list: list = product_json.get("possible_delivery_methods", [])
+    possible_delivery_methods: str | None = ""
+    for possible_delivery_method in possible_delivery_methods_list:
+        possible_delivery_methods += f"{possible_delivery_method},"
+    return possible_delivery_methods.rstrip(",") or None
+
+
+def get_categories(product_json: dict) -> str | None:
+    """Get a list of categories.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of categories
+    """
+    categories_list: list = product_json.get("categories", [])
+    categories: str | None = ""
+    for category in categories_list:
+        categories += f"{category.get('id')},"
+    return categories.rstrip(",") or None
+
+
+def get_manufacturer(product_json: dict) -> str | None:
+    """Get a list of manufacturers.
+
+    Args:
+        product_json: Product JSON
+
+    Returns:
+        str: Comma separated list of manufacturers
+    """
+    manufacturer_json: dict = product_json.get("manufacturer", {})
+    manufacturer: int | None = None
+    if manufacturer_json:
+        manufacturer: int | None = manufacturer_json.get("id")
+    return manufacturer
+
+
 def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915
     """Convert Webhallen product JSON to a Django model."""
     for json in WebhallenJSON.objects.all():
@@ -36,67 +205,16 @@ def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915
             logger.error(f"Error getting product ID {json.product_id}")
             continue
 
-        images: list = product_json.get("images", [])
-        images_list_zoom: str | None = ""
-        images_list_large: str | None = ""
-        images_list_thumb: str | None = ""
-        for image in images:
-            image: dict
-            zoom_url: str | None = image.get("zoom")
-            if zoom_url:
-                images_list_zoom += f"https://www.webhallen.com{zoom_url},"
-
-            large_url: str | None = image.get("large")
-            if large_url:
-                images_list_large += f"https://www.webhallen.com{large_url},"
-
-            thumb_url: str | None = image.get("thumb")
-            if thumb_url:
-                images_list_thumb += f"https://www.webhallen.com{thumb_url},"
-        images_list_zoom = images_list_zoom.rstrip(",") or None
-        images_list_large = images_list_large.rstrip(",") or None
-        images_list_thumb = images_list_thumb.rstrip(",") or None
-
-        status_codes_list: list = product_json.get("statusCodes", [])
-        status_codes: str | None = ""
-        for status_code in status_codes_list:
-            status_codes += f"{status_code},"
-        status_codes = status_codes.rstrip(",") or None
-
-        part_numbers_list: list = product_json.get("partNumbers", [])
-        part_numbers: str | None = ""
-        for part_number in part_numbers_list:
-            part_numbers += f"{part_number},"
-        part_numbers = part_numbers.rstrip(",") or None
-
-        eans_list: list = product_json.get("eans", [])
-        eans: str | None = ""
-        for ean in eans_list:
-            eans += f"{ean},"
-        eans = eans.rstrip(",") or None
-
-        main_category_path_list: list = product_json.get("mainCategoryPath", [])
-        main_category_path: str | None = ""
-        for main_category in main_category_path_list:
-            main_category_path += f"{main_category.get('id')},"
-        main_category_path = main_category_path.rstrip(",") or None
-
-        possible_delivery_methods_list: list = product_json.get("possible_delivery_methods", [])
-        possible_delivery_methods: str | None = ""
-        for possible_delivery_method in possible_delivery_methods_list:
-            possible_delivery_methods += f"{possible_delivery_method},"
-        possible_delivery_methods = possible_delivery_methods.rstrip(",") or None
-
-        categories_list: list = product_json.get("categories", [])
-        categories: str | None = ""
-        for category in categories_list:
-            categories += f"{category.get('id')},"
-        categories = categories.rstrip(",") or None
-
-        manufacturer_json: dict = product_json.get("manufacturer", {})
-        manufacturer: int | None = None
-        if manufacturer_json:
-            manufacturer: int | None = manufacturer_json.get("id")
+        images_list_zoom: str | None = get_image_list_zoom(product_json)
+        images_list_large: str | None = get_image_list_large(product_json)
+        images_list_thumb: str | None = get_image_list_thumb(product_json)
+        status_codes: str | None = get_status_codes(product_json)
+        part_numbers: str | None = get_part_numbers(product_json)
+        eans: str | None = get_eans(product_json)
+        main_category_path: str | None = get_main_category_path(product_json)
+        possible_delivery_methods: str | None = get_possible_delivery_methods(product_json)
+        categories: str | None = get_categories(product_json)
+        manufacturer: str | None = get_manufacturer(product_json)
 
         defaults: dict = {
             "minimum_rank_level": product_json.get("minimumRankLevel"),
