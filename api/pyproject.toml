@@ -11,8 +11,8 @@ loguru = "^0.7.2"
 python-dotenv = "^1.0.0"
 django = "^4.2.7"
 django-simple-history = "^3.4.0"
-sitemap-parser = {git = "https://github.com/TheLovinator1/sitemap-parser.git"}
-redis = {extras = ["hiredis"], version = "^5.0.1"}
+sitemap-parser = { git = "https://github.com/TheLovinator1/sitemap-parser.git" }
+redis = { extras = ["hiredis"], version = "^5.0.1" }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.5.0"
@@ -40,6 +40,7 @@ ignore = [
   "FIX002",
   "COM812",
   "ISC001",
+  "DJ001",
 ]
 line-length = 120
 

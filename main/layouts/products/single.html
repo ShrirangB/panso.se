@@ -1,15 +1,14 @@
 {{ define "main" }}
 <h1>{{ .Params.name }}</h1>
-<sub>Price: {{ .Params.price.price }} kr</sub>
+<sub>Price: {{ .Params.price }} kr</sub>
 <br>
-<sub>{{ .Params.subTitle}}</sub>
+<sub>{{ .Params.sub_title}}</sub>
 <br>
-<small>id: {{ .Params.id }}</small>
 
 <h2>Product description</h2>
-<p>{{ .Params.description }}</p>
+<p>{{ .Params.description | safeHTML}}</p>
 
-<a href="https://www.webhallen.com/se/product/{{ .Params.id }}">View product</a>
+<a href="https://www.webhallen.com/se/product/{{ .Params.product_id }}">View product</a>
 <br>
 <a href="/products">Back to products</a>
 {{ end }}

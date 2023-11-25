@@ -1,32 +1,23 @@
-import argparse
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from django.core.management.base import BaseCommand, CommandError
 
 from core.webhallen.tasks import scrape_products
 
+if TYPE_CHECKING:
+    import argparse
+
 
 class Command(BaseCommand):
-    """Scrape Webhallen products and save to the database.
+    """Scrape Webhallen products and save to the database."""
 
-    Args:
-        BaseCommand: The base class from which all management commands ultimately
-        derive.
-
-    Raises:
-        CommandError: If there is an error with the command.
-    """
-
-    help = "Closes the specified poll for voting"  # noqa: A003
-    output_transaction = True
+    help: str = __doc__ or ""  # noqa: A003
     requires_migrations_checks = True
 
     def add_arguments(self: BaseCommand, parser: argparse.ArgumentParser) -> None:  # noqa: PLR6301
-        """Add arguments to the command.
-
-        Args:
-            self: The command object.
-            parser: The parser object.
-        """
+        """Add arguments to the command."""
         parser.add_argument(
             "--reason",
             type=str,
@@ -35,16 +26,7 @@ class Command(BaseCommand):
         )
 
     def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
-        """Handle the command.
-
-        Args:
-            self: The command object.
-            *args: Variable length argument list.
-            **options: Arbitrary keyword arguments.
-
-        Raises:
-            CommandError: If there is an error with the command or got ctrl-c.
-        """
+        """Handle the command."""
         try:
             scrape_reason: str = options["reason"]
             scrape_products(scrape_reason)

@@ -9,7 +9,7 @@ from simple_history.utils import update_change_reason
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.webhallen.models import Webhallen
+from core.webhallen.models import WebhallenJSON
 
 
 def get_product_json(product_id: str) -> dict:
@@ -100,8 +100,8 @@ def scrape_products(scrape_reason: str = "No reason given") -> None:
             logger.error(f"Could not get product ID from {product}")
             continue
 
-        obj: Webhallen
-        obj, _ = Webhallen.objects.update_or_create(
+        obj: WebhallenJSON
+        obj, _ = WebhallenJSON.objects.update_or_create(
             product_id=product_id,
             defaults={
                 "product_json": product,
