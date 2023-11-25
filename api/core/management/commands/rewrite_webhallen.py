@@ -1,11 +1,66 @@
 from __future__ import annotations
 
+import datetime
+
 from django.core.management.base import BaseCommand, CommandError
 from loguru import logger
 
-from core.management.commands.convert_timestamp_to_datetime import convert_timestamp_to_datetime
-from core.management.commands.make_datetime_from_timestamp import make_datetime_from_timestamp
 from core.webhallen.models import WebhallenJSON, WebhallenProduct
+
+
+def make_datetime_from_timestamp(date_string: str | None) -> datetime.datetime | None:
+    """Convert a date to a datetime.
+
+    Args:
+        date_string: Datetime as string. For example: "2024-02-22T01:13:46"
+
+    Returns:
+        datetime.datetime: Datetime or None if timestamp is empty or fucked
+    """
+    if not date_string:
+        return None
+
+    return datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S").astimezone(tz=datetime.UTC)
+
+
+def convert_timestamp_to_datetime(timestamp: int | None, date_format: str | None) -> str:  # noqa: PLR0911
+    """Convert a timestamp to a datetime.
+
+    Example:
+        timestamp=1704059999, format="Y" -> 2023
+        timestamp=1686110400, format="Y-m-d" -> 2023-06-07
+
+    Args:
+        timestamp: Unix timestamp
+        date_format: Format shown on website
+
+    Returns:
+        The parsed date
+    """
+    if not timestamp or timestamp == 0:
+        return ""
+
+    if not date_format:
+        return ""
+
+    if timestamp == -62169966000:  # noqa: PLR2004
+        # Seems to be 0000-00-00 00:00:00?
+        return ""
+
+    if date_format == "Y":
+        return datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC).strftime("%Y")
+
+    if date_format == "Y-m-d":
+        return datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC).strftime("%Y-%m-%d")
+
+    if date_format == "M Y":
+        return datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC).strftime("%B %Y")
+
+    if date_format == "Q \\k\\v\\a\\r\\t\\a\\l\\e\\t Y":
+        # TODO: Implement this
+        logger.error("For example: 2:a kvartalet 2018 ")
+    logger.error(f"Unknown date format: {date_format}")
+    return ""
 
 
 def make_thumbnail_url(url: str | None) -> str | None:
