@@ -10,6 +10,7 @@ from core.webhallen.models import (
     SitemapCategory,
     SitemapHome,
     SitemapInfoPages,
+    SitemapProduct,
     SitemapRoot,
     SitemapSection,
     WebhallenJSON,
@@ -251,6 +252,24 @@ def api_sitemaps_campaign_lists(request: HttpRequest) -> JsonResponse:  # noqa: 
 def api_sitemaps_info_pages(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.infoPages.xml."""
     sitemaps = SitemapInfoPages.objects.all()
+    sitemaps_data: list = []
+    for sitemap in sitemaps:
+        sitemap_data = {
+            "loc": sitemap.loc,
+            "priority": sitemap.priority,
+            "active": sitemap.active,
+            "created": sitemap.created,
+            "updated": sitemap.updated,
+        }
+        sitemaps_data.append(sitemap_data)
+
+    return JsonResponse(sitemaps_data, safe=False)
+
+
+@require_http_methods(["GET"])
+def api_sitemaps_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
+    """Return all URLs from https://www.webhallen.com/sitemap.products.xml."""
+    sitemaps = SitemapProduct.objects.all()
     sitemaps_data: list = []
     for sitemap in sitemaps:
         sitemap_data = {

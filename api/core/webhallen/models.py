@@ -20,13 +20,17 @@ class WebhallenJSON(models.Model):
     product_json = models.JSONField(help_text="Product JSON")
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_history",
+        excluded_fields=["created", "updated"],
+    )
 
     class Meta:
         """Meta definition for Webhallen."""
 
         verbose_name: str = "Webhallen"
         verbose_name_plural: str = "Webhallen"
+        db_table: str = "webhallen_json"
 
     def __str__(self: WebhallenJSON) -> str:
         """Human-readable, or informal, string representation of Webhallen.
@@ -43,7 +47,10 @@ class WebhallenProduct(models.Model):
     product_id = models.IntegerField(primary_key=True, help_text="Product ID")
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_product_history",
+        excluded_fields=["created", "updated"],
+    )
 
     minimum_rank_level = models.IntegerField(null=True, blank=True, help_text="Minimum rank level")
     images_zoom = models.TextField(null=True, blank=True, help_text="Comma separated list of zoom images")
@@ -137,6 +144,13 @@ class WebhallenProduct(models.Model):
 
     possible_delivery_methods = models.TextField(null=True, blank=True, help_text="Possible delivery methods")
 
+    class Meta:
+        """Meta definition for WebhallenProduct."""
+
+        verbose_name: str = "Webhallen product"
+        verbose_name_plural: str = "Webhallen products"
+        db_table: str = "webhallen_product"
+
     def __str__(self: WebhallenProduct) -> str:
         """Human-readable, or informal, string representation of a Webhallen product.
 
@@ -170,7 +184,10 @@ class WebhallenSection(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_section_history",
+        excluded_fields=["created", "updated"],
+    )
 
     meta_title = models.TextField(null=True, blank=True, help_text="Meta title")
     active = models.BooleanField(null=True, help_text="Active")
@@ -178,6 +195,13 @@ class WebhallenSection(models.Model):
     icon_url = models.URLField(null=True, blank=True, help_text="Icon URL")
     name = models.TextField(null=True, blank=True, help_text="Name")
     url = models.URLField(null=True, blank=True, help_text="URL")
+
+    class Meta:
+        """Meta definition for WebhallenSection."""
+
+        verbose_name: str = "Webhallen section"
+        verbose_name_plural: str = "Webhallen sections"
+        db_table: str = "webhallen_section"
 
     def __str__(self: WebhallenSection) -> str:
         """Human-readable, or informal, string representation of a Webhallen section.
@@ -196,7 +220,17 @@ class SitemapRoot(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_root_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapRoot."""
+
+        verbose_name: str = "Sitemap root"
+        verbose_name_plural: str = "Sitemap roots"
+        db_table: str = "webhallen_sitemap_root"
 
     def __str__(self: SitemapRoot) -> str:
         """Human-readable, or informal, string representation of a Sitemap root.
@@ -216,7 +250,17 @@ class SitemapHome(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_home_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapHome."""
+
+        verbose_name: str = "Sitemap home"
+        verbose_name_plural: str = "Sitemap homes"
+        db_table: str = "webhallen_sitemap_home"
 
     def __str__(self: SitemapHome) -> str:
         """Human-readable, or informal, string representation of a Sitemap home.
@@ -236,7 +280,17 @@ class SitemapSection(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_section_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapSection."""
+
+        verbose_name: str = "Sitemap section"
+        verbose_name_plural: str = "Sitemap sections"
+        db_table: str = "webhallen_sitemap_section"
 
     def __str__(self: SitemapSection) -> str:
         """Human-readable, or informal, string representation of a Sitemap section.
@@ -256,7 +310,17 @@ class SitemapCategory(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_category_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapCategory."""
+
+        verbose_name: str = "Sitemap category"
+        verbose_name_plural: str = "Sitemap categories"
+        db_table: str = "webhallen_sitemap_category"
 
     def __str__(self: SitemapCategory) -> str:
         """Human-readable, or informal, string representation of a Sitemap category.
@@ -276,7 +340,17 @@ class SitemapCampaign(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_campaign_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapCampaign."""
+
+        verbose_name: str = "Sitemap campaign"
+        verbose_name_plural: str = "Sitemap campaigns"
+        db_table: str = "webhallen_sitemap_campaign"
 
     def __str__(self: SitemapCampaign) -> str:
         """Human-readable, or informal, string representation of a Sitemap campaign.
@@ -296,7 +370,17 @@ class SitemapCampaignList(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_campaign_list_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapCampaignList."""
+
+        verbose_name: str = "Sitemap campaign list"
+        verbose_name_plural: str = "Sitemap campaign lists"
+        db_table: str = "webhallen_sitemap_campaign_list"
 
     def __str__(self: SitemapCampaignList) -> str:
         """Human-readable, or informal, string representation of a Sitemap campaign list.
@@ -316,7 +400,17 @@ class SitemapInfoPages(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_info_pages_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapInfoPages."""
+
+        verbose_name: str = "Sitemap info page"
+        verbose_name_plural: str = "Sitemap info pages"
+        db_table: str = "webhallen_sitemap_info_pages"
 
     def __str__(self: SitemapInfoPages) -> str:
         """Human-readable, or informal, string representation of a Sitemap info pages.
@@ -331,11 +425,22 @@ class SitemapProduct(models.Model):
     """Model for https://www.webhallen.com/sitemap.product.xml."""
 
     loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
     active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_product_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapProduct."""
+
+        verbose_name: str = "Sitemap product"
+        verbose_name_plural: str = "Sitemap products"
+        db_table: str = "webhallen_sitemap_product"
 
     def __str__(self: SitemapProduct) -> str:
         """Human-readable, or informal, string representation of a Sitemap product.
@@ -350,11 +455,22 @@ class SitemapManufacturer(models.Model):
     """Model for https://www.webhallen.com/sitemap.manufacturer.xml."""
 
     loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
     active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_manufacturer_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapManufacturer."""
+
+        verbose_name: str = "Sitemap manufacturer"
+        verbose_name_plural: str = "Sitemap manufacturers"
+        db_table: str = "webhallen_sitemap_manufacturer"
 
     def __str__(self: SitemapManufacturer) -> str:
         """Human-readable, or informal, string representation of a Sitemap manufacturer.
@@ -369,11 +485,22 @@ class SitemapArticle(models.Model):
     """Model for https://www.webhallen.com/sitemap.article.xml."""
 
     loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
     active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
 
     created = models.DateTimeField(auto_now_add=True, help_text="Created")
     updated = models.DateTimeField(auto_now=True, help_text="Updated")
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="webhallen_sitemap_article_history",
+        excluded_fields=["created", "updated"],
+    )
+
+    class Meta:
+        """Meta definition for SitemapArticle."""
+
+        verbose_name: str = "Sitemap article"
+        verbose_name_plural: str = "Sitemap articles"
+        db_table: str = "webhallen_sitemap_article"
 
     def __str__(self: SitemapArticle) -> str:
         """Human-readable, or informal, string representation of a Sitemap article.

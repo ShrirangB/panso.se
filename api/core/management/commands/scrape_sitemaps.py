@@ -12,6 +12,7 @@ from core.webhallen.models import (
     SitemapCategory,
     SitemapHome,
     SitemapInfoPages,
+    SitemapProduct,
     SitemapRoot,
     SitemapSection,
 )
@@ -44,7 +45,7 @@ def scrape_sitemap_root() -> None:
 
 
 def scrape_sitemap_home() -> None:
-    """Scrape the home sitemap."""
+    """Scrape sitemap.home.xml."""
     sitemap = "https://www.webhallen.com/sitemap.home.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -77,7 +78,7 @@ def scrape_sitemap_home() -> None:
 
 
 def scrape_sitemap_section() -> None:
-    """Scrape a section sitemap."""
+    """Scrape sitemap.section.xml."""
     sitemap = "https://www.webhallen.com/sitemap.section.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -110,7 +111,7 @@ def scrape_sitemap_section() -> None:
 
 
 def scrape_sitemap_category() -> None:
-    """Scrape a section sitemap."""
+    """Scrape sitemap.category.xml."""
     sitemap = "https://www.webhallen.com/sitemap.category.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -143,7 +144,7 @@ def scrape_sitemap_category() -> None:
 
 
 def scrape_sitemap_campaign() -> None:
-    """Scrape a section sitemap."""
+    """Scrape sitemap.campaign.xml."""
     sitemap = "https://www.webhallen.com/sitemap.campaign.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -176,7 +177,7 @@ def scrape_sitemap_campaign() -> None:
 
 
 def scrape_sitemap_campaign_list() -> None:
-    """Scrape a section sitemap."""
+    """Scrape sitemap.campaignList.xml."""
     sitemap = "https://www.webhallen.com/sitemap.campaignList.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -209,7 +210,7 @@ def scrape_sitemap_campaign_list() -> None:
 
 
 def scrape_sitemap_info_pages() -> None:
-    """Scrape a section sitemap."""
+    """Scrape sitemap.infoPages.xml."""
     sitemap = "https://www.webhallen.com/sitemap.infoPages.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -237,5 +238,38 @@ def scrape_sitemap_info_pages() -> None:
         )
         if created:
             logger.info(f"Found new sitemap in sitemap.infoPages.xml! {loc}")
+
+        obj.save()
+
+
+def scrape_sitemap_products() -> None:
+    """Scrape sitemap.product.xml."""
+    sitemap = "https://www.webhallen.com/sitemap.product.xml"
+    sm = SiteMapParser(sitemap)
+    json_exporter = JSONExporter(sm)
+    urls_json = json_exporter.export_urls()
+    urls_json = json.loads(urls_json)
+
+    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+
+    for url in urls_json:
+        loc: str = url["loc"]
+        priority: float = url["priority"]
+
+        already_exists_in_db: bool = SitemapProduct.objects.filter(loc=loc).exists()
+        if loc not in urls_in_sitemap and already_exists_in_db:
+            logger.info(f"{loc} was removed from the sitemap.product.xml")
+            SitemapProduct.objects.filter(url=loc).update(active=False)
+            continue
+
+        obj, created = SitemapProduct.objects.update_or_create(
+            loc=loc,
+            defaults={
+                "active": True,
+                "priority": priority,
+            },
+        )
+        if created:
+            logger.info(f"Found new sitemap in sitemap.product.xml! {loc}")
 
         obj.save()
