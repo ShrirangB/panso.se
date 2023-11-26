@@ -11,6 +11,7 @@ from core.webhallen.models import (
     SitemapCampaignList,
     SitemapCategory,
     SitemapHome,
+    SitemapInfoPages,
     SitemapRoot,
     SitemapSection,
 )
@@ -203,5 +204,38 @@ def scrape_sitemap_campaign_list() -> None:
         )
         if created:
             logger.info(f"Found new sitemap in sitemap.campaignList.xml! {loc}")
+
+        obj.save()
+
+
+def scrape_sitemap_info_pages() -> None:
+    """Scrape a section sitemap."""
+    sitemap = "https://www.webhallen.com/sitemap.infoPages.xml"
+    sm = SiteMapParser(sitemap)
+    json_exporter = JSONExporter(sm)
+    urls_json = json_exporter.export_urls()
+    urls_json = json.loads(urls_json)
+
+    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+
+    for url in urls_json:
+        loc: str = url["loc"]
+        priority: float = url["priority"]
+
+        already_exists_in_db: bool = SitemapInfoPages.objects.filter(loc=loc).exists()
+        if loc not in urls_in_sitemap and already_exists_in_db:
+            logger.info(f"{loc} was removed from the sitemap.infoPages.xml")
+            SitemapInfoPages.objects.filter(url=loc).update(active=False)
+            continue
+
+        obj, created = SitemapInfoPages.objects.update_or_create(
+            loc=loc,
+            defaults={
+                "active": True,
+                "priority": priority,
+            },
+        )
+        if created:
+            logger.info(f"Found new sitemap in sitemap.infoPages.xml! {loc}")
 
         obj.save()
