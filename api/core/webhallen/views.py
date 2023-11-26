@@ -2,17 +2,14 @@ from __future__ import annotations
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
-from loguru import logger
 
-from core.management.commands.rewrite_webhallen import convert_json_to_model
-from core.webhallen.models import WebhallenJSON, WebhallenProduct
+from core.management.commands.scrape_sitemaps import scrape_sitemap_root
+from core.webhallen.models import SitemapRoot, WebhallenJSON, WebhallenProduct
 
 
 @require_http_methods(["GET"])
 def list_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
-    logger.info("Webhallen list view called")
-
     products = WebhallenJSON.objects.all()
     products_data: list = []
     for product in products:
@@ -116,9 +113,6 @@ def list_products_hugo(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
 @require_http_methods(["GET"])
 def list_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa: ARG001
     """Return Webhallen product as JSON."""
-    logger.info(f"Webhallen product view called for {product_id}")
-
-    # Get product from database or 404
     try:
         product = WebhallenJSON.objects.get(product_id=product_id)
     except WebhallenJSON.DoesNotExist:
@@ -132,5 +126,22 @@ def list_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa
 
 @require_http_methods(["GET"])
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    convert_json_to_model()
+    scrape_sitemap_root()
     return JsonResponse({"status": "ok"})
+
+
+@require_http_methods(["GET"])
+def list_root_sitemaps(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
+    """Return all Webhallen products as JSON."""
+    sitemaps = SitemapRoot.objects.all()
+    sitemaps_data: list = []
+    for sitemap in sitemaps:
+        sitemap_data = {
+            "loc": sitemap.loc,
+            "active": sitemap.active,
+            "created": sitemap.created,
+            "updated": sitemap.updated,
+        }
+        sitemaps_data.append(sitemap_data)
+
+    return JsonResponse(sitemaps_data, safe=False)
