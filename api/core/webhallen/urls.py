@@ -2,17 +2,20 @@ from __future__ import annotations
 
 from django.urls import URLPattern, path
 
-from core.webhallen.views import list_product, list_products, list_products_hugo, list_root_sitemaps, testboi
+from core.webhallen.views import (
+    api_product,
+    api_products,
+    api_products_hugo,
+    api_sitemaps_home,
+    api_sitemaps_root,
+    testboi,
+)
 
 urlpatterns: list[URLPattern] = [
-    # /api/v1/webhallen/products/ - GET - Return all Webhallen products as JSON
-    path("api/v1/webhallen/products", list_products),
-    # /api/v1/webhallen/products/hugo/ - GET - Return all Webhallen products as JSON
-    path("api/v1/webhallen/products/hugo", list_products_hugo),
-    # /api/v1/webhallen/products/<product_id> - GET - Return Webhallen product as JSON
-    path("api/v1/webhallen/products/<str:product_id>", list_product),
-    # /api/v1/webhallen/sitemaps/root - GET - Scrape the root sitemap
-    path("api/v1/webhallen/sitemaps/root", list_root_sitemaps),
-    # /testboi - GET - Test things
+    path("api/v1/webhallen/products", api_products),
+    path("api/v1/webhallen/products/hugo", api_products_hugo),
+    path("api/v1/webhallen/products/<str:product_id>", api_product),
+    path("api/v1/webhallen/sitemaps/root", api_sitemaps_root),
+    path("api/v1/webhallen/sitemaps/home", api_sitemaps_home),
     path("testboi", testboi),
 ]
