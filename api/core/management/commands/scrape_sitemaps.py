@@ -12,6 +12,7 @@ from core.webhallen.models import (
     SitemapCategory,
     SitemapHome,
     SitemapInfoPages,
+    SitemapManufacturer,
     SitemapProduct,
     SitemapRoot,
     SitemapSection,
@@ -242,7 +243,7 @@ def scrape_sitemap_info_pages() -> None:
         obj.save()
 
 
-def scrape_sitemap_products() -> None:
+def scrape_sitemap_product() -> None:
     """Scrape sitemap.product.xml."""
     sitemap = "https://www.webhallen.com/sitemap.product.xml"
     sm = SiteMapParser(sitemap)
@@ -271,5 +272,37 @@ def scrape_sitemap_products() -> None:
         )
         if created:
             logger.info(f"Found new sitemap in sitemap.product.xml! {loc}")
+
+        obj.save()
+
+
+def scrape_sitemap_manufacturer() -> None:
+    """Scrape sitemap.manufacturer.xml."""
+    sitemap = "https://www.webhallen.com/sitemap.manufacturer.xml"
+    sm = SiteMapParser(sitemap)
+    json_exporter = JSONExporter(sm)
+    urls_json = json_exporter.export_urls()
+    urls_json = json.loads(urls_json)
+
+    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+    for url in urls_json:
+        loc: str = url["loc"]
+        priority: float = url["priority"]
+
+        already_exists_in_db: bool = SitemapManufacturer.objects.filter(loc=loc).exists()
+        if loc not in urls_in_sitemap and already_exists_in_db:
+            logger.info(f"{loc} was removed from the sitemap.manufacturer.xml")
+            SitemapManufacturer.objects.filter(url=loc).update(active=False)
+            continue
+
+        obj, created = SitemapManufacturer.objects.update_or_create(
+            loc=loc,
+            defaults={
+                "active": True,
+                "priority": priority,
+            },
+        )
+        if created:
+            logger.info(f"Found new sitemap in sitemap.manufacturer.xml! {loc}")
 
         obj.save()
