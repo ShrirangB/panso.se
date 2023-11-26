@@ -29,15 +29,7 @@ class WebhallenJSON(models.Model):
         verbose_name_plural: str = "Webhallen"
 
     def __str__(self: WebhallenJSON) -> str:
-        """Unicode representation of Webhallen.
-
-        Returns:
-            str: Product ID and created
-        """
-        return f"{self.product_id} - {self.created}"
-
-    def __repr__(self: WebhallenJSON) -> str:
-        """Unicode representation of Webhallen.
+        """Human-readable, or informal, string representation of Webhallen.
 
         Returns:
             str: Product ID and created
@@ -146,9 +138,247 @@ class WebhallenProduct(models.Model):
     possible_delivery_methods = models.TextField(null=True, blank=True, help_text="Possible delivery methods")
 
     def __str__(self: WebhallenProduct) -> str:
-        """Unicode representation of WebhallenProduct.
+        """Human-readable, or informal, string representation of a Webhallen product.
 
         Returns:
-            str: Product ID and created
+            str: Product name and price
         """
         return f"{self.name} - {self.price} kr"
+
+
+class WebhallenSection(models.Model):
+    """Model definition for WebhallenSection.
+
+    Icon URL example:
+        #1A1A1D is the icon color
+        - https://cdn.webhallen.com/api/dynimg/category/datorkomponenter/1A1A1D
+        - https://cdn.webhallen.com/api/dynimg/category/datorer_tillbehor/1A1A1D
+
+
+    Example:
+        - id: 8
+        - metaTitle: "Datorkomponenter - datordelar och uppgraderingspaket"
+        - active: true
+        - icon: "datorkomponenter"
+        - name: "Datorkomponenter"
+
+    Args:
+        models: Django model
+    """
+
+    section_id = models.IntegerField(primary_key=True, help_text="Section ID")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    meta_title = models.TextField(null=True, blank=True, help_text="Meta title")
+    active = models.BooleanField(null=True, help_text="Active")
+    icon = models.TextField(null=True, blank=True, help_text="Icon")
+    icon_url = models.URLField(null=True, blank=True, help_text="Icon URL")
+    name = models.TextField(null=True, blank=True, help_text="Name")
+    url = models.URLField(null=True, blank=True, help_text="URL")
+
+    def __str__(self: WebhallenSection) -> str:
+        """Human-readable, or informal, string representation of a Webhallen section.
+
+        Returns:
+            str: Section ID and name
+        """
+        return f"{self.section_id} - {self.name}"
+
+
+class SitemapRoot(models.Model):
+    """Model for https://www.webhallen.com/sitemap.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapRoot) -> str:
+        """Human-readable, or informal, string representation of a Sitemap root.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapHome(models.Model):
+    """Model for https://www.webhallen.com/sitemap.home.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapHome) -> str:
+        """Human-readable, or informal, string representation of a Sitemap home.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapSection(models.Model):
+    """Model for https://www.webhallen.com/sitemap.section.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapSection) -> str:
+        """Human-readable, or informal, string representation of a Sitemap section.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapCategory(models.Model):
+    """Model for https://www.webhallen.com/sitemap.category.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapCategory) -> str:
+        """Human-readable, or informal, string representation of a Sitemap category.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapCampaign(models.Model):
+    """Model for https://www.webhallen.com/sitemap.campaign.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapCampaign) -> str:
+        """Human-readable, or informal, string representation of a Sitemap campaign.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapCampaignList(models.Model):
+    """Model for https://www.webhallen.com/sitemap.campaignList.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapCampaignList) -> str:
+        """Human-readable, or informal, string representation of a Sitemap campaign list.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapInfoPages(models.Model):
+    """Model for https://www.webhallen.com/sitemap.infoPages.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    priority = models.FloatField(null=True, help_text="Priority")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapInfoPages) -> str:
+        """Human-readable, or informal, string representation of a Sitemap info pages.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapProduct(models.Model):
+    """Model for https://www.webhallen.com/sitemap.product.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapProduct) -> str:
+        """Human-readable, or informal, string representation of a Sitemap product.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapManufacturer(models.Model):
+    """Model for https://www.webhallen.com/sitemap.manufacturer.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapManufacturer) -> str:
+        """Human-readable, or informal, string representation of a Sitemap manufacturer.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
+
+
+class SitemapArticle(models.Model):
+    """Model for https://www.webhallen.com/sitemap.article.xml."""
+
+    loc = models.URLField(primary_key=True, help_text="URL")
+    active = models.BooleanField(null=True, help_text="If the URL is still in the sitemap")
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Created")
+    updated = models.DateTimeField(auto_now=True, help_text="Updated")
+    history = HistoricalRecords()
+
+    def __str__(self: SitemapArticle) -> str:
+        """Human-readable, or informal, string representation of a Sitemap article.
+
+        Returns:
+            str: URL
+        """
+        return self.loc
