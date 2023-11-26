@@ -3,8 +3,9 @@ from __future__ import annotations
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 
-from core.management.commands.scrape_sitemaps import scrape_sitemap_manufacturer
+from core.management.commands.scrape_sitemaps import scrape_sitemap_article
 from core.webhallen.models import (
+    SitemapArticle,
     SitemapCampaign,
     SitemapCampaignList,
     SitemapCategory,
@@ -138,7 +139,7 @@ def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa:
 
 @require_http_methods(["GET"])
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    scrape_sitemap_manufacturer()
+    scrape_sitemap_article()
     return JsonResponse({"status": "ok"})
 
 
@@ -294,6 +295,22 @@ def api_sitemaps_manufacturers(request: HttpRequest) -> JsonResponse:  # noqa: A
         sitemap_data = {
             "loc": sitemap.loc,
             "priority": sitemap.priority,
+            "active": sitemap.active,
+            "created": sitemap.created,
+            "updated": sitemap.updated,
+        }
+        sitemaps_data.append(sitemap_data)
+    return JsonResponse(sitemaps_data, safe=False)
+
+
+@require_http_methods(["GET"])
+def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
+    """Return all URLs from https://www.webhallen.com/sitemap.article.xml."""
+    sitemaps = SitemapArticle.objects.all()
+    sitemaps_data: list = []
+    for sitemap in sitemaps:
+        sitemap_data = {
+            "loc": sitemap.loc,
             "active": sitemap.active,
             "created": sitemap.created,
             "updated": sitemap.updated,

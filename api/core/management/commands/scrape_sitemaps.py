@@ -7,6 +7,7 @@ from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
 from core.webhallen.models import (
+    SitemapArticle,
     SitemapCampaign,
     SitemapCampaignList,
     SitemapCategory,
@@ -40,7 +41,7 @@ def scrape_sitemap_root() -> None:
 
         obj, created = SitemapRoot.objects.update_or_create(loc=loc, defaults={"active": True})
         if created:
-            logger.info(f"Found new sitemap sitemap.xml! {loc}")
+            logger.info(f"Found new url sitemap.xml! {loc}")
 
         obj.save()
 
@@ -73,7 +74,7 @@ def scrape_sitemap_home() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.home.xml! {loc}")
+            logger.info(f"Found new url in sitemap.home.xml! {loc}")
 
         obj.save()
 
@@ -106,7 +107,7 @@ def scrape_sitemap_section() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.section.xml! {loc}")
+            logger.info(f"Found new url in sitemap.section.xml! {loc}")
 
         obj.save()
 
@@ -139,7 +140,7 @@ def scrape_sitemap_category() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.category.xml! {loc}")
+            logger.info(f"Found new url in sitemap.category.xml! {loc}")
 
         obj.save()
 
@@ -172,7 +173,7 @@ def scrape_sitemap_campaign() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.campaign.xml! {loc}")
+            logger.info(f"Found new url in sitemap.campaign.xml! {loc}")
 
         obj.save()
 
@@ -205,7 +206,7 @@ def scrape_sitemap_campaign_list() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.campaignList.xml! {loc}")
+            logger.info(f"Found new url in sitemap.campaignList.xml! {loc}")
 
         obj.save()
 
@@ -238,7 +239,7 @@ def scrape_sitemap_info_pages() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.infoPages.xml! {loc}")
+            logger.info(f"Found new url in sitemap.infoPages.xml! {loc}")
 
         obj.save()
 
@@ -271,7 +272,7 @@ def scrape_sitemap_product() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.product.xml! {loc}")
+            logger.info(f"Found new url in sitemap.product.xml! {loc}")
 
         obj.save()
 
@@ -303,6 +304,34 @@ def scrape_sitemap_manufacturer() -> None:
             },
         )
         if created:
-            logger.info(f"Found new sitemap in sitemap.manufacturer.xml! {loc}")
+            logger.info(f"Found new url in sitemap.manufacturer.xml! {loc}")
 
+        obj.save()
+
+
+def scrape_sitemap_article() -> None:
+    """Scrape sitemap.article.xml."""
+    sitemap = "https://www.webhallen.com/sitemap.article.xml"
+    sm = SiteMapParser(sitemap)
+    json_exporter = JSONExporter(sm)
+    urls_json = json_exporter.export_urls()
+    urls_json = json.loads(urls_json)
+    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+    for url in urls_json:
+        loc: str = url["loc"]
+        priority: float = url["priority"]
+        already_exists_in_db: bool = SitemapArticle.objects.filter(loc=loc).exists()
+        if loc not in urls_in_sitemap and already_exists_in_db:
+            logger.info(f"{loc} was removed from the sitemap.article.xml")
+            SitemapArticle.objects.filter(url=loc).update(active=False)
+            continue
+        obj, created = SitemapArticle.objects.update_or_create(
+            loc=loc,
+            defaults={
+                "active": True,
+                "priority": priority,
+            },
+        )
+        if created:
+            logger.info(f"Found new url in sitemap.article.xml! {loc}")
         obj.save()
