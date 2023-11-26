@@ -6,7 +6,7 @@ from loguru import logger
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.webhallen.models import SitemapHome, SitemapRoot, SitemapSection
+from core.webhallen.models import SitemapCategory, SitemapHome, SitemapRoot, SitemapSection
 
 
 def scrape_sitemap_root() -> None:
@@ -97,5 +97,38 @@ def scrape_sitemap_section() -> None:
         )
         if created:
             logger.info(f"Found new sitemap in sitemap.section.xml! {loc}")
+
+        obj.save()
+
+
+def scrape_sitemap_category() -> None:
+    """Scrape a section sitemap."""
+    sitemap = "https://www.webhallen.com/sitemap.category.xml"
+    sm = SiteMapParser(sitemap)
+    json_exporter = JSONExporter(sm)
+    urls_json = json_exporter.export_urls()
+    urls_json = json.loads(urls_json)
+
+    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+
+    for url in urls_json:
+        loc: str = url["loc"]
+        priority: float = url["priority"]
+
+        already_exists_in_db: bool = SitemapCategory.objects.filter(loc=loc).exists()
+        if loc not in urls_in_sitemap and already_exists_in_db:
+            logger.info(f"{loc} was removed from the sitemap.category.xml")
+            SitemapCategory.objects.filter(url=loc).update(active=False)
+            continue
+
+        obj, created = SitemapCategory.objects.update_or_create(
+            loc=loc,
+            defaults={
+                "active": True,
+                "priority": priority,
+            },
+        )
+        if created:
+            logger.info(f"Found new sitemap in sitemap.category.xml! {loc}")
 
         obj.save()
