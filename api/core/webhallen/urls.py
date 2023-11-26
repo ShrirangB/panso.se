@@ -6,6 +6,7 @@ from core.webhallen.views import (
     api_product,
     api_products,
     api_products_hugo,
+    api_sitemaps_campaign_lists,
     api_sitemaps_campaigns,
     api_sitemaps_categories,
     api_sitemaps_home,
@@ -23,5 +24,6 @@ urlpatterns: list[URLPattern] = [
     path("api/v1/webhallen/sitemaps/sections", api_sitemaps_sections),
     path("api/v1/webhallen/sitemaps/categories", api_sitemaps_categories),
     path("api/v1/webhallen/sitemaps/campaigns", api_sitemaps_campaigns),
+    path("api/v1/webhallen/sitemaps/campaign_lists", api_sitemaps_campaign_lists),
     path("testboi", testboi),
 ]
