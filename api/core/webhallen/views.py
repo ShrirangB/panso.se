@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 
-from core.management.commands.scrape_sitemaps import scrape_sitemap_article
+from core.management.commands.add_sections import create_sections
 from core.webhallen.models import (
     SitemapArticle,
     SitemapCampaign,
@@ -17,6 +17,7 @@ from core.webhallen.models import (
     SitemapSection,
     WebhallenJSON,
     WebhallenProduct,
+    WebhallenSection,
 )
 
 
@@ -139,7 +140,7 @@ def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa:
 
 @require_http_methods(["GET"])
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    scrape_sitemap_article()
+    create_sections()
     return JsonResponse({"status": "ok"})
 
 
@@ -317,3 +318,23 @@ def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
         }
         sitemaps_data.append(sitemap_data)
     return JsonResponse(sitemaps_data, safe=False)
+
+
+@require_http_methods(["GET"])
+def api_list_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
+    """Return all sections."""
+    sections = WebhallenSection.objects.all()
+    sections_data: list = []
+    for section in sections:
+        section_data = {
+            "section_id": section.section_id,
+            "url": section.url,
+            "meta_title": section.meta_title,
+            "active": section.active,
+            "icon": section.icon,
+            "icon_url": section.icon_url,
+            "name": section.name,
+        }
+        sections_data.append(section_data)
+
+    return JsonResponse(sections_data, safe=False)
