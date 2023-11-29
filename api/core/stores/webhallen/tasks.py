@@ -4,12 +4,15 @@ import json
 import re
 
 import httpx
-from loguru import logger
+from rich import print
+from rich.console import Console
 from simple_history.utils import update_change_reason
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
 from core.stores.webhallen.models import WebhallenJSON
+
+err_console = Console(stderr=True)
 
 
 def get_product_json(product_id: str) -> dict:
@@ -26,19 +29,19 @@ def get_product_json(product_id: str) -> dict:
     try:
         response: httpx.Response = httpx.get(product_url)
     except httpx.HTTPError as e:
-        logger.error(f"Error getting product {product_id}: {e}")
+        err_console.print(f"Error getting product {product_id}: {e}")
         return {}
     if response.is_error:
-        logger.error(f"Error getting product {product_id}: {response.status_code}\n{response.text}")
+        err_console.print(f"Error getting product {product_id}: {response.status_code}\n{response.text}")
         return {}
 
     if response.text.startswith("<!DOCTYPE html>"):
-        logger.error(f"Probably 404? https://www.webhallen.com/api/product/{product_id}")
+        err_console.print(f"Probably 404? https://www.webhallen.com/api/product/{product_id}")
         return {}
 
     product_json = response.json()
     if not product_json:
-        logger.error(f"Error getting product JSON {product_id}: {response.status_code}\n{response.text}")
+        err_console.print(f"Error getting product JSON {product_id}: {response.status_code}\n{response.text}")
         return {}
 
     # Add our own metadata
@@ -74,7 +77,7 @@ def get_products_from_sitemap():  # noqa: ANN201
         product_url: str = url["loc"]
         product_id = _get_product_id(product_url)
         if not product_id:
-            logger.error(f"Could not get product ID from {product_url}")
+            err_console.print(f"Could not get product ID from {product_url}")
             continue
 
         yield get_product_json(product_id)
@@ -97,7 +100,7 @@ def scrape_products(scrape_reason: str = "No reason given") -> None:
         # Get product ID from metadata
         product_id = product["metadata"]["product_id"]
         if not product_id:
-            logger.error(f"Could not get product ID from {product}")
+            err_console.print(f"Could not get product ID from {product}")
             continue
 
         obj: WebhallenJSON
@@ -111,4 +114,4 @@ def scrape_products(scrape_reason: str = "No reason given") -> None:
         obj.save()
         update_change_reason(obj, f"Scraped Webhallen product JSON: {scrape_reason}")
 
-    logger.info("Done scraping Webhallen products")
+    print("Done scraping Webhallen products")

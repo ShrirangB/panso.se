@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 
-from loguru import logger
+from rich import print
+from rich.console import Console
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
@@ -18,6 +19,8 @@ from core.stores.webhallen.models import (
     SitemapRoot,
     SitemapSection,
 )
+
+err_console = Console(stderr=True)
 
 
 def scrape_sitemap_root() -> None:
@@ -35,13 +38,13 @@ def scrape_sitemap_root() -> None:
 
         already_exists_in_db: bool = SitemapRoot.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.xml")
+            print(f"{loc} was removed from the sitemap.xml")
             SitemapRoot.objects.filter(url=loc).update(active=False)
             continue
 
         obj, created = SitemapRoot.objects.update_or_create(loc=loc, defaults={"active": True})
         if created:
-            logger.info(f"Found new url sitemap.xml! {loc}")
+            print(f"Found new url sitemap.xml! {loc}")
 
         obj.save()
 
@@ -62,7 +65,7 @@ def scrape_sitemap_home() -> None:
 
         already_exists_in_db: bool = SitemapHome.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.home.xml")
+            print(f"{loc} was removed from the sitemap.home.xml")
             SitemapHome.objects.filter(url=loc).update(active=False)
             continue
 
@@ -74,7 +77,7 @@ def scrape_sitemap_home() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.home.xml! {loc}")
+            print(f"Found new url in sitemap.home.xml! {loc}")
 
         obj.save()
 
@@ -95,7 +98,7 @@ def scrape_sitemap_section() -> None:
 
         already_exists_in_db: bool = SitemapSection.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.section.xml")
+            print(f"{loc} was removed from the sitemap.section.xml")
             SitemapSection.objects.filter(url=loc).update(active=False)
             continue
 
@@ -107,7 +110,7 @@ def scrape_sitemap_section() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.section.xml! {loc}")
+            print(f"Found new url in sitemap.section.xml! {loc}")
 
         obj.save()
 
@@ -128,7 +131,7 @@ def scrape_sitemap_category() -> None:
 
         already_exists_in_db: bool = SitemapCategory.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.category.xml")
+            print(f"{loc} was removed from the sitemap.category.xml")
             SitemapCategory.objects.filter(url=loc).update(active=False)
             continue
 
@@ -140,7 +143,7 @@ def scrape_sitemap_category() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.category.xml! {loc}")
+            print(f"Found new url in sitemap.category.xml! {loc}")
 
         obj.save()
 
@@ -161,7 +164,7 @@ def scrape_sitemap_campaign() -> None:
 
         already_exists_in_db: bool = SitemapCampaign.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.campaign.xml")
+            print(f"{loc} was removed from the sitemap.campaign.xml")
             SitemapCampaign.objects.filter(url=loc).update(active=False)
             continue
 
@@ -173,7 +176,7 @@ def scrape_sitemap_campaign() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.campaign.xml! {loc}")
+            print(f"Found new url in sitemap.campaign.xml! {loc}")
 
         obj.save()
 
@@ -194,7 +197,7 @@ def scrape_sitemap_campaign_list() -> None:
 
         already_exists_in_db: bool = SitemapCampaignList.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.campaignList.xml")
+            print(f"{loc} was removed from the sitemap.campaignList.xml")
             SitemapCampaignList.objects.filter(url=loc).update(active=False)
             continue
 
@@ -206,7 +209,7 @@ def scrape_sitemap_campaign_list() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.campaignList.xml! {loc}")
+            print(f"Found new url in sitemap.campaignList.xml! {loc}")
 
         obj.save()
 
@@ -227,7 +230,7 @@ def scrape_sitemap_info_pages() -> None:
 
         already_exists_in_db: bool = SitemapInfoPages.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.infoPages.xml")
+            print(f"{loc} was removed from the sitemap.infoPages.xml")
             SitemapInfoPages.objects.filter(url=loc).update(active=False)
             continue
 
@@ -239,7 +242,7 @@ def scrape_sitemap_info_pages() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.infoPages.xml! {loc}")
+            print(f"Found new url in sitemap.infoPages.xml! {loc}")
 
         obj.save()
 
@@ -260,7 +263,7 @@ def scrape_sitemap_product() -> None:
 
         already_exists_in_db: bool = SitemapProduct.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.product.xml")
+            print(f"{loc} was removed from the sitemap.product.xml")
             SitemapProduct.objects.filter(url=loc).update(active=False)
             continue
 
@@ -272,7 +275,7 @@ def scrape_sitemap_product() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.product.xml! {loc}")
+            print(f"Found new url in sitemap.product.xml! {loc}")
 
         obj.save()
 
@@ -292,7 +295,7 @@ def scrape_sitemap_manufacturer() -> None:
 
         already_exists_in_db: bool = SitemapManufacturer.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.manufacturer.xml")
+            print(f"{loc} was removed from the sitemap.manufacturer.xml")
             SitemapManufacturer.objects.filter(url=loc).update(active=False)
             continue
 
@@ -304,7 +307,7 @@ def scrape_sitemap_manufacturer() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.manufacturer.xml! {loc}")
+            print(f"Found new url in sitemap.manufacturer.xml! {loc}")
 
         obj.save()
 
@@ -322,7 +325,7 @@ def scrape_sitemap_article() -> None:
         priority: float = url["priority"]
         already_exists_in_db: bool = SitemapArticle.objects.filter(loc=loc).exists()
         if loc not in urls_in_sitemap and already_exists_in_db:
-            logger.info(f"{loc} was removed from the sitemap.article.xml")
+            print(f"{loc} was removed from the sitemap.article.xml")
             SitemapArticle.objects.filter(url=loc).update(active=False)
             continue
         obj, created = SitemapArticle.objects.update_or_create(
@@ -333,5 +336,5 @@ def scrape_sitemap_article() -> None:
             },
         )
         if created:
-            logger.info(f"Found new url in sitemap.article.xml! {loc}")
+            print(f"Found new url in sitemap.article.xml! {loc}")
         obj.save()

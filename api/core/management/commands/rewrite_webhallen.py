@@ -3,9 +3,12 @@ from __future__ import annotations
 import datetime
 
 from django.core.management.base import BaseCommand, CommandError
-from loguru import logger
+from rich.console import Console
+from rich.progress import track
 
 from core.stores.webhallen.models import WebhallenJSON, WebhallenProduct
+
+err_console = Console(stderr=True)
 
 
 def make_datetime_from_timestamp(date_string: str | None) -> datetime.datetime | None:
@@ -18,6 +21,7 @@ def make_datetime_from_timestamp(date_string: str | None) -> datetime.datetime |
         datetime.datetime: Datetime or None if timestamp is empty or fucked
     """
     if not date_string:
+        err_console.print("Failed to get date from timestamp")
         return None
 
     return datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S").astimezone(tz=datetime.UTC)
@@ -38,13 +42,16 @@ def convert_timestamp_to_datetime(timestamp: int | None, date_format: str | None
         The parsed date
     """
     if not timestamp or timestamp == 0:
+        err_console.print("Timestamp is 0 or None")
         return ""
 
     if not date_format:
+        err_console.print("date_format is None")
         return ""
 
     if timestamp == -62169966000:  # noqa: PLR2004
         # Seems to be 0000-00-00 00:00:00?
+        err_console.print("Timestamp is 0000-00-00 00:00:00")
         return ""
 
     if date_format == "Y":
@@ -58,8 +65,8 @@ def convert_timestamp_to_datetime(timestamp: int | None, date_format: str | None
 
     if date_format == "Q \\k\\v\\a\\r\\t\\a\\l\\e\\t Y":
         # TODO: Implement this
-        logger.error("For example: 2:a kvartalet 2018 ")
-    logger.error(f"Unknown date format: {date_format}")
+        err_console.print(f"Found Q kvartalet Y for {timestamp}")
+    err_console.print(f"Unknown date format: {date_format}")
     return ""
 
 
@@ -248,16 +255,17 @@ def get_manufacturer(product_json: dict) -> str | None:
 
 def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915
     """Convert Webhallen product JSON to a Django model."""
-    for json in WebhallenJSON.objects.all():
+    products = WebhallenJSON.objects.all()
+    for json in track(products, description="Processing...", total=products.count()):
         product_json = dict(json.product_json)
         product_json: dict = product_json.get("product", {})
         if not product_json:
-            logger.error(f"Error getting product JSON {json.product_id}")
+            err_console.print(f"Error getting product JSON {json.product_id}")
             continue
 
         product_id: int | None = product_json.get("id")
         if not product_id:
-            logger.error(f"Error getting product ID {json.product_id}")
+            err_console.print(f"Error getting product ID {json.product_id}")
             continue
 
         images_list_zoom: str | None = get_image_list_zoom(product_json)

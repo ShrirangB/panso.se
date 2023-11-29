@@ -3,16 +3,20 @@ from __future__ import annotations
 from functools import lru_cache
 
 from django.core.management.base import BaseCommand, CommandError
-from loguru import logger
+from rich import print
+from rich.console import Console
+from rich.progress import track
 
 from core.stores.webhallen.models import WebhallenJSON, WebhallenSection
+
+err_console = Console(stderr=True)
 
 
 @lru_cache(maxsize=20)
 def get_section_url(section_id: str | None) -> str | None:
     """Return section URL."""
     if not section_id:
-        logger.error(f"Error getting section URL for {section_id}")
+        err_console.print(f"Error getting section URL for {section_id}")
         return None
 
     sections = WebhallenSection.objects.all()
@@ -21,7 +25,7 @@ def get_section_url(section_id: str | None) -> str | None:
         if not section_url:
             continue
         if section_url.startswith(f"https://www.webhallen.com/se/section/{section_id}-"):
-            logger.debug(f"Found section URL for {section_id}")
+            print(f"Found section URL for {section_id}")
             return section_url
 
     section_id_presentkort = 19
@@ -29,7 +33,7 @@ def get_section_url(section_id: str | None) -> str | None:
         # Has no URL so we use something close
         return "https://www.webhallen.com/se/info/28-Kop-presentkort"
 
-    logger.error(f"Error getting section URL for {section_id}")
+    err_console.print(f"Error getting section URL for {section_id}")
     return None
 
 
@@ -48,28 +52,29 @@ def get_section_icon_url(icon: str | None, name: str | None) -> str | None:
     icon_hex_color: str = "1A1A1D"
     if not icon:
         if name != "Presentkort":
-            logger.error(f"Error getting section icon URL for {name}")
+            err_console.print(f"Error getting section icon URL for {name}")
         return None
     icon_url: str = f"https://cdn.webhallen.com/api/dynimg/category/{icon}/{icon_hex_color}"
 
-    logger.debug(f"Found section icon URL for {name}")
+    print(f"Found section icon URL for {name}")
     return icon_url
 
 
 def create_sections() -> None:
     """Loop through all JSON objects and create sections."""
     old_sections = WebhallenSection.objects.all()
+    products = WebhallenJSON.objects.all()
 
-    for json in WebhallenJSON.objects.all():
+    for json in track(products, description="Processing...", total=products.count()):
         product_json = dict(json.product_json)
         product_json: dict = product_json.get("product", {})
         if not product_json:
-            logger.error(f"Error getting product JSON {json.product_id}")
+            err_console.print(f"Error getting product JSON {json.product_id}")
             continue
 
         section: dict = product_json.get("section", {})
         if not section:
-            logger.error(f"Error getting section JSON {json.product_id}")
+            err_console.print(f"Error getting section JSON {json.product_id}")
             continue
 
         # 3
@@ -114,7 +119,7 @@ def create_sections() -> None:
         )
 
         if created:
-            logger.info(f"Found new section! {name} - {url}")
+            print(f"Found new section! {name} - {url}")
 
         obj.save()
 
