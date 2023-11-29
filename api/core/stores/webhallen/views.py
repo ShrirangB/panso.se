@@ -4,7 +4,7 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 
 from core.management.commands.add_sections import create_sections
-from core.webhallen.models import (
+from core.stores.webhallen.models import (
     SitemapArticle,
     SitemapCampaign,
     SitemapCampaignList,

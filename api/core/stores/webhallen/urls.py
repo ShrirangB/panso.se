@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django.urls import URLPattern, path
 
-from core.webhallen.views import (
+from core.stores.webhallen.views import (
     api_list_sections,
     api_product,
     api_products,

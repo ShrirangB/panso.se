@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from django.urls import URLPattern, path
+from typing import TYPE_CHECKING
 
-from .views import index_view
-from .webhallen.urls import urlpatterns as webhallen_urlpatterns
+from .stores.webhallen.urls import urlpatterns as webhallen_urlpatterns
 
-# /
-urlpatterns: list[URLPattern] = [path("", index_view, name="index")]
+if TYPE_CHECKING:
+    from django.urls import URLPattern
 
 # /webhallen/
-urlpatterns += webhallen_urlpatterns
+urlpatterns: list[URLPattern] = webhallen_urlpatterns

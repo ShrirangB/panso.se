@@ -6,7 +6,7 @@ from loguru import logger
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.webhallen.models import (
+from core.stores.webhallen.models import (
     SitemapArticle,
     SitemapCampaign,
     SitemapCampaignList,

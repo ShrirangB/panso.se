@@ -5,7 +5,7 @@ from functools import lru_cache
 from django.core.management.base import BaseCommand, CommandError
 from loguru import logger
 
-from core.webhallen.models import WebhallenJSON, WebhallenSection
+from core.stores.webhallen.models import WebhallenJSON, WebhallenSection
 
 
 @lru_cache(maxsize=20)

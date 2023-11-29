@@ -9,7 +9,7 @@ from simple_history.utils import update_change_reason
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.webhallen.models import WebhallenJSON
+from core.stores.webhallen.models import WebhallenJSON
 
 
 def get_product_json(product_id: str) -> dict:

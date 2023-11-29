@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from django.core.management.base import BaseCommand, CommandError
 
-from core.webhallen.tasks import scrape_products
+from core.stores.webhallen.tasks import scrape_products
 
 if TYPE_CHECKING:
     import argparse

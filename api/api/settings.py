@@ -46,39 +46,14 @@ INSTALLED_APPS: list[str] = [
     # Third party
     "simple_history",  # https://github.com/jazzband/django-simple-history
     # Django
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
 ]
 
 MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-
-TEMPLATES: list[dict[str, str | list[str] | bool | dict[str, list[str]]]] = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
 ]
 
 DATABASE_URL: str = os.getenv(key="DATABASE_URL", default=str(Path(BASE_DIR / "db.sqlite3")))
@@ -86,14 +61,5 @@ DATABASES: dict[str, dict[str, str]] = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": DATABASE_URL,
-    },
-}
-
-REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
-REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="192.168.1.2")
-CACHES: dict[str, dict[str, str]] = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379",
     },
 }

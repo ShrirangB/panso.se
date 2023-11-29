@@ -5,7 +5,7 @@ import datetime
 from django.core.management.base import BaseCommand, CommandError
 from loguru import logger
 
-from core.webhallen.models import WebhallenJSON, WebhallenProduct
+from core.stores.webhallen.models import WebhallenJSON, WebhallenProduct
 
 
 def make_datetime_from_timestamp(date_string: str | None) -> datetime.datetime | None:
