@@ -1,43 +1,31 @@
 from __future__ import annotations
 
 from django.core.management.base import BaseCommand, CommandError
-from rich import print
-from rich.console import Console
 from rich.progress import track
 
 from core.models import Eans
 from core.stores.webhallen.models import WebhallenJSON
 
-err_console = Console(stderr=True)
-
 
 def create_eans() -> None:
     """Loop through all JSON objects and create eans."""
+    eans_to_create: list[Eans] = []
     products = WebhallenJSON.objects.all()
     for json in track(products, description="Processing...", total=products.count()):
         product_json = dict(json.product_json)
-        product_json: dict = product_json.get("product", {})
         if not product_json:
-            err_console.print(f"Error getting product JSON for {json.product_id}")
             continue
 
-        name: str = product_json.get("name", "No name")
         eans: dict = product_json.get("eans", {})
         if not eans:
-            err_console.print(f"Error getting eans JSON for {json.product_id}")
             continue
 
-        for ean in eans:
-            obj, created = Eans.objects.update_or_create(
-                ean=ean,
-                defaults={
-                    "name": name,
-                    "list_of_webhallen_ids_with_ean": f"{json.product_id}",
-                },
-            )
-            if created:
-                print(f"Found new ean! {ean} - {name}")
-            obj.save()
+        name: str = product_json.get("name", "")
+        if not name:
+            continue
+
+        eans_to_create.extend([Eans(ean=ean, name=name) for ean in eans])
+    Eans.objects.bulk_create(eans_to_create, update_fields=["name"], ignore_conflicts=True)
 
 
 class Command(BaseCommand):
