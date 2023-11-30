@@ -61,8 +61,18 @@ def get_section_icon_url(icon: str | None, name: str | None) -> str | None:
     return icon_url
 
 
+def mark_sections_inactive() -> None:
+    """Mark all sections as inactive."""
+    sections = WebhallenSection.objects.all()
+    for section in sections:
+        section.active = False
+    WebhallenSection.objects.bulk_update(sections, ["active"])
+
+
 def create_sections() -> None:
     """Loop through all JSON objects and create sections."""
+    mark_sections_inactive()
+
     new_sections = []
     products = WebhallenJSON.objects.all()
     for json in track(products, description="Processing...", total=products.count()):
