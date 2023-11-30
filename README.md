@@ -1,17 +1,10 @@
 # panso.se
 
-The source code for [panso.se](https://panso.se) and [api.panso.se](https://api.panso.se).
+The source code for [panso.se](https://panso.se).
 
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-### Directory structure
-
-- `api/` - [api.panso.se](https://api.panso.se)
-  - We use [Django](https://www.djangoproject.com/) to serve the API and store data that is used for generating Markdown files.
-- `main/` - [panso.se](https://panso.se)
-  - Uses [Hugo](https://gohugo.io/) to generate static HTML files from Markdown files.
 
 ## License
 
