@@ -3,6 +3,7 @@ from __future__ import annotations
 from functools import lru_cache
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 from rich import print
 from rich.console import Console
 from rich.progress import track
@@ -62,12 +63,10 @@ def get_section_icon_url(icon: str | None, name: str | None) -> str | None:
 
 def create_sections() -> None:
     """Loop through all JSON objects and create sections."""
-    old_sections = WebhallenSection.objects.all()
+    new_sections = []
     products = WebhallenJSON.objects.all()
-
     for json in track(products, description="Processing...", total=products.count()):
-        product_json = dict(json.product_json)
-        product_json: dict = product_json.get("product", {})
+        product_json: dict = dict(json.product_json).get("product", {})
         if not product_json:
             err_console.print(f"Error getting product JSON {json.product_id}")
             continue
@@ -77,51 +76,33 @@ def create_sections() -> None:
             err_console.print(f"Error getting section JSON {json.product_id}")
             continue
 
-        # 3
         section_id: str | None = section.get("id")
-        # Datorer och Tillbehör
         meta_title: str | None = product_json.get("metaTitle")
-        # True
         active: bool | None = section.get("active")
-        # Datorer och Tillbehör
         name: str | None = section.get("name")
-        # https://www.webhallen.com/se/section/3-datorer-och-tillbehor
         url: str | None = get_section_url(section_id=section_id)
-        # datorer_tillbehor
         icon: str | None = section.get("icon")
-        # https://cdn.webhallen.com/api/dynimg/category/datorer_tillbehor/1A1A1D
         icon_url: str | None = get_section_icon_url(icon=icon, name=name)
 
-        # Only update if meta_title, active, name, url, icon or icon_url has changed since last time
-        old_section: WebhallenSection | None = old_sections.filter(section_id=section_id).first()
-        if old_section and (  # noqa: PLR0916
-            old_section.meta_title == meta_title
-            and old_section.active == active
-            and old_section.name == name
-            and old_section.url == url
-            and old_section.icon == icon
-            and old_section.icon_url == icon_url
-        ):
-            continue
-
-        obj: WebhallenSection
-        created: bool
-        obj, created = WebhallenSection.objects.update_or_create(
-            section_id=section_id,
-            defaults={
-                "url": url,
-                "meta_title": meta_title,
-                "active": active,
-                "icon": icon,
-                "icon_url": icon_url,
-                "name": name,
-            },
+        new_sections.append(
+            WebhallenSection(
+                section_id=section_id,
+                url=url,
+                meta_title=meta_title,
+                active=active,
+                icon=icon,
+                icon_url=icon_url,
+                name=name,
+            ),
         )
 
-        if created:
-            print(f"Found new section! {name} - {url}")
-
-        obj.save()
+    with transaction.atomic():
+        sections: list[WebhallenSection] = WebhallenSection.objects.bulk_create(
+            new_sections,
+            update_fields=["url", "meta_title", "active", "icon", "icon_url", "name"],
+            ignore_conflicts=True,
+        )
+        print(f"Created {len(sections)} sections" if sections else "No sections created")
 
 
 class Command(BaseCommand):
