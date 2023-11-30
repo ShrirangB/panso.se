@@ -25,8 +25,10 @@ def get_section_url(section_id: str | None) -> str | None:
         section_url: str | None = section.url
         if not section_url:
             continue
+        section_name: str = section.name or ""
         if section_url.startswith(f"https://www.webhallen.com/se/section/{section_id}-"):
-            print(f"Found section URL for {section_id}")
+            print(f"{section_id} - {section_name}")
+            print(f"\t{section_url}")
             return section_url
 
     section_id_presentkort = 19
@@ -57,7 +59,7 @@ def get_section_icon_url(icon: str | None, name: str | None) -> str | None:
         return None
     icon_url: str = f"https://cdn.webhallen.com/api/dynimg/category/{icon}/{icon_hex_color}"
 
-    print(f"Found section icon URL for {name}")
+    print(f"\t{icon_url}")
     return icon_url
 
 
