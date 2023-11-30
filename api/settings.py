@@ -3,9 +3,20 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+import sentry_sdk
 from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv(), verbose=True)
+
+sentry_dsn: str = os.getenv(key="SENTRY_DSN", default="")
+if sentry_dsn:
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
+    )
+
+
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 SECRET_KEY: str = os.getenv("SECRET_KEY", default="")
 DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
