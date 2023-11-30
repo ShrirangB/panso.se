@@ -28,6 +28,21 @@ services:
       - /mnt/Fourteen/Docker/Panso/Redis:/data
     networks:
       - redis
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    user: "1000:1000"
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - /mnt/Fourteen/Docker/Panso/Postgres:/var/lib/postgresql/data
+    networks:
+      - db
 
 networks:
   tunnel:
@@ -35,4 +50,6 @@ networks:
   panso:
     driver: bridge
   redis:
+    driver: bridge
+  db:
     driver: bridge

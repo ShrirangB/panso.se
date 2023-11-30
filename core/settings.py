@@ -8,18 +8,17 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv(), verbose=True)
 
-sentry_dsn: str = os.getenv(key="SENTRY_DSN", default="")
-if sentry_dsn:
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        traces_sample_rate=1.0,
-        profiles_sample_rate=1.0,
-    )
-
+DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
+sentry_sdk.init(
+    debug=DEBUG,
+    environment="Development" if DEBUG else "Production",
+    send_default_pii=True,
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 SECRET_KEY: str = os.getenv("SECRET_KEY", default="")
-DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
 ADMINS: list[tuple[str, str]] = [("Joakim Hellsén", "django@panso.se")]
 BOT_IP_LIST: list[str] = [os.getenv(key="BOT_IP", default="")]
 ALLOWED_HOSTS: list[str] = [".panso.se", ".localhost", "127.0.0.1", "::1"]
@@ -42,11 +41,11 @@ DEFAULT_FROM_EMAIL: str = os.getenv(key="EMAIL_HOST_USER", default="webmaster@lo
 SERVER_EMAIL: str = os.getenv(key="EMAIL_HOST_USER", default="webmaster@localhost")
 USE_X_FORWARDED_HOST = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-ROOT_URLCONF = "api.urls"
+ROOT_URLCONF = "core.urls"
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SIMPLE_HISTORY_REVERT_DISABLED = True
-WSGI_APPLICATION = "api.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 INTERNAL_IPS: list[str] = ["127.0.0.1", "localhost"]
 if BOT_IP_LIST:
     INTERNAL_IPS.extend(BOT_IP_LIST)
@@ -57,20 +56,58 @@ INSTALLED_APPS: list[str] = [
     # Third party
     "simple_history",  # https://github.com/jazzband/django-simple-history
     # Django
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
 MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-DATABASE_URL: str = os.getenv(key="DATABASE_URL", default=str(Path(BASE_DIR / "db.sqlite3")))
 DATABASES: dict[str, dict[str, str]] = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DATABASE_URL,
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv(key="DB_NAME", default="panso"),
+        "USER": os.getenv(key="POSTGRES_USER", default=""),
+        "PASSWORD": os.getenv(key="POSTGRES_PASSWORD", default=""),
+        "HOST": os.getenv(key="POSTGRES_HOST", default=""),
+        "PORT": os.getenv(key="POSTGRES_PORT", default="5432"),
+    },
+}
+
+
+TEMPLATES: list[dict[str, str | list[str] | bool | dict[str, list[str]]]] = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+
+REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
+REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="192.168.1.2")
+CACHES: dict[str, dict[str, str]] = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379",
     },
 }

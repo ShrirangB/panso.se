@@ -1,14 +1,7 @@
 name: Ruff
 on:
   push:
-    branches: [master]
-    paths:
-      - "api/**"
-      - ".github/workflows/ruff.yml"
   pull_request:
-    branches: [master]
-    paths:
-      - "api/**"
   schedule:
     - cron: "0 0 * * *" # Run every day
   workflow_dispatch:

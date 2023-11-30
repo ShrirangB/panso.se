@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
+from ninja import Router
 
 from webhallen.management.commands.add_sections import create_sections
 from webhallen.models import (
@@ -20,8 +21,10 @@ from webhallen.models import (
     WebhallenSection,
 )
 
+router = Router()
 
-@require_http_methods(["GET"])
+
+@router.get("/products")
 def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
     products = WebhallenJSON.objects.all()
