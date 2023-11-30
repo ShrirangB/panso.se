@@ -10,7 +10,7 @@ from simple_history.utils import update_change_reason
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.stores.webhallen.models import WebhallenJSON
+from webhallen.models import WebhallenJSON
 
 err_console = Console(stderr=True)
 

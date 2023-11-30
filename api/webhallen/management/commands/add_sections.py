@@ -8,7 +8,7 @@ from rich import print
 from rich.console import Console
 from rich.progress import track
 
-from core.stores.webhallen.models import WebhallenJSON, WebhallenSection
+from webhallen.models import WebhallenJSON, WebhallenSection
 
 err_console = Console(stderr=True)
 

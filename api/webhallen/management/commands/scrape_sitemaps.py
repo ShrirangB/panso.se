@@ -7,7 +7,7 @@ from rich.console import Console
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
-from core.stores.webhallen.models import (
+from webhallen.models import (
     SitemapArticle,
     SitemapCampaign,
     SitemapCampaignList,

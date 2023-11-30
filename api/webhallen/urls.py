@@ -1,8 +1,14 @@
 from __future__ import annotations
 
-from django.urls import URLPattern, path
+from typing import TYPE_CHECKING
 
-from core.stores.webhallen.views import (
+from django.urls import path
+
+if TYPE_CHECKING:
+    from django.urls import URLPattern
+
+
+from webhallen.views import (
     api_list_sections,
     api_product,
     api_products,

@@ -2,4 +2,5 @@ from __future__ import annotations
 
 from django.urls import URLResolver, include, path
 
-urlpatterns: list[URLResolver] = [path("", include("core.urls"))]
+# https://www.webhallen.com/
+urlpatterns: list[URLResolver] = [path("", include("webhallen.urls"))]

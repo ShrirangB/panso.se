@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 from rich.console import Console
 from rich.progress import track
 
-from core.stores.webhallen.models import WebhallenJSON, WebhallenProduct
+from webhallen.models import WebhallenJSON, WebhallenProduct
 
 err_console = Console(stderr=True)
 
