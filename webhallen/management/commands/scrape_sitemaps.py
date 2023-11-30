@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+from django.core.management.base import BaseCommand, CommandError
+from django.db import models, transaction
 from rich import print
 from rich.console import Console
 from sitemap_parser.exporter import JSONExporter
@@ -30,311 +32,62 @@ def scrape_sitemap_root() -> None:
     json_exporter = JSONExporter(sm)
     urls_json = json_exporter.export_sitemaps()
     urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-
-        already_exists_in_db: bool = SitemapRoot.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.xml")
-            SitemapRoot.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapRoot.objects.update_or_create(loc=loc, defaults={"active": True})
-        if created:
-            print(f"Found new url sitemap.xml! {loc}")
-
-        obj.save()
+    sitemap_objects: list[SitemapRoot] = [SitemapRoot(loc=url["loc"], active=True) for url in urls_json]
+    with transaction.atomic():
+        SitemapRoot.objects.bulk_create(sitemap_objects)
+    print(f"Done scraping sitemap.xml, {len(sitemap_objects)} sitemaps found")
 
 
-def scrape_sitemap_home() -> None:
-    """Scrape sitemap.home.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.home.xml"
-    sm = SiteMapParser(sitemap)
+def scrape_sitemap(url: str, model_class: type[models.Model], model_name: str) -> None:
+    """Scrape a sitemap.xml and store the data in the specified model."""
+    sm = SiteMapParser(url)
     json_exporter = JSONExporter(sm)
     urls_json = json_exporter.export_urls()
     urls_json = json.loads(urls_json)
 
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+    sitemap_objects: list[models.Model] = [
+        model_class(loc=url["loc"], active=True, priority=url["priority"]) for url in urls_json
+    ]
 
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapHome.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.home.xml")
-            SitemapHome.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapHome.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
+    with transaction.atomic():
+        model_class.objects.bulk_create(
+            sitemap_objects,
+            update_fields=["active", "priority"],
+            ignore_conflicts=True,
         )
-        if created:
-            print(f"Found new url in sitemap.home.xml! {loc}")
 
-        obj.save()
+    print(f"Done scraping {model_name}, {len(sitemap_objects)} urls found")
 
 
-def scrape_sitemap_section() -> None:
-    """Scrape sitemap.section.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.section.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
+class Command(BaseCommand):
+    """Scrape Webhallen products and save to the database."""
 
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
+    help: str = __doc__ or ""  # noqa: A003
+    requires_migrations_checks = True
 
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapSection.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.section.xml")
-            SitemapSection.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapSection.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.section.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_category() -> None:
-    """Scrape sitemap.category.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.category.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapCategory.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.category.xml")
-            SitemapCategory.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapCategory.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.category.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_campaign() -> None:
-    """Scrape sitemap.campaign.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.campaign.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapCampaign.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.campaign.xml")
-            SitemapCampaign.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapCampaign.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.campaign.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_campaign_list() -> None:
-    """Scrape sitemap.campaignList.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.campaignList.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapCampaignList.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.campaignList.xml")
-            SitemapCampaignList.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapCampaignList.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.campaignList.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_info_pages() -> None:
-    """Scrape sitemap.infoPages.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.infoPages.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapInfoPages.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.infoPages.xml")
-            SitemapInfoPages.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapInfoPages.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.infoPages.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_product() -> None:
-    """Scrape sitemap.product.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.product.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapProduct.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.product.xml")
-            SitemapProduct.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapProduct.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.product.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_manufacturer() -> None:
-    """Scrape sitemap.manufacturer.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.manufacturer.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-
-        already_exists_in_db: bool = SitemapManufacturer.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.manufacturer.xml")
-            SitemapManufacturer.objects.filter(url=loc).update(active=False)
-            continue
-
-        obj, created = SitemapManufacturer.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.manufacturer.xml! {loc}")
-
-        obj.save()
-
-
-def scrape_sitemap_article() -> None:
-    """Scrape sitemap.article.xml."""
-    sitemap = "https://www.webhallen.com/sitemap.article.xml"
-    sm = SiteMapParser(sitemap)
-    json_exporter = JSONExporter(sm)
-    urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
-    urls_in_sitemap: list[str] = [url["loc"] for url in urls_json]
-    for url in urls_json:
-        loc: str = url["loc"]
-        priority: float = url["priority"]
-        already_exists_in_db: bool = SitemapArticle.objects.filter(loc=loc).exists()
-        if loc not in urls_in_sitemap and already_exists_in_db:
-            print(f"{loc} was removed from the sitemap.article.xml")
-            SitemapArticle.objects.filter(url=loc).update(active=False)
-            continue
-        obj, created = SitemapArticle.objects.update_or_create(
-            loc=loc,
-            defaults={
-                "active": True,
-                "priority": priority,
-            },
-        )
-        if created:
-            print(f"Found new url in sitemap.article.xml! {loc}")
-        obj.save()
+    def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
+        """Handle the command."""
+        try:
+            scrape_sitemap("https://www.webhallen.com/sitemap.product.xml", SitemapProduct, "sitemap.product.xml")
+            scrape_sitemap(
+                "https://www.webhallen.com/sitemap.manufacturer.xml",
+                SitemapManufacturer,
+                "sitemap.manufacturer.xml",
+            )
+            scrape_sitemap("https://www.webhallen.com/sitemap.article.xml", SitemapArticle, "sitemap.article.xml")
+            scrape_sitemap("https://www.webhallen.com/sitemap.infoPages.xml", SitemapInfoPages, "sitemap.infoPages.xml")
+            scrape_sitemap("https://www.webhallen.com/sitemap.home.xml", SitemapHome, "sitemap.home.xml")
+            scrape_sitemap("https://www.webhallen.com/sitemap.section.xml", SitemapSection, "sitemap.section.xml")
+            scrape_sitemap("https://www.webhallen.com/sitemap.category.xml", SitemapCategory, "sitemap.category.xml")
+            scrape_sitemap("https://www.webhallen.com/sitemap.campaign.xml", SitemapCampaign, "sitemap.campaign.xml")
+            scrape_sitemap(
+                "https://www.webhallen.com/sitemap.campaignList.xml",
+                SitemapCampaignList,
+                "sitemap.campaignList.xml",
+            )
+            scrape_sitemap_root()  # Needs to be standalone because it doesn't have priority
+        except KeyboardInterrupt:
+            msg = "Got keyboard interrupt while scraping Webhallen products"
+            raise CommandError(msg) from KeyboardInterrupt
+        except Exception as e:  # noqa: BLE001
+            raise CommandError(e) from e
