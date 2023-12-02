@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import models, transaction
@@ -72,22 +73,31 @@ class Command(BaseCommand):
         """Handle the command."""
         try:
             scrape_sitemap("https://www.webhallen.com/sitemap.product.xml", SitemapProduct, "sitemap.product.xml")
+            time.sleep(5)
             scrape_sitemap(
                 "https://www.webhallen.com/sitemap.manufacturer.xml",
                 SitemapManufacturer,
                 "sitemap.manufacturer.xml",
             )
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.article.xml", SitemapArticle, "sitemap.article.xml")
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.infoPages.xml", SitemapInfoPages, "sitemap.infoPages.xml")
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.home.xml", SitemapHome, "sitemap.home.xml")
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.section.xml", SitemapSection, "sitemap.section.xml")
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.category.xml", SitemapCategory, "sitemap.category.xml")
+            time.sleep(5)
             scrape_sitemap("https://www.webhallen.com/sitemap.campaign.xml", SitemapCampaign, "sitemap.campaign.xml")
+            time.sleep(5)
             scrape_sitemap(
                 "https://www.webhallen.com/sitemap.campaignList.xml",
                 SitemapCampaignList,
                 "sitemap.campaignList.xml",
             )
+            time.sleep(5)
             scrape_sitemap_root()  # Needs to be standalone because it doesn't have priority
         except KeyboardInterrupt:
             msg = "Got keyboard interrupt while scraping Webhallen products"
