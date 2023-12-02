@@ -6,7 +6,7 @@ import re
 import httpx
 from rich import print
 from rich.console import Console
-from simple_history.utils import update_change_reason
+from rich.progress import track
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 
@@ -55,10 +55,7 @@ def get_product_json(product_id: str) -> dict:
 
 
 def _get_product_id(url: str) -> str | None:
-    match: re.Match[str] | None = re.search(r"\d+", url)
-    if match:
-        return match.group()
-    return None
+    return match.group() if (match := re.search(r"\d+", url)) else None
 
 
 def get_products_from_sitemap():  # noqa: ANN201
@@ -83,35 +80,35 @@ def get_products_from_sitemap():  # noqa: ANN201
         yield get_product_json(product_id)
 
 
-def scrape_products(scrape_reason: str = "No reason given") -> None:
-    """Scrape products from Webhallen and save to the Django database.
+def scrape_products() -> None:
+    """Scrape products from Webhallen and save to the Django database."""
+    # Prepare the list of WebhallenJSON objects
+    webhallen_json_list = []
 
-    Args:
-        scrape_reason: Reason for scraping the products.
-    """
     # Get the product JSON
     products = get_products_from_sitemap()
-
-    # Save the products
-    for product in products:
+    products = list(products)
+    for product in track(products, description="Scraping products...", total=len(products)):
         if not product:
             continue
 
         # Get product ID from metadata
-        product_id = product["metadata"]["product_id"]
-        if not product_id:
+        try:
+            product_id = product["metadata"]["product_id"]
+            if not product_id:
+                err_console.print(f"Could not get product ID from {product}")
+                continue
+        except KeyError:
             err_console.print(f"Could not get product ID from {product}")
             continue
 
-        obj: WebhallenJSON
-        obj, _ = WebhallenJSON.objects.update_or_create(
+        webhallen_json = WebhallenJSON(
             product_id=product_id,
-            defaults={
-                "product_json": product,
-            },
+            product_json=product,
         )
+        webhallen_json_list.append(webhallen_json)
 
-        obj.save()
-        update_change_reason(obj, f"Scraped Webhallen product JSON: {scrape_reason}")
+    # Bulk create the WebhallenJSON objects
+    WebhallenJSON.objects.bulk_create(webhallen_json_list)
 
     print("Done scraping Webhallen products")

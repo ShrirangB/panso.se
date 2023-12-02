@@ -10,6 +10,7 @@ load_dotenv(find_dotenv(), verbose=True)
 
 DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
 sentry_sdk.init(
+    dsn="https://9b2528b38dbd535184b0b2420c80aea4@o4505228040339456.ingest.sentry.io/4506312539439104",
     debug=DEBUG,
     environment="Development" if DEBUG else "Production",
     send_default_pii=True,
@@ -77,7 +78,7 @@ MIDDLEWARE: list[str] = [
 DATABASES: dict[str, dict[str, str]] = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv(key="DB_NAME", default="panso"),
+        "NAME": "panso",
         "USER": os.getenv(key="POSTGRES_USER", default=""),
         "PASSWORD": os.getenv(key="POSTGRES_PASSWORD", default=""),
         "HOST": os.getenv(key="POSTGRES_HOST", default=""),
@@ -104,7 +105,7 @@ TEMPLATES: list[dict[str, str | list[str] | bool | dict[str, list[str]]]] = [
 
 
 REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
-REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="192.168.1.2")
+REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="")
 CACHES: dict[str, dict[str, str]] = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",

@@ -19,11 +19,8 @@ def create_eans() -> None:
         if not eans:
             continue
 
-        name: str = product_json.get("name", "")
-        if not name:
-            continue
-
-        eans_to_create.extend([Eans(ean=ean, name=name) for ean in eans])
+        if name := product_json.get("name", ""):
+            eans_to_create.extend([Eans(ean=ean, name=name) for ean in eans])
     Eans.objects.bulk_create(eans_to_create, update_fields=["name"], ignore_conflicts=True)
 
 
