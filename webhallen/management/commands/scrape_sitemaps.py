@@ -8,6 +8,7 @@ from rich import print
 from rich.console import Console
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
+from tenacity import retry, stop_after_attempt
 
 from webhallen.models import (
     SitemapArticle,
@@ -25,6 +26,7 @@ from webhallen.models import (
 err_console = Console(stderr=True)
 
 
+@retry(stop=stop_after_attempt(3))
 def scrape_sitemap_root() -> None:
     """Scrape the root sitemap."""
     sitemap = "https://www.webhallen.com/sitemap.xml"
@@ -38,6 +40,7 @@ def scrape_sitemap_root() -> None:
     print(f"Done scraping sitemap.xml, {len(sitemap_objects)} sitemaps found")
 
 
+@retry(stop=stop_after_attempt(3))
 def scrape_sitemap(url: str, model_class: type[models.Model], model_name: str) -> None:
     """Scrape a sitemap.xml and store the data in the specified model."""
     sm = SiteMapParser(url)
