@@ -2,6 +2,21 @@
 
 The source code for [panso.se](https://panso.se).
 
+## Development
+
+- You need:
+  - [Poetry](https://python-poetry.org/)
+  - [Python](https://www.python.org/) 3.12 or later
+  - [Microsoft C++ Build Tools](https://aka.ms/vs/17/release/vs_buildtools.exe) (If you're on Windows)
+    - Choose Desktop development with C++ and uncheck optional components except for Windows 10/11 SDK and MSVC.
+  - [PostgreSQL 16](https://www.postgresql.org/).
+  - [Redis](https://redis.io/).
+- Clone the repository
+- Run `poetry install` to install dependencies
+- Rename `.env.example` to `.env` and fill in the values
+- Run `poetry shell` to enter the virtual environment
+- Run `python .\manage.py runserver` to start the server or `Run and Debug` in VSCode
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
