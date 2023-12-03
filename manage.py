@@ -7,11 +7,11 @@ import sys
 
 def main() -> None:
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "panso.settings")
     try:
         from django.core.management import execute_from_command_line  # noqa: PLC0415
     except ImportError as exc:
-        msg = "Couldn't import Django. Have you run `poetry install`?"
+        msg = "Couldn't import Django. Have you run `poetry install` or `poetry shell`?"
         raise ImportError(msg) from exc
     execute_from_command_line(sys.argv)
 

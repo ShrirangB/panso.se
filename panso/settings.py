@@ -42,11 +42,11 @@ DEFAULT_FROM_EMAIL: str = os.getenv(key="EMAIL_HOST_USER", default="webmaster@lo
 SERVER_EMAIL: str = os.getenv(key="EMAIL_HOST_USER", default="webmaster@localhost")
 USE_X_FORWARDED_HOST = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = "panso.urls"
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SIMPLE_HISTORY_REVERT_DISABLED = True
-WSGI_APPLICATION = "core.wsgi.application"
+WSGI_APPLICATION = "panso.wsgi.application"
 INTERNAL_IPS: list[str] = ["127.0.0.1", "localhost"]
 if BOT_IP_LIST:
     INTERNAL_IPS.extend(BOT_IP_LIST)
