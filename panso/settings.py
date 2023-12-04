@@ -11,7 +11,6 @@ load_dotenv(find_dotenv(), verbose=True)
 DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
 sentry_sdk.init(
     dsn="https://9b2528b38dbd535184b0b2420c80aea4@o4505228040339456.ingest.sentry.io/4506312539439104",
-    debug=DEBUG,
     environment="Development" if DEBUG else "Production",
     send_default_pii=True,
     traces_sample_rate=1.0,

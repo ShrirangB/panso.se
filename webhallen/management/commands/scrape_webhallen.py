@@ -28,8 +28,7 @@ class Command(BaseCommand):
     def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
         """Handle the command."""
         try:
-            scrape_reason: str = options["reason"]
-            scrape_products(scrape_reason)
+            scrape_products()
         except KeyboardInterrupt:
             msg = "Got keyboard interrupt while scraping Webhallen products"
             raise CommandError(msg) from KeyboardInterrupt
