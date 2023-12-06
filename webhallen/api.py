@@ -323,7 +323,7 @@ def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sections")
 def api_list_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all sections."""
     sections = WebhallenSection.objects.all()
