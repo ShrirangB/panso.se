@@ -1,0 +1,31 @@
+{% extends "pages/base.html" %}
+{% block title %}<title>Webhallen - Panso</title>{% endblock %}
+{% block description %}Webhallen{% endblock %}
+{% block keywords %}Webhallen, Webhallen.se{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'pages:index' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Webhallen</li>
+    </ol>
+</nav>
+<h1>Sections</h1>
+<span class="text-body-secondary">List of sections.</span>
+<br>
+<ul class="list-group">
+    {% for section in sections %}
+    <li class="list-group-item">
+        {{ section.pk }} - <a href="{{ section.url }}">{{ section.name }}</a>
+        {% if section.active %}
+        <span class="badge rounded-pill text-bg-success">Active</span>
+        {% else %}
+        <span class="badge rounded-pill text-bg-secondary">Inactive</span>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li class="list-group-item">No sections yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -52,6 +52,7 @@ if BOT_IP_LIST:
 
 INSTALLED_APPS: list[str] = [
     # First party
+    "pages.apps.PagesConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
     "simple_history",  # https://github.com/jazzband/django-simple-history

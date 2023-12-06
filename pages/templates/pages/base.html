@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+    <head>
+        {% load static %}
+        <!-- Head start -->
+        <meta charset="UTF-8">
+        <meta name="description" content="{% block description %}Panso{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}Panso, Panso.se{% endblock %}">
+        <meta name="author" content="Panso">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block title %}<title>Panso</title>{% endblock %}
+        <link rel="icon" href="{% static 'pages/favicon.ico' %}" sizes="32x32">
+        <link rel="icon" href="{% static 'pages/icon.svg' %}" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="{% static 'pages/apple-touch-icon.png' %}">
+        <link rel="manifest" href="{% static 'pages/manifest.webmanifest' %}">
+        <link rel="stylesheet" href="{% static 'pages/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'pages/style.css' %}">
+        <!-- Head end -->
+    </head>
+
+    <body class="d-flex flex-column vh-100">
+        <!-- Body start -->
+        {% include "pages/navbar.html" %}
+        <!-- Content -->
+        <div class="container-xl mt-3 mb-3">
+            {% block content %}<!-- default content -->{% endblock %}
+        </div>
+        <!-- Content end -->
+        <!-- Footer -->
+        {% include "pages/footer.html" %}
+        <!-- Footer end -->
+        <script src="{% static 'pages/bootstrap.min.js' %}"></script>
+        <!-- Body end -->
+    </body>
+
+</html>
