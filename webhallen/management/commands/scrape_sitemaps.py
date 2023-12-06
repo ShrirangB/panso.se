@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import json
 import time
 
+import orjson
 from django.core.management.base import BaseCommand, CommandError
 from django.db import models, transaction
 from rich import print
@@ -34,7 +34,7 @@ def scrape_sitemap_root() -> None:
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
     urls_json = json_exporter.export_sitemaps()
-    urls_json = json.loads(urls_json)
+    urls_json = orjson.loads(urls_json)
     sitemap_objects: list[SitemapRoot] = [SitemapRoot(loc=url["loc"], active=True) for url in urls_json]
     with transaction.atomic():
         SitemapRoot.objects.bulk_create(sitemap_objects)
@@ -47,7 +47,7 @@ def scrape_sitemap(url: str, model_class: type[models.Model], model_name: str) -
     sm = SiteMapParser(url)
     json_exporter = JSONExporter(sm)
     urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
+    urls_json = orjson.loads(urls_json)
 
     sitemap_objects: list[models.Model] = [
         model_class(loc=url["loc"], active=True, priority=url["priority"]) for url in urls_json

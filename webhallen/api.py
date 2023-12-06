@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
+from loguru import logger
 from ninja import Router
 
 from webhallen.management.commands.add_sections import create_sections
@@ -31,6 +32,10 @@ def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     products_data: list = []
     for product in products:
         product_json = product.product_json
+        if "product" not in product_json:
+            logger.error(f"Product {product.product_id} has no product key")
+            continue
+
         products_data.append(product_json["product"])
 
     return JsonResponse(products_data, safe=False)

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import json
 import re
 from datetime import datetime
 
 import httpx
+import orjson
 from rich import print
 from rich.console import Console
 from rich.progress import track
@@ -61,7 +61,7 @@ def scrape_products() -> None:
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
     urls_json = json_exporter.export_urls()
-    urls_json = json.loads(urls_json)
+    urls_json = orjson.loads(urls_json)
 
     print(f"Got {len(urls_json)} products from Webhallen sitemap")
     for url in track(urls_json, description="Scraping products...", total=len(urls_json)):
