@@ -36,7 +36,7 @@ def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(products_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/products/hugo")
 def api_products_hugo(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
     products = WebhallenProduct.objects.all()
@@ -127,7 +127,7 @@ def api_products_hugo(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(products_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/products/{product_id}")
 def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa: ARG001
     """Return Webhallen product as JSON."""
     try:
@@ -147,7 +147,7 @@ def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
     return JsonResponse({"status": "ok"})
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/root")
 def api_sitemaps_root(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.xml."""
     sitemaps = SitemapRoot.objects.all()
@@ -164,7 +164,7 @@ def api_sitemaps_root(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/home")
 def api_sitemaps_home(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.home.xml."""
     sitemaps = SitemapHome.objects.all()
@@ -182,7 +182,7 @@ def api_sitemaps_home(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/sections")
 def api_sitemaps_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.section.xml."""
     sitemaps = SitemapSection.objects.all()
@@ -200,7 +200,7 @@ def api_sitemaps_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/categories")
 def api_sitemaps_categories(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.category.xml."""
     sitemaps = SitemapCategory.objects.all()
@@ -218,7 +218,7 @@ def api_sitemaps_categories(request: HttpRequest) -> JsonResponse:  # noqa: ARG0
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/campaigns")
 def api_sitemaps_campaigns(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaign.xml."""
     sitemaps = SitemapCampaign.objects.all()
@@ -236,7 +236,7 @@ def api_sitemaps_campaigns(request: HttpRequest) -> JsonResponse:  # noqa: ARG00
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/campaign-lists")
 def api_sitemaps_campaign_lists(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaignList.xml."""
     sitemaps = SitemapCampaignList.objects.all()
@@ -254,7 +254,7 @@ def api_sitemaps_campaign_lists(request: HttpRequest) -> JsonResponse:  # noqa: 
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/info-pages")
 def api_sitemaps_info_pages(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.infoPages.xml."""
     sitemaps = SitemapInfoPages.objects.all()
@@ -272,7 +272,7 @@ def api_sitemaps_info_pages(request: HttpRequest) -> JsonResponse:  # noqa: ARG0
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/products")
 def api_sitemaps_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.products.xml."""
     sitemaps = SitemapProduct.objects.all()
@@ -290,7 +290,7 @@ def api_sitemaps_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/manufacturers")
 def api_sitemaps_manufacturers(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.manufacturer.xml."""
     sitemaps = SitemapManufacturer.objects.all()
@@ -307,7 +307,7 @@ def api_sitemaps_manufacturers(request: HttpRequest) -> JsonResponse:  # noqa: A
     return JsonResponse(sitemaps_data, safe=False)
 
 
-@require_http_methods(["GET"])
+@router.get("/sitemaps/articles")
 def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.article.xml."""
     sitemaps = SitemapArticle.objects.all()
