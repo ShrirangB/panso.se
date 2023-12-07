@@ -99,6 +99,7 @@ INSTALLED_APPS: list[str] = [
     "simple_history",  # https://github.com/jazzband/django-simple-history
     # Django
     "django.contrib.admin",
+    "django.contrib.sitemaps",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
