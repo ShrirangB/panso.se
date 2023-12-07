@@ -17,6 +17,11 @@ The source code for [panso.se](https://panso.se).
 - Run `poetry shell` to enter the virtual environment
 - Run `python .\manage.py runserver` to start the server or `Run and Debug` in VSCode
 
+### Tests
+
+- Run `python manage.py test` to run all tests
+    - Run `python manage.py test --keepdb` to keep the test database to speed up tests
+
 ## Commands
 
 Remember to run `poetry shell` before running any commands.
