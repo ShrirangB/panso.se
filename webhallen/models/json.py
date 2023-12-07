@@ -29,8 +29,9 @@ class WebhallenJSON(models.Model):
         """Meta definition for Webhallen."""
 
         verbose_name: str = "Webhallen JSON"
-        verbose_name_plural: str = "Webhallen JSON objects"
+        verbose_name_plural: str = "Webhallen JSON Entries"
         db_table: str = "webhallen_json"
+        db_table_comment: str = "Table storing JSON data from Webhallen API"
 
     def __str__(self: WebhallenJSON) -> str:
         """Human-readable, or informal, string representation of Webhallen.

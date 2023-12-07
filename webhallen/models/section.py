@@ -46,6 +46,7 @@ class WebhallenSection(models.Model):
         verbose_name: str = "Webhallen section"
         verbose_name_plural: str = "Webhallen sections"
         db_table: str = "webhallen_section"
+        db_table_comment: str = "Table storing Webhallen sections"
 
     def __str__(self: WebhallenSection) -> str:
         """Human-readable, or informal, string representation of a Webhallen section.

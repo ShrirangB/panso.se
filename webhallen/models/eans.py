@@ -4,6 +4,8 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 
+# TODO: #3 We should move this to a separate app when we have more than one store.
+# https://github.com/TheLovinator1/panso.se/issues/3
 class Eans(models.Model):
     """European Article Number (EAN) and the corresponding product name."""
 
@@ -23,6 +25,7 @@ class Eans(models.Model):
         verbose_name: str = "European Article Number"
         verbose_name_plural: str = "European Article Numbers"
         db_table: str = "eans"
+        db_table_comment: str = "Table storing European Article Numbers (EANs)"
 
     def __str__(self: Eans) -> str:
         """EAN and product name."""

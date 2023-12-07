@@ -23,6 +23,7 @@ class SitemapRoot(models.Model):
         verbose_name: str = "Sitemap root"
         verbose_name_plural: str = "Sitemap roots"
         db_table: str = "webhallen_sitemap_root"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.xml sitemap"
 
     def __str__(self: SitemapRoot) -> str:
         """Human-readable, or informal, string representation of a Sitemap root.
@@ -53,6 +54,7 @@ class SitemapHome(models.Model):
         verbose_name: str = "Sitemap home"
         verbose_name_plural: str = "Sitemap homes"
         db_table: str = "webhallen_sitemap_home"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.home.xml sitemap"
 
     def __str__(self: SitemapHome) -> str:
         """Human-readable, or informal, string representation of a Sitemap home.
@@ -83,6 +85,7 @@ class SitemapSection(models.Model):
         verbose_name: str = "Sitemap section"
         verbose_name_plural: str = "Sitemap sections"
         db_table: str = "webhallen_sitemap_section"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.section.xml sitemap"
 
     def __str__(self: SitemapSection) -> str:
         """Human-readable, or informal, string representation of a Sitemap section.
@@ -113,6 +116,7 @@ class SitemapCategory(models.Model):
         verbose_name: str = "Sitemap category"
         verbose_name_plural: str = "Sitemap categories"
         db_table: str = "webhallen_sitemap_category"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.category.xml sitemap"
 
     def __str__(self: SitemapCategory) -> str:
         """Human-readable, or informal, string representation of a Sitemap category.
@@ -143,6 +147,7 @@ class SitemapCampaign(models.Model):
         verbose_name: str = "Sitemap campaign"
         verbose_name_plural: str = "Sitemap campaigns"
         db_table: str = "webhallen_sitemap_campaign"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.campaign.xml sitemap"
 
     def __str__(self: SitemapCampaign) -> str:
         """Human-readable, or informal, string representation of a Sitemap campaign.
@@ -173,6 +178,7 @@ class SitemapCampaignList(models.Model):
         verbose_name: str = "Sitemap campaign list"
         verbose_name_plural: str = "Sitemap campaign lists"
         db_table: str = "webhallen_sitemap_campaign_list"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.campaignList.xml sitemap"
 
     def __str__(self: SitemapCampaignList) -> str:
         """Human-readable, or informal, string representation of a Sitemap campaign list.
@@ -203,6 +209,7 @@ class SitemapInfoPages(models.Model):
         verbose_name: str = "Sitemap info page"
         verbose_name_plural: str = "Sitemap info pages"
         db_table: str = "webhallen_sitemap_info_pages"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.infoPages.xml sitemap"
 
     def __str__(self: SitemapInfoPages) -> str:
         """Human-readable, or informal, string representation of a Sitemap info pages.
@@ -233,6 +240,7 @@ class SitemapProduct(models.Model):
         verbose_name: str = "Sitemap product"
         verbose_name_plural: str = "Sitemap products"
         db_table: str = "webhallen_sitemap_product"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.product.xml sitemap"
 
     def __str__(self: SitemapProduct) -> str:
         """Human-readable, or informal, string representation of a Sitemap product.
@@ -263,6 +271,7 @@ class SitemapManufacturer(models.Model):
         verbose_name: str = "Sitemap manufacturer"
         verbose_name_plural: str = "Sitemap manufacturers"
         db_table: str = "webhallen_sitemap_manufacturer"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.manufacturer.xml sitemap"
 
     def __str__(self: SitemapManufacturer) -> str:
         """Human-readable, or informal, string representation of a Sitemap manufacturer.
@@ -293,6 +302,7 @@ class SitemapArticle(models.Model):
         verbose_name: str = "Sitemap article"
         verbose_name_plural: str = "Sitemap articles"
         db_table: str = "webhallen_sitemap_article"
+        db_table_comment: str = "Table storing the https://www.webhallen.com/sitemap.article.xml sitemap"
 
     def __str__(self: SitemapArticle) -> str:
         """Human-readable, or informal, string representation of a Sitemap article.
