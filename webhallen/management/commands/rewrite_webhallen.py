@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 from rich.console import Console
 from rich.progress import track
 
-from webhallen.models import WebhallenJSON, WebhallenProduct
+from webhallen.models import WebhallenJSON
 
 err_console = Console(stderr=True)
 
@@ -400,10 +400,8 @@ def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915
         if section:
             defaults["section_id"] = section.get("id")
 
-        obj: WebhallenProduct
-        obj, _ = WebhallenProduct.objects.update_or_create(product_id=product_id, defaults=defaults)
-
-        obj.save()
+        # obj, _ = WebhallenProduct.objects.update_or_create(product_id=product_id, defaults=defaults)
+        # obj.save()
 
 
 class Command(BaseCommand):
