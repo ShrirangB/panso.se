@@ -1,18 +1,15 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime
 
 import httpx
 import orjson
 from rich import print
 from rich.console import Console
 from rich.progress import track
-from simple_history.utils import update_change_reason
 from sitemap_parser.exporter import JSONExporter
 from sitemap_parser.sitemap_parser import SiteMapParser
 from tenacity import retry, stop_after_attempt, wait_random_exponential
-from zoneinfo import ZoneInfo
 
 from webhallen.models import WebhallenJSON
 
@@ -91,9 +88,5 @@ def scrape_products() -> None:
         if created:
             print(f"Created {product_id}")
         product.save()
-
-        current_datetime: datetime = datetime.now(tz=ZoneInfo("Europe/Stockholm"))
-        iso8601_format: str = current_datetime.isoformat()
-        update_change_reason(product, f"Daily scrape {iso8601_format}")
 
     print("Done!")
