@@ -15,9 +15,6 @@ from tenacity import retry, stop_after_attempt, wait_random_exponential
 
 from webhallen.models import WebhallenJSON
 
-if TYPE_CHECKING:
-    import argparse
-
 err_console = Console(stderr=True)
 
 
@@ -102,15 +99,6 @@ class Command(BaseCommand):
 
     help: str = __doc__ or ""  # noqa: A003
     requires_migrations_checks = True
-
-    def add_arguments(self: BaseCommand, parser: argparse.ArgumentParser) -> None:  # noqa: PLR6301
-        """Add arguments to the command."""
-        parser.add_argument(
-            "--reason",
-            type=str,
-            default="No reason given",
-            help="Reason for scraping the products.",
-        )
 
     def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
         """Handle the command."""
