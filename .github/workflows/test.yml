@@ -17,4 +17,4 @@ jobs:
         python-version: 3.12
     - run: pipx install poetry
     - run: poetry install
-    - run: python manage.py test
+    - run: poetry run python manage.py test
