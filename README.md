@@ -21,7 +21,7 @@ The source code for [panso.se](https://panso.se).
 
 Remember to run `poetry shell` before running any commands.
 
-- `python manage.py scrape_webhallen` 
+- `python manage.py scrape_webhallen`
   - Downloads all the URLs from https://www.webhallen.com/sitemap.product.xml and downloads the JSON for each product from the Webhallen API.
 - `python manage.py scrape_sitemaps`
   - Downloads the URLs from these sitemaps add adds them to the database:

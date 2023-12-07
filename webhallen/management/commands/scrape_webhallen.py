@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
 
 import httpx
 import orjson
@@ -84,7 +83,8 @@ def scrape_products() -> None:
         product_json["metadata"] = metadata
 
         product, created = WebhallenJSON.objects.get_or_create(
-            product_id=product_id, defaults={"product_json": product_json}
+            product_id=product_id,
+            defaults={"product_json": product_json},
         )
 
         if created:
