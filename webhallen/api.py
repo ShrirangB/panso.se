@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.http import HttpRequest, JsonResponse
-from loguru import logger
 from ninja import Router
 
 from webhallen.models import (
@@ -25,16 +24,11 @@ router = Router()
 @router.get("/products")
 def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
-    products = WebhallenJSON.objects.all()
-    products_data: list = []
-    for product in products:
-        product_json = product.product_json
-        if "product" not in product_json:
-            logger.error(f"Product {product.product_id} has no product key")
-            continue
-
-        products_data.append(product_json["product"])
-
+    products_data = list(
+        WebhallenJSON.objects.values_list("product_json__product", flat=True).filter(
+            product_json__product__isnull=False,
+        ),
+    )
     return JsonResponse(products_data, safe=False)
 
 
