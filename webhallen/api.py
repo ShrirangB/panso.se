@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from django.http import HttpRequest, JsonResponse
+from typing import TYPE_CHECKING
+
+from django.http import Http404, HttpRequest, JsonResponse
+from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from webhallen.models import (
@@ -17,6 +20,11 @@ from webhallen.models import (
     WebhallenJSON,
     WebhallenSection,
 )
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from django.db import models
 
 router = Router()
 
@@ -36,207 +44,101 @@ def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
 def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa: ARG001
     """Return Webhallen product as JSON."""
     try:
-        product = WebhallenJSON.objects.get(product_id=product_id)
-    except WebhallenJSON.DoesNotExist:
-        return JsonResponse({"error": "Product not found"}, status=404)
-
-    product_json = product.product_json
-    product_data = product_json["product"]
-
-    return JsonResponse(product_data, safe=False)
+        product: WebhallenJSON = get_object_or_404(WebhallenJSON, product_id=product_id)
+        product_json = product.product_json
+        product_data = product_json.get("product", {})
+        return JsonResponse(product_data, safe=False)
+    except Http404:
+        return JsonResponse({"error": f"Product with ID {product_id} not found."}, status=404)
+    except Exception as e:  # noqa: BLE001
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @router.get("/sitemaps/root")
 def api_sitemaps_root(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.xml."""
-    sitemaps = SitemapRoot.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
+    sitemaps_data = list(SitemapRoot.objects.values("loc", "active", "created", "updated"))
     return JsonResponse(sitemaps_data, safe=False)
+
+
+def get_sitemap_data(model: type[models.Model]) -> list[dict[str, str | datetime]]:
+    """Return all URLs from https://www.webhallen.com/sitemap.{sitemap}.xml.
+
+    Args:
+        model: Sitemap model.
+
+    Returns:
+        list[dict[str, str | datetime]]: Sitemap data.
+    """
+    return list(model.objects.values("loc", "priority", "active", "created", "updated"))
 
 
 @router.get("/sitemaps/home")
 def api_sitemaps_home(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.home.xml."""
-    sitemaps = SitemapHome.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapHome), safe=False)
 
 
 @router.get("/sitemaps/sections")
 def api_sitemaps_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.section.xml."""
-    sitemaps = SitemapSection.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapSection), safe=False)
 
 
 @router.get("/sitemaps/categories")
 def api_sitemaps_categories(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.category.xml."""
-    sitemaps = SitemapCategory.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapCategory), safe=False)
 
 
 @router.get("/sitemaps/campaigns")
 def api_sitemaps_campaigns(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaign.xml."""
-    sitemaps = SitemapCampaign.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapCampaign), safe=False)
 
 
 @router.get("/sitemaps/campaign-lists")
 def api_sitemaps_campaign_lists(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaignList.xml."""
-    sitemaps = SitemapCampaignList.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapCampaignList), safe=False)
 
 
 @router.get("/sitemaps/info-pages")
 def api_sitemaps_info_pages(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.infoPages.xml."""
-    sitemaps = SitemapInfoPages.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapInfoPages), safe=False)
 
 
 @router.get("/sitemaps/products")
 def api_sitemaps_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.products.xml."""
-    sitemaps = SitemapProduct.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapProduct), safe=False)
 
 
 @router.get("/sitemaps/manufacturers")
 def api_sitemaps_manufacturers(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.manufacturer.xml."""
-    sitemaps = SitemapManufacturer.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "priority": sitemap.priority,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapManufacturer), safe=False)
 
 
 @router.get("/sitemaps/articles")
 def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.article.xml."""
-    sitemaps = SitemapArticle.objects.all()
-    sitemaps_data: list = []
-    for sitemap in sitemaps:
-        sitemap_data = {
-            "loc": sitemap.loc,
-            "active": sitemap.active,
-            "created": sitemap.created,
-            "updated": sitemap.updated,
-        }
-        sitemaps_data.append(sitemap_data)
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(get_sitemap_data(SitemapArticle), safe=False)
 
 
 @router.get("/sections")
 def api_list_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all sections."""
-    sections = WebhallenSection.objects.all()
-    sections_data: list = []
-    for section in sections:
-        section_data = {
-            "section_id": section.section_id,
-            "url": section.url,
-            "meta_title": section.meta_title,
-            "active": section.active,
-            "icon": section.icon,
-            "icon_url": section.icon_url,
-            "name": section.name,
-        }
-        sections_data.append(section_data)
-
+    sections_data = list(
+        WebhallenSection.objects.values(
+            "section_id",
+            "url",
+            "meta_title",
+            "active",
+            "icon",
+            "icon_url",
+            "name",
+        ),
+    )
     return JsonResponse(sections_data, safe=False)

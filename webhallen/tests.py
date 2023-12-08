@@ -19,3 +19,96 @@ class WebhallenTests(TestCase):
         assert response.status_code == 200
         response2: HttpResponse = self.client.get("/webhallen/")
         assert response2.status_code == 200
+
+
+class WebhallenAPITests(TestCase):
+    """Tests for the webhallen API."""
+
+    # TODO: Add product data to the test database and test the API endpoint.
+    def test_api_products(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for all products."""
+        response: HttpResponse = self.client.get("/api/webhallen/products")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_product(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for a single product."""
+        # TODO: Implement this test. See the comment at the top of this file.
+
+    def test_api_sitemaps_root(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the root sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/root")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_home(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the home sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/home")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_info_pages(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the info pages sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/info-pages")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_categories(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the categories sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/categories")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_products(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the products sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/products")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_campaigns(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the campaigns sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/campaigns")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_campaign_lists(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the campaign lists sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/campaign-lists")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_sections(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the sections sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/sections")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_manufacturers(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the manufacturers sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/manufacturers")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_sitemaps_articles(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the articles sitemap."""
+        response: HttpResponse = self.client.get("/api/webhallen/sitemaps/articles")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_list_sections(self: WebhallenAPITests) -> None:
+        """Test the API endpoint for the sections list."""
+        response: HttpResponse = self.client.get("/api/webhallen/sections")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
