@@ -94,10 +94,10 @@ INTERNAL_IPS: list[str] = ["127.0.0.1", "localhost"]
 INSTALLED_APPS: list[str] = [
     # First party
     "products.apps.ProductsConfig",
-    "pages.apps.PagesConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
     "simple_history",  # https://github.com/jazzband/django-simple-history
+    "whitenoise.runserver_nostatic",  # https://whitenoise.readthedocs.io/en/latest/index.html
     # Django
     "django.contrib.admin",
     "django.contrib.sitemaps",

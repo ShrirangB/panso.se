@@ -16,7 +16,7 @@ def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
 
 
 sitemaps: dict[str, type[StaticViewSitemap]] = {
-    "pages": StaticViewSitemap,
+    "products": StaticViewSitemap,
 }
 
 # TODO: Cache views
@@ -24,7 +24,7 @@ urlpatterns: list = [
     path("admin/", admin.site.urls),
     path("testboi", testboi, name="testboi"),
     path("api/", api.urls),  # type: ignore  # noqa: PGH003
-    path("", include("pages.urls")),
+    path("", include("products.urls")),
     path("webhallen/", include("webhallen.urls")),
     path(
         "sitemap.xml",
