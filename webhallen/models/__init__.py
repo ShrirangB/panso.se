@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from webhallen.models.eans import Eans
 from webhallen.models.json import WebhallenJSON
 from webhallen.models.section import WebhallenSection
 from webhallen.models.sitemaps import (
@@ -19,7 +18,6 @@ from webhallen.models.sitemaps import (
 __all__: list[str] = [
     "WebhallenJSON",
     "WebhallenSection",
-    "Eans",
     "SitemapRoot",
     "SitemapHome",
     "SitemapSection",

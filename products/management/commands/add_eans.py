@@ -3,7 +3,8 @@ from __future__ import annotations
 from django.core.management.base import BaseCommand, CommandError
 from rich.progress import track
 
-from webhallen.models import Eans, WebhallenJSON
+from products.models import Eans
+from webhallen.models import WebhallenJSON
 
 
 def create_eans() -> None:
