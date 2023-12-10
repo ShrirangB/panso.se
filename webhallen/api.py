@@ -29,7 +29,11 @@ if TYPE_CHECKING:
 router = Router()
 
 
-@router.get("/products")
+@router.get(
+    "/products",
+    summary="Return all Webhallen products as JSON.",
+    description="Return all Webhallen products as JSON.  \n\n **Note:** This will return 130 MB+ of JSON so don't try to load this via the Swagger UI.",  # noqa: E501
+)
 def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
     products_data = list(

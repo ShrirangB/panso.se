@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
 if TYPE_CHECKING:
@@ -53,3 +53,57 @@ class ProductsTests(SimpleTestCase):
         response2: HttpResponse = self.client.get("/bot-ip-list.txt")
         assert response2.status_code == 200
         assert response2.content.decode().count(".") == 3
+
+
+class PansoAPITests(TestCase):
+    """Test the Panso API."""
+
+    def test_api_eans(self: PansoAPITests) -> None:
+        """Test the API endpoint for all EANs."""
+        response: HttpResponse = self.client.get("/api/eans")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == []
+
+    def test_api_ean(self: PansoAPITests) -> None:
+        """Test the API endpoint for a single EAN."""
+        response: HttpResponse = self.client.get("/api/eans/1")
+        assert response.status_code == 404
+        assert response["Content-Type"] == "application/json"
+        assert response.json() == {"error": "EAN with ID 1 not found."}
+
+        # TODO: Implement this when we have some EANs in the test database.
+        # response2: HttpResponse = self.client.get("/api/eans/5907814951762")
+        # assert response2.status_code == 200
+        # assert response2["Content-Type"] == "application/json"
+        # response_json = response2.json()
+        # assert response_json["ean"] == "5907814951762"
+        # assert response_json["name"] == "Carcassonne - Expansion 1: Inns & Cathedrals (Nordic)"
+
+        # created: str = response_json["created"]
+        # assert len(created) == 19
+        # assert created[4] == "-"
+        # assert created[7] == "-"
+        # assert created[10] == " "
+        # assert created[13] == ":"
+        # assert created[16] == ":"
+        # assert created[0:4].isdigit()
+        # assert created[5:7].isdigit()
+        # assert created[8:10].isdigit()
+        # assert created[11:13].isdigit()
+        # assert created[14:16].isdigit()
+        # assert created[17:19].isdigit()
+
+        # updated: str = response_json["updated"]
+        # assert len(updated) == 19
+        # assert updated[4] == "-"
+        # assert updated[7] == "-"
+        # assert updated[10] == " "
+        # assert updated[13] == ":"
+        # assert updated[16] == ":"
+        # assert updated[0:4].isdigit()
+        # assert updated[5:7].isdigit()
+        # assert updated[8:10].isdigit()
+        # assert updated[11:13].isdigit()
+        # assert updated[14:16].isdigit()
+        # assert updated[17:19].isdigit()

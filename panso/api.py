@@ -6,6 +6,7 @@ import orjson
 from ninja import NinjaAPI
 from ninja.parser import Parser
 
+from products.api import router as panso_router
 from webhallen.api import router as webhallen_router
 
 if TYPE_CHECKING:
@@ -33,4 +34,5 @@ api = NinjaAPI(
     parser=ORJSONParser(),
 )
 
-api.add_router("webhallen/", webhallen_router)
+api.add_router("webhallen/", webhallen_router, tags=["Webhallen"])
+api.add_router("", panso_router, tags=["Panso"])
