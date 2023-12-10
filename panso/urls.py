@@ -7,9 +7,11 @@ from django.urls import include, path
 
 from panso.api import api
 from panso.sitemaps import StaticViewSitemap
+from products.management.commands.add_eans import create_eans
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
+    create_eans()
     return JsonResponse({"status": "ok"})
 
 

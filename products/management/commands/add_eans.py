@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.core.management.base import BaseCommand, CommandError
+from rich import print
 from rich.progress import track
 
 from products.models import Eans
@@ -14,15 +15,23 @@ def create_eans() -> None:
     for json in track(products, description="Processing...", total=products.count()):
         product_json = dict(json.product_json)
         if not product_json:
+            print(f"Product JSON is empty for {json.product_id}")
             continue
-
-        eans: dict = product_json.get("eans", {})
+        product: dict = product_json.get("product", {})
+        eans: dict = product.get("eans", {})
         if not eans:
             continue
 
-        if name := product_json.get("name", ""):
-            eans_to_create.extend([Eans(ean=ean, name=name) for ean in eans])
+        name = product.get("name", "")
+        if not name:
+            print(f"No name for {json.product_id}")
+            continue
+
+        eans_to_create.extend([Eans(ean=ean, name=name) for ean in eans])
+        print(f"Created {len(eans_to_create)} EANs so far")
+
     Eans.objects.bulk_create(eans_to_create, update_fields=["name"], ignore_conflicts=True)
+    print(f"Created {len(eans_to_create)} EANs")
 
 
 class Command(BaseCommand):
