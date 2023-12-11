@@ -6,6 +6,7 @@ import orjson
 from ninja import NinjaAPI
 from ninja.parser import Parser
 
+from intel.api import router as intel_router
 from products.api import router as panso_router
 from webhallen.api import router as webhallen_router
 
@@ -36,3 +37,4 @@ api = NinjaAPI(
 
 api.add_router("webhallen/", webhallen_router, tags=["Webhallen"])
 api.add_router("", panso_router, tags=["Panso"])
+api.add_router("intel/", intel_router, tags=["Intel"])
