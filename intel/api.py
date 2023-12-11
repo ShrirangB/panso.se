@@ -16,7 +16,7 @@ router = Router()
 def return_filter_data(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html."""
     try:
-        filters = ArkFilterData.objects.get(pk=1)
+        filters: ArkFilterData = ArkFilterData.objects.get(pk=1)
         return JsonResponse(filters.json_data, safe=False)
     except ArkFilterData.DoesNotExist:
         return JsonResponse([], safe=False)

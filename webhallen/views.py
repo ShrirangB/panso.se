@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from django.http import HttpRequest, HttpResponse
-from django.template import loader
+from django.template import Template, loader
 
 from webhallen.models import WebhallenSection
 
@@ -15,7 +15,7 @@ def index(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="webhallen/index.html")
+    template: Template = loader.get_template(template_name="webhallen/index.html")
     sections = WebhallenSection.objects.all()
     sections = sorted(sections, key=lambda section: section.section_id)
 
