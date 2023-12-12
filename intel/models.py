@@ -31,10 +31,17 @@ class ArkFilterData(models.Model):
 class Processor(models.Model):
     """The data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html."""
 
+    product_id = models.IntegerField(
+        verbose_name="Product ID",
+        help_text="The product ID of the processor.",
+        primary_key=True,
+    )
+
     name = models.TextField(
         verbose_name="Name",
         help_text="The name of the processor.",
-        primary_key=True,
+        blank=True,
+        null=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

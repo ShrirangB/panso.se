@@ -4,14 +4,16 @@ from django.contrib import admin
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
+from rich import print
 
+from intel.management.commands.scrape_cpus import get_csv
 from panso.api import api
 from panso.sitemaps import StaticViewSitemap
-from products.management.commands.add_eans import create_eans
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    create_eans()
+    for row in get_csv():
+        print(row)
     return JsonResponse({"status": "ok"})
 
 
@@ -21,21 +23,21 @@ sitemaps: dict[str, type[StaticViewSitemap]] = {
 
 # TODO: Cache views
 urlpatterns: list = [
-    path("admin/", admin.site.urls),
-    path("testboi", testboi, name="testboi"),
-    path("api/", api.urls),  # type: ignore  # noqa: PGH003
-    path("", include("products.urls")),
-    path("webhallen/", include("webhallen.urls")),
+    path(route="admin/", view=admin.site.urls),
+    path(route="testboi", view=testboi, name="testboi"),
+    path(route="api/", view=api.urls),  # type: ignore  # noqa: PGH003
+    path(route="", view=include(arg="products.urls")),
+    path(route="webhallen/", view=include(arg="webhallen.urls")),
     path(
-        "sitemap.xml",
-        sitemaps_views.index,
-        {"sitemaps": sitemaps},
+        route="sitemap.xml",
+        view=sitemaps_views.index,
+        kwargs={"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.index",
     ),
     path(
-        "sitemap-<section>.xml",
-        sitemaps_views.sitemap,
-        {"sitemaps": sitemaps},
+        route="sitemap-<section>.xml",
+        view=sitemaps_views.sitemap,
+        kwargs={"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]

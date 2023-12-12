@@ -3,10 +3,16 @@
         "Chipset",
         "datordelar",
         "Datorkomponenter",
+        "directx",
+        "giga",
         "keepdb",
         "kvartalet",
+        "Lexbor",
         "MBEC",
         "MIPI",
+        "opencl",
+        "opengl",
+        "Optane",
         "orjson",
         "panso",
         "presentkort",
@@ -17,6 +23,7 @@
         "testboi",
         "uart",
         "uppgraderingspaket",
+        "vpro",
         "VRAN"
     ]
 }
