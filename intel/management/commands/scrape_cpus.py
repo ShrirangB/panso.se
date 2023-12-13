@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import _Date, datetime
+from datetime import datetime
 from functools import lru_cache
 from itertools import batched
 from typing import TYPE_CHECKING, Any
@@ -175,10 +175,27 @@ def bandwidth_to_bandwidth(b: str) -> int | None:
     return int(b)
 
 
-def add_to_database(data: list[LexborNode], _id: str) -> dict[str, str | int | None | _Date] | None:  # noqa: PLR0912, C901, PLR0915
+@lru_cache
+def float_to_float(f: str) -> float | None:
+    """Convert 2.8 to 2.8.
+
+    Args:
+        f (str): The value to convert.
+
+    Returns:
+        float: The value in float.
+    """
+    if not f:
+        return None
+    if f.isdigit():
+        return float(f)
+    return float(f)
+
+
+def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: PLR0912, C901, PLR0915
     """Add the processor to the database."""
     node: LexborNode
-    defaults: dict[str, str | int | None | _Date] = {}
+    defaults: dict | None = {}
     for node in data:
         node_attributes: dict[str, str | None] = node.attributes
         if not node_attributes:
@@ -300,7 +317,7 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict[str, str | int | N
                 date_string: str | None = node.text(strip=True) or None
                 if date_string:
                     datetime_object: datetime = datetime.strptime(date_string, "%m/%d/%Y %I:%M:%S %p").astimezone()
-                    date_part: _Date = datetime_object.date()
+                    date_part = datetime_object.date()
                     defaults["end_of_servicing_updates_date"] = date_part
                 else:
                     defaults["end_of_servicing_updates_date"] = None
@@ -347,6 +364,153 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict[str, str | int | N
 
             if data_key == "IntelThunderbolt4":
                 defaults["thunderbolt_4_support"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "DMIRevision":
+                defaults["direct_media_interface_revision"] = node.text(strip=True) or None
+
+            if data_key == "MaxDMILanesCount":
+                defaults["max_amount_of_direct_media_interface_lanes"] = int(node.text(strip=True)) or None
+
+            if data_key == "NumUSBPorts":
+                defaults["number_of_usb_ports"] = int(node.text(strip=True)) or None
+
+            if data_key == "USBRevision":
+                defaults["usb_revision"] = node.text(strip=True) or None
+
+            if data_key == "IntegratedLAN":
+                defaults["integrated_lan"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "SATA6PortCount":
+                defaults["number_of_sata_6_0_ports"] = int(node.text(strip=True)) or None
+
+            if data_key == "USBConfigurationDescription":
+                defaults["usb_configuration"] = node.text(strip=True) or None
+
+            if data_key == "NumSATAPorts":
+                defaults["number_of_sata_ports"] = int(node.text(strip=True)) or None
+
+            if data_key == "IntegratedIDE":
+                defaults["integrated_ide"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "GeneralPurposeIO":
+                defaults["general_purpose_io"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "UART":
+                defaults["uart"] = node.text(strip=True) or None
+
+            if data_key == "SocketsSupported":
+                defaults["sockets_supported"] = node.text(strip=True) or None
+
+            if data_key == "PackageSize":
+                defaults["package_size"] = node.text(strip=True) or None
+
+            if data_key == "MaxCPUs":
+                defaults["max_cpu_configuration"] = int(node.text(strip=True)) or None
+
+            if data_key == "OperatingTemperature":
+                defaults["operating_temperature_range"] = node.text(strip=True) or None
+
+            if data_key == "OperatingTemperatureMax":
+                defaults["operating_temperature_max"] = int(node.text(strip=True)) or None
+
+            if data_key == "OperatingTemperatureMin":
+                defaults["operating_temperature_min"] = int(node.text(strip=True)) or None
+
+            if data_key == "ThermalSolutionSpecification":
+                defaults["thermal_solution_specification"] = node.text(strip=True) or None
+
+            if data_key == "TCase":
+                defaults["t_case"] = node.text(strip=True) or None
+
+            if data_key == "ResourceDirectorTechVersion":
+                defaults["resource_director_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "OptaneMemorySupport":
+                defaults["optane_supported"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "TBTVersion":
+                defaults["turbo_boost_technology"] = node.text(strip=True) or None
+
+            if data_key == "HyperThreading":
+                defaults["hyper_threading_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "EM64":
+                defaults["_64_bit"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "InstructionSet":
+                defaults["instruction_set"] = node.text(strip=True) or None
+
+            if data_key == "InstructionSetExtensions":
+                defaults["instruction_set_extensions"] = node.text(strip=True) or None
+
+            if data_key == "AVX512FusedMultiplyAddUnits":
+                defaults["avx_512_fma_units"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "SpeedstepTechnology":
+                defaults["enhanced_speedstep_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ThermalMonitoring2Indicator":
+                defaults["thermal_monitoring_technologies"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "QuickAssistTechnology":
+                defaults["integrated_quick_assist_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "VolumeManagementDeviceVersion":
+                defaults["volume_management_device"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "TimeCoordinatedComputing":
+                defaults["time_coordinated_computing"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "GaussianNeuralAcceleratorVersion":
+                defaults["gaussian_neural_accelerator"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelThreadDirector":
+                defaults["thread_director"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ImageProcessingUnitVersion":
+                defaults["image_processing_unit"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelSmartSoundTechnology":
+                defaults["smart_sound_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelWakeonVoice":
+                defaults["wake_on_voice"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelHighDefinitionAudio":
+                defaults["high_definition_audio"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "MipiSoundwireVersion":
+                defaults["mipi_soundwire_version"] = float_to_float(node.text(strip=True))
+
+            if data_key == "DeepLearningBoostVersion":
+                defaults["deep_learning_boost"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "AdaptixTechVersion":
+                defaults["adaptix_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "SpeedShiftTechVersion":
+                defaults["speed_shift_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "TurboBoostMaxTechVersion":
+                defaults["turbo_boost_max_technology_3_0"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "FlexMemoryTechnology":
+                defaults["flex_memory_access"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ThermalVelocityBoostVersion":
+                defaults["thermal_velocity_boost"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "HaltState":
+                defaults["idle_states"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "AdaptiveBoostTechVesion":
+                defaults["adaptive_boost_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "TransactionalSynchronizationExtensionVersion":
+                defaults["transactional_synchronization_extensions"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "DemandBasedSwitching":
+                defaults["demand_based_switching"] = bool_to_bool(node.text(strip=True))
 
             for key, value in defaults.items():
                 if not value:

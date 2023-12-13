@@ -256,10 +256,10 @@ class Processor(models.Model):
         null=True,
     )
 
-    # TODO: Is this the same as Intel® Deep Learning Boost on CPU?
+    # TODO: Is this the same as Intel Deep Learning Boost on CPU?
     deep_learning_boost = models.BooleanField(
-        verbose_name="Deep Learning Boost",
-        help_text="Whether the processor has Deep Learning Boost.",
+        verbose_name="Intel Deep Learning Boost (Intel DL Boost)",
+        help_text="Whether Intel Deep Learning Boost (Intel DL Boost) is supported.",
         blank=True,
         null=True,
     )
@@ -463,15 +463,15 @@ class Processor(models.Model):
     )
 
     # Package Specifications
-    socket_supported = models.TextField(
-        verbose_name="Socket Supported",
-        help_text="The socket supported by the processor.",
+    sockets_supported = models.TextField(
+        verbose_name="Sockets Supported",
+        help_text="Sockets the processor supports.",
         blank=True,
         null=True,
     )
     t_case = models.IntegerField(
         verbose_name="T Case",
-        help_text="The T case of the processor. In celsius.",
+        help_text="The maximum temperature allowed at the processor Integrated Heat Spreader (IHS).",
         blank=True,
         null=True,
     )
@@ -483,13 +483,13 @@ class Processor(models.Model):
     )
     max_cpu_configuration = models.TextField(
         verbose_name="Max CPU Configuration",
-        help_text="The maximum CPU configuration the processor supports.",
+        help_text="How many CPUs you can have in a configuration.",
         blank=True,
         null=True,
     )
     t_junction = models.IntegerField(
         verbose_name="T Junction",
-        help_text="The T junction of the processor. In celsius.",
+        help_text="The highest temperature the processor can reach without damaging it. In celsius.",
         blank=True,
         null=True,
     )
@@ -538,8 +538,8 @@ class Processor(models.Model):
 
     # Advanced Technologies
     optane_supported = models.BooleanField(
-        verbose_name="Optane Supported",
-        help_text="Whether Optane is supported.",
+        verbose_name="Intel Optane supported",
+        help_text="Whether Intel Optane is supported.",
         blank=True,
         null=True,
     )
@@ -556,8 +556,8 @@ class Processor(models.Model):
         null=True,
     )
     turbo_boost_technology = models.TextField(
-        verbose_name="Turbo Boost Technology",
-        help_text="The turbo boost technology the processor supports.",
+        verbose_name="Intel Turbo Boost version",
+        help_text="Intel Turbo Boost version used",
         blank=True,
         null=True,
     )
@@ -568,14 +568,14 @@ class Processor(models.Model):
         null=True,
     )
     transactional_synchronization_extensions = models.BooleanField(
-        verbose_name="Transactional Synchronization Extensions",
-        help_text="Whether transactional synchronization extensions are supported.",
+        verbose_name="Intel TSX-NI",
+        help_text="Whether Intel TSX-NI is supported.",
         blank=True,
         null=True,
     )
     _64_bit = models.BooleanField(
         verbose_name="64-bit",
-        help_text="Whether 64-bit is supported.",
+        help_text="Whether 64-bit is supported. Also called EM64T (Extended Memory 64 Technology).",
         blank=True,
         null=True,
     )
@@ -592,14 +592,14 @@ class Processor(models.Model):
         null=True,
     )
     enhanced_speedstep_technology = models.BooleanField(
-        verbose_name="Enhanced SpeedStep Technology",
-        help_text="Whether enhanced speedstep technology is supported.",
+        verbose_name="Enhanced Intel SpeedStep Technology",
+        help_text="Allows the clock speed to be dynamically changed (to different P-states) by software.",
         blank=True,
         null=True,
     )
     volume_management_device = models.BooleanField(
-        verbose_name="Volume Management Device",
-        help_text="Whether volume management device is supported.",
+        verbose_name="Intel Volume Management Device (VMD)",
+        help_text="Enables direct control and management of NVMe SSDs from the PCIe bus without additional hardware adaptors",  # noqa: E501
         blank=True,
         null=True,
     )
@@ -617,7 +617,7 @@ class Processor(models.Model):
     )
     thermal_monitoring_technologies = models.BooleanField(
         verbose_name="Thermal Monitoring Technologies",
-        help_text="Whether thermal monitoring technologies are supported.",
+        help_text="Allows the processor to maintain optimal temperature by regulating voltage and frequency.",
         blank=True,
         null=True,
     )
@@ -670,20 +670,20 @@ class Processor(models.Model):
         null=True,
     )
     resource_director_technology = models.BooleanField(
-        verbose_name="RDT",
-        help_text="Whether RDT is supported.",
+        verbose_name="Intel Resource Director Technology (Intel RDT)",
+        help_text="Whether Intel Resource Director Technology (Intel RDT) is supported.",
         blank=True,
         null=True,
     )
     demand_based_switching = models.BooleanField(
-        verbose_name="Demand Based Switching",
-        help_text="Whether demand based switching is supported.",
+        verbose_name="Intel Demand Based Switching",
+        help_text="Whether Intel Demand Based Switching is supported.",
         blank=True,
         null=True,
     )
     thermal_velocity_boost = models.BooleanField(
-        verbose_name="Thermal Velocity Boost",
-        help_text="Whether thermal velocity boost is supported.",
+        verbose_name="Intel Thermal Velocity Boost",
+        help_text="Whether Intel Thermal Velocity Boost is supported.",
         blank=True,
         null=True,
     )
@@ -700,8 +700,14 @@ class Processor(models.Model):
         null=True,
     )
     gaussian_neural_accelerator = models.BooleanField(
-        verbose_name="Gaussian & Neural Accelerator",
+        verbose_name="Intel Gaussian & Neural Accelerator",
         help_text="Whether gaussian & neural accelerator is supported.",
+        blank=True,
+        null=True,
+    )
+    thread_director = models.BooleanField(
+        verbose_name="Intel Thread Director",
+        help_text="Monitors the runtime instruction mix of each thread and the state of each core with nanosecond precision.",  # noqa: E501
         blank=True,
         null=True,
     )
@@ -730,26 +736,26 @@ class Processor(models.Model):
         null=True,
     )
     image_processing_unit = models.BooleanField(
-        verbose_name="Image Processing Unit",
-        help_text="Whether image processing unit is supported.",
+        verbose_name="Intel Image Processing Unit",
+        help_text="Whether Intel Image Processing Unit is supported.",
         blank=True,
         null=True,
     )
     smart_sound_technology = models.BooleanField(
-        verbose_name="Smart Sound Technology",
-        help_text="Whether smart sound technology is supported.",
+        verbose_name="Intel Smart Sound Technology",
+        help_text="Whether Intel Smart Sound Technology is supported.",
         blank=True,
         null=True,
     )
     wake_on_voice = models.BooleanField(
-        verbose_name="Wake on Voice",
-        help_text="Whether wake on voice is supported.",
+        verbose_name="Intel Wake on Voice",
+        help_text="Whether Intel Wake on Voice is supported.",
         blank=True,
         null=True,
     )
     high_definition_audio = models.BooleanField(
-        verbose_name="High Definition Audio",
-        help_text="Whether high definition audio is supported.",
+        verbose_name="Intel High Definition Audio",
+        help_text="Whether Intel High Definition Audio is supported.",
         blank=True,
         null=True,
     )
@@ -760,14 +766,14 @@ class Processor(models.Model):
         null=True,
     )
     time_coordinated_computing = models.BooleanField(
-        verbose_name="Time Coordinated Computing",
-        help_text="Whether time coordinated computing is supported.",
+        verbose_name="Intel Time Coordinated Computing (Intel TCC)",
+        help_text="Whether Intel Time Coordinated Computing (Intel TCC) is supported.",
         blank=True,
         null=True,
     )
-    mipi_soundwire_technology = models.BooleanField(
-        verbose_name="MIPI SoundWire Technology",
-        help_text="Whether MIPI SoundWire technology is supported.",
+    mipi_soundwire_version = models.FloatField(
+        verbose_name="MIPI SoundWire Version",
+        help_text="The MIPI SoundWire version the processor supports.",
         blank=True,
         null=True,
     )
@@ -811,6 +817,12 @@ class Processor(models.Model):
     vran_boost = models.BooleanField(
         verbose_name="VRAN Boost",
         help_text="Whether VRAN Boost is supported.",
+        blank=True,
+        null=True,
+    )
+    adaptive_boost_technology = models.BooleanField(
+        verbose_name="Intel Adaptive Boost Technology",
+        help_text="Whether Intel Adaptive Boost Technology is supported.",
         blank=True,
         null=True,
     )
@@ -1010,15 +1022,27 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    uart = models.BooleanField(
+    uart = models.TextField(  # This is Yes, No or 3 :thinking:
         verbose_name="UART",
-        help_text="Whether UART is supported.",
+        help_text="Universal asynchronous receiver-transmitter",
         blank=True,
         null=True,
     )
     number_of_sata_6_0_ports = models.IntegerField(
         verbose_name="Number of SATA 6.0 Gb/s Ports",
         help_text="The number of SATA 6.0 Gb/s ports the processor has.",
+        blank=True,
+        null=True,
+    )
+    usb_configuration = models.TextField(
+        verbose_name="USB Configuration",
+        help_text="The amount and generation the CPU supports.",
+        blank=True,
+        null=True,
+    )
+    integrated_ide = models.BooleanField(
+        verbose_name="Integrated IDE",
+        help_text="Integrated development environment",
         blank=True,
         null=True,
     )
