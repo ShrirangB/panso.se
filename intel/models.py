@@ -114,18 +114,19 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    l3_cache = models.TextField(
-        verbose_name="L3 Cache",
-        help_text="The L3 cache the processor has. In bytes.",
-        blank=True,
-        null=True,
-    )
     cache = models.TextField(
         verbose_name="Cache",
         help_text="The cache the processor has.",
         blank=True,
         null=True,
     )
+    l2_cache = models.TextField(
+        verbose_name="L2 Cache",
+        help_text="The L2 cache the processor has.",
+        blank=True,
+        null=True,
+    )
+
     upi_links = models.IntegerField(
         verbose_name="UPI Links",
         help_text="The number of Intel Ultra Path Interconnect links the processor has.",
@@ -150,6 +151,19 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
+    single_performance_core_turbo_frequency = models.IntegerField(
+        verbose_name="Single P-core Turbo Frequency",
+        help_text="How many hertz a single P-core can reach.",
+        blank=True,
+        null=True,
+    )
+    single_efficiency_core_turbo_frequency = models.IntegerField(
+        verbose_name="Single E-core Turbo Frequency",
+        help_text="How many hertz a single E-core can reach.",
+        blank=True,
+        null=True,
+    )
+
     number_of_qpi_links = models.IntegerField(
         verbose_name="Number of QPI Links",
         help_text="The number of Intel QuickPath Interconnect links the processor has.",
@@ -229,6 +243,19 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
+    min_assured_power = models.IntegerField(
+        verbose_name="Minimum Assured Power",
+        help_text="The minimum assured power of the processor. In watts.",
+        blank=True,
+        null=True,
+    )
+    max_assured_power = models.IntegerField(
+        verbose_name="Maximum Assured Power",
+        help_text="The maximum assured power of the processor. In watts.",
+        blank=True,
+        null=True,
+    )
+
     # TODO: Is this the same as Intel® Deep Learning Boost on CPU?
     deep_learning_boost = models.BooleanField(
         verbose_name="Deep Learning Boost",

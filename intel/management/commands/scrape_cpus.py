@@ -1,67 +1,378 @@
 from __future__ import annotations
 
-from pathlib import Path
+from dataclasses import dataclass
+from datetime import _Date, datetime
+from functools import lru_cache
+from itertools import batched
 from typing import TYPE_CHECKING, Any
 
+import hishel
 from django.core.management.base import BaseCommand, CommandError
 from loguru import logger
-from playwright.sync_api import Browser, BrowserContext, Download, Page, sync_playwright
+from selectolax.lexbor import LexborHTMLParser, LexborNode
+
+from intel.management.commands.product_ids import product_ids
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from httpx import Response
 
-def get_csv() -> Generator[str, Any, None]:
-    """Get CSV files from Intel ARK.
-
-    Args:
-        urls: Dictionary of names and urls
-
-    Yields:
-        str: CSV file
-    """
-    # TODO: Don't hardcode these urls, or at least check them for validity
-    urls: list[str] = [
-        "https://www.intel.com/content/www/us/en/products/compare.html?productIds=212262,214805,214806,212258,212259,212260,212261,212253,212255,212257,195334,193741,193742,193744,193748,195323,195325,193745,193743,191038,191039,191040,191041,191033,191035,191036,191037,191042,191043,134854,134855,134856,134857,134863,134864,134866,134858,134862,134867,134860,226245,226240,226236,226238,226237,226239,226119,226233,226234,226235,226105,226106,226107,226108,226109,226110,226111,226112,226101,226102,226103,226104,226241,226242,226243,226113,226114,226115,226116,226244,226246,226247,226248,226249,226250,226251,226252,226098,226099,226100,229915,193696,193680,193686,193687,193690,193692,193693,193694,136429,136430,136431,136437,136438,136439,136440,136432,136433,136434,136435,136436,136441,122998,122999,123000,123001,123002,91194,91200,93352,93356,93364,93353,93355,91204,91195,91196,91198,91199,91201,91202,91203,87038,87039,233482,233483,233484,233485,233418,233419,233420,233421,233478,233479,233480,233481,233415,233416,233417,217378,217368,217375,217376,217377,217367,217245,217246,217247,217243,217244,213796,213797,212263,212264,212265,212266,212267,212268,212269,203895,203903,203904,203905,199337,199338,199339,199340,203907,199341,201908,201909,203892,199274,199336,198609,198610,198010,198011,198015,198016,198018,198608,193749,193750,193751,193752,193739,193746,193747,193753,193754,232372,197101,193381,123540,232376,232378,232388,215269,215270,215275,215277,215283,197098,197100,199344,199349,193382,193384,193385,193389,193390,193394,193553,120481,123547,123549,126153,126155,237980,236591,236592,236593,236589,236590,232397,232398,234915,234916,232389,232390,232391,232392,232379,232380,232381,232382,232384,232385,232386,232387,232393,232394,232395,232396,232373,232374,232375,232377,231731,231733,231737,215286,212458,212460,212461,212633,215271,215272,215273,215274,212285,212286,212456,212457,215281,215282,215284,215285,215276,215278,215279,215280,204091,204090,204095,205687,204086,204088,199354,202780,199345,199346,199347,199348,198652,198655,199342,199343,199350,199351,199352,199353,193957,193958,193959,193962,193969,193970,193971,193972,193951,193952,193953,193954,193388,193391,193393,193396,192440,192442,192443,192444,192445,192446,192447,192448,192437,192439,192450,192451,192452,192453,193397,193564,193949,193950,126154,123542,123545,120477,120483,120473,120476,123548,120492,231761,232383,231748,231749,231750,231756,231738,231739,231741,231742,231744,231745,231746,231747,231727,231728,231735,231736,212282,212284,212287,212288,212289,212307,212308,212454,212455,212459,217215,217216,204089,204097,205688,205683,205684,204092,204094,204096,204087,195434,195437,194146,192474,192475,192476,192478,192465,192467,192470,192472,192480,192481,192482,194145,123543,232597,232592,232594,232595,232596",
-        "https://www.intel.com/content/www/us/en/products/compare.html?productIds=198012,198014,198017,198019,231805,231806,233459,235942,230576,230579,230575,232163,232169,232909,233391,232105,232136,232151,235072,235075,230902,219491,227851,227852,226451,226257,226263,226269,223097,223095,223096,132224,132225,132226,134584,132223,217371,209735,209736,208074,208079,208656,208651,208652,208920,203474,201893,201894,201898,201889,201890,203473,199283,199284,199280,199281,199282,203898,203899,196451,194376,194374,194375,193560,129944,149160,126688,97124,97125,97130,97131,95442,88181,90611,90612,88180,90729,236778,236799,233458,235940,230495,232157,232173,233389,233392,232143,232145,232147,232148,230578,230580,232127,232132,232133,232134,232103,232107,232108,232126,230501,230573,230574,230577,232152,232153,232154,232156,235071,235077,230493,230494,229976,229975,230900,230901,228438,228794,227854,227850,226266,226452,226453,226256,226260,226261,132221,132222,134586,134587,223094,96149,96150,96156,96158,96141,96142,96143,96144,96140,134589,134590,217369,217183,217184,217185,213804,213805,213806,212278,212274,212275,212276,212277,212270,212271,212272,212273,208659,208660,196656,208078,208081,208657,208658,208922,201891,201905,208016,201892,199315,199277,199278,199279,199311,199271,199273,199275,199276,203891,203893,201895,201839,195436,196454,195324,195327,193559,129939,134877,129941,97532,97472,97523,97121,97123,90617,90425,88186,88190,88184,236783,236789,232155,232160,232161,232164,232166,232168,232175,233390,235070,232139,232141,232146,232150,230492,230490,230491,232101,232128,232130,232131,235076,230500,230489,235938,235939,235073,229953,228459,230904,230905,228442,228795,226058,227853,132217,226253,226254,226255,226258,226259,226454,226455,226066,226055,226059,132216,132219,134596,132228,134591,134592,134594,134595,217379,213802,217182,217181,217187,213803,213799,212279,212280,212047,212048,212251,208663,197384,196655,208076,208082,208921,208661,208662,208664,208018,201896,201888,199325,199335,199314,199316,199318,203906,203908,201897,201837,196448,196449,196452,195306,195328,195329,195333,193554,129948,134899,126686,97122,97127,97128,97466,90426,90615,88201,88192,88196,236773,236787,232167,232162,232171,232172,232135,232138,232144,232149,230498,230499,230502,232099,230496,230497,228439,228441,225916,132211,132212,132214,132215,134601,134597,134598,134599,134600,213798,213800,213801,212254,212256,212321,212325,212252,205904,203682,199331,199332,199324,199328,199329,203901,203902,201838",
-        "https://www.intel.com/content/www/us/en/products/compare.html?productIds=232592,237980,236589,236590,236591,236592,236593,231748,231761,231728,231745,232383,232381,232384,232373,234916,232390,232392,232393,232394,232395,232397,234915,231737,232377,232379,232376,232378,232388,232372,215281,215282,215283,215284,215269,215270,215271,215272,215286,215274,215277,215278,215280,212288,212458,212461,212633,212286,199349,197098,197100,199344,199346,199347,199348,193394,193397,193384,193385,193389,193391,192437,192439,192450,193382,193953,193957,193970,193951,193952,193744,193748,195325,195334,195323,193741,193742,134854,134867,134860,123540,123542,123543,123545,123547,123548,123549,120473,120476,120477,120481,120483,120492,126153,126154,126155,217367,217368,217375,217376,217377,217378,203904,203905,203907,203892,203895,203903,97478,98858,97463,122822,122823,96901,93796,93802,92990,91316,91754,92982,92984,92986,92988,91759,91767,91771,91775,93848,93358,88178,88168,88177,90618,89608,226251,226233,226234,226248,226250,226100,226103,226105,226106,226108,193694,193696,193680,193686,193687,193690,193692,193693,136429,136431,136432,136433,136434,136436,136437,136438,136439,136440,136441,122998,122999,123000,123001,123002,91200,93352,91194,93356,93364,93353,91195,91196,91198,91201,91204,83351,231805,235942,233391,232163,232169,232151,230575,230579,232105,235072,235075,235940,233392,232152,232157,233389,232134,232148,230580,230578,230495,232108,232133,235071,235077,233390,235070,232168,232175,232150,230490,230492,232131,235076,235938,235939,235073,232162,232099,230499,230902,219491,227851,227852,132224,132225,132226,134584,134597,132211,132212,229975,230900,230901,229976,227850,227854,96143,96144,96158,96142,134586,230904,230905,228459,229953,227853,132217,226055,132216,132219,134591,217371,208079,208074,217379,208082,208076,217369,208081,208078,203901,203902,203908,203906,203899,203898,203891,203893,195333,195328,195329,195306,195324,195327,194374,194375,194376,193559,129939,129941,134877,193554,129948,134899,126686,193560,129944,149160,126688,97130,97131,97124,97125,95442,97127,97128,97122,97466,97472,97523,97532,97123,97121,90611,90612,88181,88180,90729,90617,90425,88186,88190,88184,90426,90615,88201,88192,88196,229362,229363,229360,229361,134793,134794,134795,134796,134797,202681,202682,134803,134799,134800,134801,134802,134798,204841,204842,204839,204840,184994,97939,97934,97935,97936,97937,97926,97927,97929,97930,123003,123004,97928,81270,81328,77978,77979,77981,77983,77976,77984,77986,77988,84311,78474,78475,78476,78477,78478,233091,233092,233093,230379,230380,207901,207902,207904,207905,207899,207900,207907,207908,96485,96486,96488,92124",
-        "https://www.intel.com/content/www/us/en/products/compare.html?productIds=229363,134793,134794,134795,134796,134797,229360,229361,229362,202681,202682,134800,134801,134802,134803,134798,134799,204842,204839,204840,204841,184994,97934,97935,97936,97937,97926,97927,97929,97930,97931,97932,97933,97938,97939,97940,123003,123004,97928,81270,81328,77988,77979,77981,77976,77978,77983,77984,77986,233393,232142,233090,231803,231804,233089",
-    ]
-    with sync_playwright() as p:
-        browser: Browser = p.chromium.launch(timeout=5 * 60 * 1000)  # 5 minutes because this takes a while
-        for url in urls:
-            context: BrowserContext = browser.new_context()
-            page: Page = context.new_page()
-            page.goto(url=url)
-
-            page.get_by_role(role="button", name="Deactivate Cookies").click()
-
-            with page.expect_download() as download_info:
-                # Click the Export comparison button
-                page.get_by_text(text="Export comparison").click()
-
-            download: Download = download_info.value
-
-            # Open the file and yield it
-            with Path.open(Path(download.path()), encoding="utf-8") as f:
-                logger.info("Yielding CSV file")
-                yield str(f.read())
-
-            context.close()
-        browser.close()
+storage = hishel.FileStorage(
+    ttl=60 * 60 * 24 * 7,  # 1 week
+)
 
 
-def parse_csv(csv: str) -> None:
-    """Parse CSV file.
+@dataclass(frozen=True)
+class ProcessorData:
+    """Data about a processor."""
+
+    html: str
+    ids: str
+
+
+def get_html() -> Generator[ProcessorData, Any, None]:
+    """Get the HTML from Intel ARK so we can parse it."""
+    # Split the URLs into batches of 100
+    for batch in list(batched(product_ids, 100)):
+        ids: str = ",".join(batch)
+        url: str = f"https://www.intel.com/content/www/us/en/products/compare.html?productIds={ids}"
+        logger.info(f"Visiting {url}")
+        with hishel.CacheClient(storage=storage) as client:
+            response: Response = client.get(url)
+            processor_data: ProcessorData = ProcessorData(html=response.text, ids=ids)
+            yield processor_data
+
+
+@lru_cache
+def hertz_an_hertz(hz: str) -> int | None:  # noqa: PLR0911
+    """Convert GHz, MHz, and KHz to Hz.
+
+    Example:
+        >>> hz_to_hz("2.8 GHz")
+        2800000000
+        >>> hz_to_hz("2.8 MHz")
+        2800000
+        >>> hz_to_hz("2.8 KHz")
+        2800
+        >>> hz_to_hz("2.8 Hz")
+        2
 
     Args:
-        csv: CSV file
+        hz (str): The value to convert.
+
+    Returns:
+        int: The value in Hz.
     """
-    lines: list[str] = csv.splitlines()
-    headers: list[str] = lines[0].split(",")
-    for line in lines[1:]:
-        values: list[str] = line.split(",")
-        dict(zip(headers, values))
+    if not hz:
+        return None
+    if hz.isdigit():
+        return int(hz)
+    if "THz" in hz:
+        return int(float(hz.replace("THz", "")) * 1_000_000_000_000)
+    if "GHz" in hz:
+        return int(float(hz.replace("GHz", "")) * 1_000_000_000)
+    if "MHz" in hz:
+        return int(float(hz.replace("MHz", "")) * 1_000_000)
+    if "KHz" in hz:
+        return int(float(hz.replace("KHz", "")) * 1_000)
+    return int(hz)
+
+
+@lru_cache
+def bytes_to_bytes(b: str) -> int | None:  # noqa: PLR0911
+    """Convert MB, GB, and TB to bytes.
+
+    Example:
+        >>> bytes_to_bytes("2.8 GB")
+        2800000000
+        >>> bytes_to_bytes("2.8 MB")
+        2800000
+        >>> bytes_to_bytes("2.8 KB")
+        2800
+        >>> bytes_to_bytes("2.8 B")
+        2
+
+    Args:
+        b (str): The value to convert.
+
+    Returns:
+        int: The value in bytes.
+    """
+    if not b:
+        return None
+    if b.isdigit():
+        return int(b)
+    if "TB" in b:
+        return int(float(b.replace("TB", "")) * 1_000_000_000_000)
+    if "GB" in b:
+        return int(float(b.replace("GB", "")) * 1_000_000_000)
+    if "MB" in b:
+        return int(float(b.replace("MB", "")) * 1_000_000)
+    if "KB" in b:
+        return int(float(b.replace("KB", "")) * 1_000)
+    return int(b)
+
+
+@lru_cache
+def watt_to_watt(w: str) -> int | None:
+    """Convert 11 W to 11.
+
+    Args:
+        w (str): The value to convert.
+
+    Returns:
+        int: The value in W.
+    """
+    if not w:
+        return None
+    if w.isdigit():
+        return int(w)
+
+    return int(float(w.replace("W", "")))
+
+
+@lru_cache
+def bool_to_bool(b: str) -> bool | None:
+    """Convert Yes to True and No to False.
+
+    Args:
+        b (str): The value to convert.
+
+    Returns:
+        bool: The value in bool.
+    """
+    if not b:
+        return None
+
+    if b == "Yes":
+        return True
+    if b == "No":
+        return False
+    return None
+
+
+@lru_cache
+def bandwidth_to_bandwidth(b: str) -> int | None:
+    """Convert 76.8 GB/s to 76800000000.
+
+    Args:
+        b (str): The value to convert.
+
+    Returns:
+        int: The value in bytes.
+    """
+    if not b:
+        return None
+    if b.isdigit():
+        return int(b)
+    if "GB/s" in b:
+        return int(float(b.replace("GB/s", "")) * 1_000_000_000)
+    if "MB/s" in b:
+        return int(float(b.replace("MB/s", "")) * 1_000_000)
+    if "KB/s" in b:
+        return int(float(b.replace("KB/s", "")) * 1_000)
+    return int(b)
+
+
+def add_to_database(data: list[LexborNode], _id: str) -> dict[str, str | int | None | _Date] | None:  # noqa: PLR0912, C901, PLR0915
+    """Add the processor to the database."""
+    node: LexborNode
+    defaults: dict[str, str | int | None | _Date] = {}
+    for node in data:
+        node_attributes: dict[str, str | None] = node.attributes
+        if not node_attributes:
+            logger.info(f"Could not find attributes for {_id}")
+            return None
+        if "data-key" in node_attributes:
+            data_key: str | None = node_attributes["data-key"]
+            if not data_key:
+                logger.info(f"Could not find data-key for {_id}")
+                return None
+
+            if data_key == "ProductGroup":  # Intel® Xeon® D Processor
+                defaults["product_collection"] = node.text(strip=True) or None
+
+            if data_key == "MarketSegment":  # Server
+                defaults["vertical_segment"] = node.text(strip=True) or None
+
+            if data_key == "ProcessorNumber":  # D-2738
+                defaults["processor_number"] = node.text(strip=True) or None
+
+            if data_key == "Lithography":  # 10 nm
+                defaults["Lithography"] = node.text(strip=True) or None
+
+            if data_key == "CertifiedUseConditions":  # Automotive, Base Transceiver Station
+                defaults["use_conditions"] = node.text(strip=True) or None
+
+            # TODO: Add l3_cache
+            # TODO: Add recommended_customer_price. We should check if the value starts with "$" and then remove it
+            if data_key == "CoreCount":  # 8
+                defaults["total_cores"] = int(node.text(strip=True)) or None
+
+            if data_key == "PerfCoreCount":  # 8
+                defaults["performance_cores"] = int(node.text(strip=True)) or None
+
+            if data_key == "ThreadCount":  # 16
+                defaults["total_threads"] = int(node.text(strip=True)) or None
+
+            if data_key == "ClockSpeedMax":  # 2.8 GHz -> 2800000000
+                defaults["max_turbo_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "ClockSpeed":  # 2.2 GHz -> 2200000000
+                defaults["base_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "Cache":  # 16.5 MB
+                defaults["cache"] = node.text(strip=True) or None
+
+            if data_key == "UltraPathInterconnectLinks":  # 0
+                defaults["upi_links"] = int(node.text(strip=True)) or None
+
+            if data_key == "MaxTDP":  # 65 W -> 65
+                defaults["tdp"] = watt_to_watt(node.text(strip=True))
+
+            if data_key == "DeepLearningBoostVersion":  # Yes -> True
+                defaults["dl_boost_version"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "EffCoreCount":  # 8
+                defaults["efficiency_cores"] = int(node.text(strip=True)) or None
+
+            if data_key == "TurboBoostMaxTechMaxFreq":  # 4.8 GHz -> 4800000000
+                defaults["turbo_boost_max_technology_3_0_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "PCoreTurboFreq":  # 4.8 GHz -> 4800000000
+                defaults["single_performance_core_turbo_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "ECoreTurboFreq":  # 4.5 GHz -> 4500000000
+                defaults["single_efficiency_core_turbo_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "ProcessorBasePower":  # 15 W -> 15
+                defaults["processor_base_power"] = watt_to_watt(node.text(strip=True))
+
+            if data_key == "MaxTurboPower":  # 64 W -> 64
+                defaults["max_turbo_power"] = watt_to_watt(node.text(strip=True))
+
+            if data_key == "AssuredPowerMin":  # 15 W -> 15
+                defaults["min_assured_power"] = watt_to_watt(node.text(strip=True))
+
+            if data_key == "AssuredPowerMax":  # 64 W -> 64
+                defaults["max_assured_power"] = watt_to_watt(node.text(strip=True))
+
+            if data_key == "BusNumPorts":  # 0
+                defaults["number_of_qpi_links"] = int(node.text(strip=True)) or None
+
+            if data_key == "PCoreBaseFreq":  # 2.8 GHz -> 2800000000
+                defaults["p_core_base_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "ECoreBaseFreq":  # 2.2 GHz -> 2200000000
+                defaults["e_core_base_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "TotalL2Cache":  # 24 MB
+                defaults["l2_cache"] = node.text(strip=True) or None
+
+            if data_key == "ThermalVelocityBoostFreq":  # 4.4 GHz -> 4400000000
+                defaults["thermal_velocity_boost_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "TurboBoostTech2MaxFreq":  # 4.8 GHz -> 4800000000
+                defaults["turbo_boost_2_0_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "StatusCodeText":  # Launched
+                defaults["marketing_status"] = node.text(strip=True) or None
+
+            if data_key == "BornOnDate":  # Q4'20
+                defaults["launch_date"] = node.text(strip=True) or None
+
+            if data_key == "Embedded":  # Yes -> True
+                defaults["embedded_options_available"] = bool_to_bool(node.text(strip=True))
+
+            # https://www.intel.com/content/www/us/en/products/docs/processors/xeon-d/network-segments-product-brief.html
+            if data_key == "ProductBriefUrl":
+                defaults["product_brief_url"] = node.text(strip=True) or None
+
+            # https://www.intel.com/content/www/us/en/products/docs/processors/core/core-technical-resources.html
+            if data_key == "DatasheetUrl":
+                defaults["datasheet"] = node.text(strip=True) or None
+
+            if data_key == "ServicingStatus":  # End of Servicing Lifetime
+                defaults["servicing_status"] = node.text(strip=True) or None
+
+            if data_key == "ESUDate":  # 6/30/2022 12:00:00 AM -> 2022-06-30
+                date_string: str | None = node.text(strip=True) or None
+                if date_string:
+                    datetime_object: datetime = datetime.strptime(date_string, "%m/%d/%Y %I:%M:%S %p").astimezone()
+                    date_part: _Date = datetime_object.date()
+                    defaults["end_of_servicing_updates_date"] = date_part
+                else:
+                    defaults["end_of_servicing_updates_date"] = None
+
+            if data_key == "MaxMem":  # 1 TB -> 1000000000000
+                defaults["max_memory_size"] = bytes_to_bytes(node.text(strip=True))
+
+            if data_key == "MemoryTypes":  # DDR4
+                defaults["memory_types"] = node.text(strip=True) or None
+
+            if data_key == "MemoryMaxSpeedMhz":  # 2933 MHz -> 2933000000
+                defaults["max_memory_speed"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "NumMemoryChannels":  # 4
+                defaults["max_number_of_memory_channels"] = int(node.text(strip=True)) or None
+
+            if data_key == "OptaneDCPersistentMemoryVersion":  # No -> False
+                defaults["optane_supported"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ECCMemory":  # Yes -> True
+                defaults["ecc_memory_supported"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "MaxMemoryBandwidth":  # 41.6 GB/s -> 41600000000
+                defaults["max_memory_bandwidth"] = bandwidth_to_bandwidth(node.text(strip=True))
+
+            if data_key == "PhysicalAddressExtension":  # 46-bit
+                # TODO: Should we convert this to an int?
+                defaults["physical_address_extensions"] = node.text(strip=True) or None
+
+            if data_key == "ScalableSockets":  # 1S
+                defaults["scalability"] = node.text(strip=True) or None
+
+            if data_key == "PCIExpressRevision":  # 4.0
+                defaults["pci_express_revision"] = node.text(strip=True) or None
+
+            if data_key == "MicroprocessorPCIeRevision":
+                defaults["microprocessor_pcie_revision"] = node.text(strip=True) or None
+
+            if data_key == "ChipsetPCHPCIeRevision":
+                defaults["chipset_pch_pcie_revision"] = node.text(strip=True) or None
+
+            if data_key == "NumPCIExpressPorts":
+                defaults["max_amount_of_pci_express_lanes"] = int(node.text(strip=True)) or None
+
+            if data_key == "IntelThunderbolt4":
+                defaults["thunderbolt_4_support"] = bool_to_bool(node.text(strip=True))
+
+            for key, value in defaults.items():
+                if not value:
+                    continue
+                if not isinstance(value, str):
+                    continue
+                defaults[key] = value.replace("®", "")
+                defaults[key] = value.replace("™", "")
+                defaults[key] = value.replace("©", "")
+
+    return defaults
+
+
+def parse_html(processor_data: ProcessorData) -> None:
+    """Parse the HTML from Intel ARK."""
+    html: str = processor_data.html
+    ids: str = processor_data.ids
+    parser: LexborHTMLParser = LexborHTMLParser(html=html)
+    for _id in ids.split(","):
+        selector = f'[data-product-id="{_id}"]'
+        data: list[LexborNode] = parser.css(selector)
+        if not data:
+            logger.info(f"Could not find {_id}")
+            continue
+
+        add_to_database(data, _id=_id)
 
 
 class Command(BaseCommand):
@@ -73,9 +384,10 @@ class Command(BaseCommand):
     def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
         """Handle the command."""
         try:
-            get_csv()
+            for data in get_html():
+                parse_html(processor_data=data)
         except KeyboardInterrupt:
-            msg = "Got keyboard interrupt while creating eans"
+            msg = "Got keyboard interrupt while scraping Intel ARK"
             raise CommandError(msg) from KeyboardInterrupt
         except Exception as e:  # noqa: BLE001
             raise CommandError(e) from e

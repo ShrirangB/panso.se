@@ -4,17 +4,16 @@ from django.contrib import admin
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
-from rich import print
 
-from intel.management.commands.scrape_cpus import get_csv
+from intel.management.commands.scrape_cpus import get_html, parse_html
 from panso.api import api
 from panso.sitemaps import StaticViewSitemap
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    for row in get_csv():
-        print(row)
-    return JsonResponse({"status": "ok"})
+    for data in get_html():
+        parse_html(processor_data=data)
+    return JsonResponse({"status": "ok"}, status=200, safe=False)
 
 
 sitemaps: dict[str, type[StaticViewSitemap]] = {
