@@ -512,6 +512,150 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
             if data_key == "DemandBasedSwitching":
                 defaults["demand_based_switching"] = bool_to_bool(node.text(strip=True))
 
+            if data_key == "IdentityProtectionTechVersion":
+                defaults["identity_protection_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelQAssistSWAccel":
+                defaults["quick_assist_software_acceleration"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelTotalMemoryEncryption":
+                defaults["total_memory_encryption"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "AESTech":
+                defaults["aes_new_instructions"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "SoftwareGuardExtensions":
+                defaults["software_guard_extensions"] = node.text(strip=True) or None
+
+            if data_key == "TXT":
+                defaults["trusted_execution_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ExecuteDisable":
+                defaults["execute_disable_bit"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "DeviceProtectionTechBootGuardVersion":
+                defaults["boot_guard"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelPlatformFWResSupport":
+                defaults["platform_firmware_resilience"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "MaxEncSizeSupportIntelSGX":
+                defaults["maximum_enclave_size_for_sgx"] = bytes_to_bytes(node.text(strip=True))
+
+            if data_key == "IntelCryptoAcceleration":
+                defaults["crypto_acceleration"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "VTX":
+                defaults["virtualization_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "VTD":
+                defaults["virtualization_technology_for_directed_io"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "VProTechnologyOptions":
+                defaults["vpro_eligibility"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ThreatDetectTech":
+                defaults["threat_detection_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ActiveManagementTech":
+                defaults["active_management_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "StandardManageability":
+                defaults["standard_manageability"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "RemotePlatformErase":
+                defaults["remote_platform_erase"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "OneClickRecovery":
+                defaults["one_click_recovery"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelHardwareShield":
+                defaults["hardware_shield"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelControlFlowEnforcementTechnology":
+                defaults["control_flow_enforcement_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "IntelTotalMemoryEncryptionWithMultikey":
+                defaults["total_memory_encryption_multi_key"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "SecureKeyTechVersion":
+                defaults["secure_key"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "OSGuardTechVersion":
+                defaults["os_guard"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ModeBasedExecutionControlVersion":
+                defaults["mode_based_execute_control"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "StableImagePlatformProgramVersion":
+                defaults["stable_image_platform_program"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "VTRP":
+                defaults["virtualization_technology_with_redirect_protection"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ExtendedPageTables":
+                defaults["virtualization_technology_with_extended_page_tables"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ProcessorGraphicsModelId":
+                defaults["processor_graphics"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsMaxFreq":
+                defaults["graphics_max_dynamic_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "GraphicsOutput":
+                defaults["graphics_output"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsExecutionUnits":
+                defaults["execution_units"] = int(node.text(strip=True)) or None
+
+            if data_key == "GraphicsMaxResolutionHDMI":
+                defaults["max_resolution_hdmi"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsMaxResolutionDP":
+                defaults["max_resolution_dp"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsMaxResolutionIFP":
+                defaults["max_resolution_edp_integrated_flat_panel"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsDirectXSupport":
+                defaults["directx_support"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsOpenGLSupport":
+                defaults["opengl_support"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsOpenCLSupport":
+                defaults["opencl_support"] = node.text(strip=True) or None
+
+            if data_key == "MultiFormatCodecEngines":
+                defaults["multi_format_codec_engines"] = node.text(strip=True) or None
+
+            if data_key == "QuickSyncVideo":
+                defaults["intel_quick_sync_video"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "NumDisplaysSupported":
+                defaults["number_of_displays_supported"] = int(node.text(strip=True)) or None
+
+            if data_key == "GraphicsDeviceId":
+                defaults["device_id"] = node.text(strip=True) or None
+
+            if data_key == "GraphicsFreq":
+                defaults["graphics_base_frequency"] = hertz_an_hertz(node.text(strip=True))
+
+            if data_key == "Graphics4KSupportLevel":
+                defaults["_4k_support"] = node.text(strip=True) or None
+
+            if data_key == "CVTHD":
+                defaults["intel_clear_video_hd_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "InTru3D":
+                defaults["intel_in_tru_3d_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "ClearVideoTechnology":
+                defaults["intel_clear_video_technology"] = bool_to_bool(node.text(strip=True))
+
+            if data_key == "NetworkInterfaces":
+                defaults["network_interfaces"] = node.text(strip=True) or None
+
             for key, value in defaults.items():
                 if not value:
                     continue

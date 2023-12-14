@@ -652,8 +652,8 @@ class Processor(models.Model):
         null=True,
     )
     identity_protection_technology = models.BooleanField(
-        verbose_name="Identity Protection Technology",
-        help_text="Whether identity protection technology is supported.",
+        verbose_name="Intel Identity Protection Technology",
+        help_text="Intel Identity Protection Technology generates a unique PC number and a six-digit code for web authentication.",  # noqa: E501
         blank=True,
         null=True,
     )
@@ -829,32 +829,34 @@ class Processor(models.Model):
 
     # Security & Reliability
     vpro_eligibility = models.TextField(
-        verbose_name="vPro Eligibility",
-        help_text="The vPro eligibility of the processor.",
+        verbose_name="Intel vPro Eligibility",
+        help_text="Whether Intel vPro is supported.",
         blank=True,
         null=True,
     )
     quick_assist_software_acceleration = models.BooleanField(
-        verbose_name="Quick Assist Software Acceleration",
-        help_text="Whether quick assist software acceleration is supported.",
+        verbose_name="Intel QuickAssist Software Acceleration",
+        help_text="Offloads data compression and decompression, encrypt and decrypt, and public key data encryption tasks from the CPU cores",  # noqa: E501
         blank=True,
         null=True,
     )
     aes_new_instructions = models.BooleanField(
-        verbose_name="AES New Instructions",
-        help_text="Whether AES new instructions is supported.",
+        verbose_name="Intel AES New Instructions",
+        help_text="Whether Intel AES New Instructions is supported.",
         blank=True,
         null=True,
     )
     trusted_execution_technology = models.BooleanField(
-        verbose_name="Trusted Execution Technology",
-        help_text="Whether trusted execution technology is supported.",
+        verbose_name="Intel Trusted Execution Technology (Intel TXT, formerly known as LaGrande Technology)",
+        help_text="Whether Intel Trusted Execution Technology (Intel TXT, formerly known as LaGrande Technology) is supported.",  # noqa: E501
         blank=True,
         null=True,
     )
+    # TODO: Intel.com has "Newer processors such as 11th Generation Intel® Core™ Processors consider the Execute Disable Bit feature to be Legacy and thus it may not be listed in the processor specification page (ARK). However, it is still supported." # noqa: E501
+    #   Should we set this to True for all newer processors?
     execute_disable_bit = models.BooleanField(
         verbose_name="Execute Disable Bit",
-        help_text="Whether execute disable bit is supported.",
+        help_text="The Execute Disable Bit is a hardware-based security feature that can reduce exposure to viruses and malicious-code attacks, and prevent harmful software from executing and propagating on the server or network.",  # noqa: E501
         blank=True,
         null=True,
     )
@@ -865,14 +867,14 @@ class Processor(models.Model):
         null=True,
     )
     mode_based_execute_control = models.BooleanField(
-        verbose_name="Mode-based Execute Control (MBEC)",
-        help_text="Whether Mode-based Execute Control (MBEC) is supported.",
+        verbose_name="Mode-based Execute Control (MBE)",
+        help_text="Whether Mode-based Execute Control (MBE) is supported.",
         blank=True,
         null=True,
     )
     virtualization_technology = models.BooleanField(
-        verbose_name="Virtualization Technology (VT-x)",
-        help_text="Whether Virtualization Technology (VT-x) is supported.",
+        verbose_name="Intel Virtualization Technology (VT-x)",
+        help_text="Whether Intel Virtualization Technology (VT-x) is supported.",
         blank=True,
         null=True,
     )
@@ -895,20 +897,23 @@ class Processor(models.Model):
         null=True,
     )
     os_guard = models.BooleanField(
-        verbose_name="OS Guard",
-        help_text="Whether OS guard is supported.",
+        verbose_name="Intel OS Guard",
+        help_text="Whether Intel OS Guard is supported.",
         blank=True,
         null=True,
     )
-    software_guard_extensions = models.BooleanField(
-        verbose_name="Software Guard Extensions (SGX)",
-        help_text="Whether Software Guard Extensions (SGX) is supported.",
+    # TODO: Software Guard Extensions is "Yes with Intel® SPS" or "No"
+    #   Should this be a boolean and a separate field with what it supports?
+    #   Is it always with Intel SPS?
+    software_guard_extensions = models.TextField(
+        verbose_name="Intel Software Guard Extensions (Intel SGX)",
+        help_text="Whether Intel Software Guard Extensions (Intel SGX) is supported.",
         blank=True,
         null=True,
     )
     boot_guard = models.BooleanField(
-        verbose_name="Boot Guard",
-        help_text="Whether boot guard is supported.",
+        verbose_name="Intel Boot Guard",
+        help_text="Whether Intel Boot Guard is supported.",
         blank=True,
         null=True,
     )
@@ -924,69 +929,81 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    maximum_enclave_size_for_sgx = models.BooleanField(
-        verbose_name="Maximum Enclave Size for SGX",
-        help_text="Whether maximum enclave size for SGX is supported.",
+    maximum_enclave_size_for_sgx = models.IntegerField(
+        verbose_name="Default Maximum Enclave Page Cache (EPC) Size for Intel SGX",
+        help_text="How many bytes the Enclave Page Cache (EPC) can be.",
         blank=True,
         null=True,
     )
     crypto_acceleration = models.BooleanField(
-        verbose_name="Crypto Acceleration",
-        help_text="Whether crypto acceleration is supported.",
+        verbose_name="Intel Crypto Acceleration",
+        help_text="Whether Intel Crypto Acceleration is supported.",
         blank=True,
         null=True,
     )
     platform_firmware_resilience = models.BooleanField(
-        verbose_name="Platform Firmware Resilience",
-        help_text="Whether Platform Firmware Resilience is supported.",
+        verbose_name="Intel Platform Firmware Resilience Support (Intel PFR)",
+        help_text="Whether Intel Platform Firmware Resilience Support (Intel PFR) is supported.",
         blank=True,
         null=True,
     )
     total_memory_encryption = models.BooleanField(
-        verbose_name="Total Memory Encryption",
-        help_text="Whether total memory encryption is supported.",
+        verbose_name="Intel Total Memory Encryption (Intel TME)",
+        help_text="Whether Intel Total Memory Encryption (Intel TME) is supported.",
         blank=True,
         null=True,
     )
     control_flow_enforcement_technology = models.BooleanField(
-        verbose_name="Control-flow Enforcement Technology",
-        help_text="Whether Control-flow Enforcement Technology is supported.",
+        verbose_name="Intel Control-flow Enforcement Technology",
+        help_text="Whether Intel Control-flow Enforcement Technology is supported.",
         blank=True,
         null=True,
     )
     threat_detection_technology = models.BooleanField(
-        verbose_name="Threat Detection Technology (TDT)",
-        help_text="Whether Threat Detection Technology (TDT) is supported.",
+        verbose_name="Intel Threat Detection Technology (TDT)",
+        help_text="Whether Intel Threat Detection Technology (TDT) is supported.",
         blank=True,
         null=True,
     )
     active_management_technology = models.BooleanField(
-        verbose_name="Active Management Technology (AMT)",
-        help_text="Whether Active Management Technology (AMT) is supported.",
+        verbose_name="Intel Active Management Technology (AMT)",
+        help_text="Whether Intel Active Management Technology (AMT) is supported.",
+        blank=True,
+        null=True,
+    )
+    standard_manageability = models.BooleanField(
+        verbose_name="Intel Standard Manageability (ISM)",
+        help_text="Whether Intel Standard Manageability (ISM) is supported.",
         blank=True,
         null=True,
     )
     remote_platform_erase = models.BooleanField(
-        verbose_name="Remote Platform Erase (RPE)",
-        help_text="Whether Remote Platform Erase (RPE) is supported.",
+        verbose_name="Intel Remote Platform Erase (RPE)",
+        help_text="Whether Intel Remote Platform Erase (RPE) is supported.",
         blank=True,
         null=True,
     )
     one_click_recovery = models.BooleanField(
-        verbose_name="One-click Recovery",
-        help_text="Whether One-click Recovery is supported.",
+        verbose_name="Intel One-click Recovery",
+        help_text="Whether Intel One-click Recovery is supported.",
+        blank=True,
+        null=True,
+    )
+    hardware_shield = models.BooleanField(
+        verbose_name="Intel Hardware Shield Eligibility",
+        help_text="Whether Intel Hardware Shield is supported.",
         blank=True,
         null=True,
     )
     total_memory_encryption_multi_key = models.BooleanField(
-        verbose_name="Total Memory Encryption Multi-Key",
-        help_text="Whether Total Memory Encryption Multi-Key is supported.",
+        verbose_name="Intel Total Memory Encryption - Multi Key",
+        help_text="Whether Intel Total Memory Encryption - Multi Key is supported.",
         blank=True,
         null=True,
     )
     virtualization_technology_with_redirect_protection = models.BooleanField(
-        verbose_name="Virtualization Technology with Redirect Protection (VT-rp)",
-        help_text="Whether Virtualization Technology with Redirect Protection (VT-rp) is supported.",
+        verbose_name="Intel Virtualization Technology with Redirect Protection (VT-rp)",
+        help_text="Whether Intel Virtualization Technology with Redirect Protection (VT-rp) is supported.",
         blank=True,
         null=True,
     )
@@ -1086,7 +1103,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    _4k_support = models.BooleanField(
+    _4k_support = models.TextField(
         verbose_name="4K Support",
         help_text="Whether 4K is supported.",
         blank=True,
@@ -1116,6 +1133,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
+    # TODO: Should this be a float?
     directx_support = models.TextField(
         verbose_name="DirectX Support",
         help_text="The DirectX support the processor has.",
@@ -1187,6 +1205,14 @@ class Processor(models.Model):
     intel_on_demand_available_upgrades = models.TextField(
         verbose_name="Intel On Demand Available Upgrades",
         help_text="The Intel On Demand available upgrades the processor has.",
+        blank=True,
+        null=True,
+    )
+
+    # Networking Specifications
+    network_interfaces = models.TextField(
+        verbose_name="Network Interfaces",
+        help_text="The network interfaces the processor has.",
         blank=True,
         null=True,
     )
