@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
     from httpx import Response
+from django.db import transaction
 
 storage = hishel.FileStorage(ttl=60 * 60 * 24 * 7)  # 1 week
 err_console = Console(stderr=True)
@@ -47,7 +48,7 @@ def get_html() -> Generator[ProcessorData, Any, None]:
             yield processor_data
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def hertz_an_hertz(hz: str) -> int | None:  # noqa: PLR0911
     """Convert GHz, MHz, and KHz to Hz.
 
@@ -82,7 +83,7 @@ def hertz_an_hertz(hz: str) -> int | None:  # noqa: PLR0911
     return int(hz)
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def bytes_to_bytes(b: str) -> int | None:  # noqa: PLR0911
     """Convert MB, GB, and TB to bytes.
 
@@ -117,7 +118,7 @@ def bytes_to_bytes(b: str) -> int | None:  # noqa: PLR0911
     return int(b)
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def watt_to_watt(w: str) -> int | None:
     """Convert 11 W to 11.
 
@@ -135,7 +136,7 @@ def watt_to_watt(w: str) -> int | None:
     return int(float(w.replace("W", "")))
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def bool_to_bool(b: str) -> bool | None:
     """Convert Yes to True and No to False.
 
@@ -155,7 +156,7 @@ def bool_to_bool(b: str) -> bool | None:
     return None
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def bandwidth_to_bandwidth(b: str) -> int | None:
     """Convert 76.8 GB/s to 76800000000.
 
@@ -178,7 +179,7 @@ def bandwidth_to_bandwidth(b: str) -> int | None:
     return int(b)
 
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def float_to_float(f: str) -> float | None:
     """Convert 2.8 to 2.8.
 
@@ -195,6 +196,7 @@ def float_to_float(f: str) -> float | None:
     return float(f)
 
 
+@lru_cache(maxsize=1024)
 def bit_to_bit(b: str) -> int | None:
     """Convert 64-bit to 64.
 
@@ -211,6 +213,7 @@ def bit_to_bit(b: str) -> int | None:
     return int(b.replace("-bit", ""))
 
 
+@lru_cache(maxsize=1024)
 def temp_to_temp(t: str) -> float | None:
     """Convert 100 °C to 100.
 
@@ -227,6 +230,7 @@ def temp_to_temp(t: str) -> float | None:
     return float(t.replace("°C", ""))
 
 
+@lru_cache(maxsize=1024)
 def dollar_to_cents(d: str) -> int | None:
     """Convert $100 to 10000.
 
@@ -761,8 +765,44 @@ def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults[key] = value.replace("®", "")
                 defaults[key] = value.replace("™", "")
                 defaults[key] = value.replace("©", "")
-    print(defaults)
     return defaults
+
+
+def get_names(processor_data: ProcessorData) -> None:
+    """Get the names of the processors.
+
+    Args:
+        processor_data: The data about the processor.
+    """
+    # TODO: Merge this with parse_html()
+    html: str = processor_data.html
+    ids: str = processor_data.ids
+    parser: LexborHTMLParser = LexborHTMLParser(html=html)
+    for _id in track(sequence=ids.split(sep=","), description="Getting names..."):
+        print(f"Processing {_id}")
+        selector = f'[data-product-id="{_id}"]'
+        data: list[LexborNode] = parser.css(selector)
+        for child in data:
+            arkproductlink: LexborNode | None = child.css_first('[data-component="arkproductlink"]')
+            if not arkproductlink:
+                continue
+            name: str = arkproductlink.text(strip=True)
+            name = name.replace("®", "")
+            name = name.replace("™", "")
+            name = name.replace("©", "")
+            name = name.replace("Processor", "")
+            name = name.replace("  ", " ")
+            name = name.strip()
+
+            try:
+                with transaction.atomic():
+                    processor: Processor = Processor.objects.get(product_id=_id)
+                    processor.name = name
+                    processor.save()
+                    print(f"Updated {_id} with name {name}")
+            except Processor.DoesNotExist:
+                print(f"Could not find {_id}")
+                continue
 
 
 def parse_html(processor_data: ProcessorData) -> None:
@@ -770,15 +810,9 @@ def parse_html(processor_data: ProcessorData) -> None:
     html: str = processor_data.html
     ids: str = processor_data.ids
     parser: LexborHTMLParser = LexborHTMLParser(html=html)
-    old_processor_ids = Processor.objects.values_list("product_id", flat=True)
-    # Convert to a list so we can track it
-    old_processor_ids = list(old_processor_ids)
-
+    defaults: dict | None = None
+    processors_to_update: list[Processor] = []
     for _id in track(sequence=ids.split(sep=","), description="Parsing HTML..."):
-        if int(_id) in old_processor_ids:
-            print(f"Skipping {_id} because we already have it")
-            continue
-
         print(f"Processing {_id}")
         selector = f'[data-product-id="{_id}"]'
         data: list[LexborNode] = parser.css(selector)
@@ -790,15 +824,14 @@ def parse_html(processor_data: ProcessorData) -> None:
         if not defaults:
             print(f"Could not create defaults for {_id}")
             continue
+        processor = Processor(product_id=_id, **defaults)
+        processors_to_update.append(processor)
 
-        processor, created = Processor.objects.update_or_create(
-            product_id=_id,
-            defaults=defaults,
-        )
-        if created:
-            print(f"Created {processor}")
-        else:
-            print(f"Updated {processor}")
+    if defaults and processors_to_update:
+        with transaction.atomic():
+            Processor.objects.bulk_update(processors_to_update, fields=list(defaults.keys()))
+    else:
+        print("No processors to update")
 
 
 class Command(BaseCommand):

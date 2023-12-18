@@ -5,14 +5,14 @@ from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
 
-from intel.management.commands.scrape_cpus import get_html, parse_html
+from intel.management.commands.scrape_cpus import get_html, get_names
 from panso.api import api
 from panso.sitemaps import StaticViewSitemap
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
     for data in get_html():
-        parse_html(processor_data=data)
+        get_names(processor_data=data)
     return JsonResponse({"status": "ok"}, status=200, safe=False)
 
 
