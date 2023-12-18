@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -8,8 +10,8 @@ class ArkFilterData(models.Model):
     """The data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html."""
 
     json_data = models.JSONField(verbose_name="Intel ARK Filter Data")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     history = HistoricalRecords(
         table_name="ark_filter_data_history",
         excluded_fields=["created", "updated"],
@@ -18,6 +20,7 @@ class ArkFilterData(models.Model):
     class Meta:
         """Django metadata."""
 
+        ordering: typing.ClassVar[list[str]] = ["-created"]
         verbose_name: str = "Intel ARK Filter Data"
         verbose_name_plural: str = "Intel ARK Filter Data"
         db_table: str = "ark_filter_data"
@@ -25,7 +28,7 @@ class ArkFilterData(models.Model):
 
     def __str__(self: ArkFilterData) -> str:
         """Return the string representation of the model."""
-        return f"Intel ARK Filter Data ({self.created_at})"
+        return f"Intel ARK Filter Data ({self.created})"
 
 
 class Processor(models.Model):
@@ -44,8 +47,8 @@ class Processor(models.Model):
         null=True,
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     history = HistoricalRecords(
         table_name="ark_processors_history",
         excluded_fields=["created", "updated"],
@@ -102,13 +105,13 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    max_turbo_frequency = models.IntegerField(
+    max_turbo_frequency = models.BigIntegerField(
         verbose_name="Max Turbo Frequency",
         help_text="The maximum turbo frequency the processor can reach. In hertz.",
         blank=True,
         null=True,
     )
-    base_frequency = models.IntegerField(
+    base_frequency = models.BigIntegerField(
         verbose_name="Base Frequency",
         help_text="The base frequency the processor can reach. In hertz.",
         blank=True,
@@ -139,25 +142,25 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    turbo_boost_2_0_frequency = models.IntegerField(
+    turbo_boost_2_0_frequency = models.BigIntegerField(
         verbose_name="Turbo Boost 2.0 Frequency",
         help_text="The maximum turbo frequency the processor can reach. In hertz.",
         blank=True,
         null=True,
     )
-    turbo_boost_max_technology_3_0_frequency = models.IntegerField(
+    turbo_boost_max_technology_3_0_frequency = models.BigIntegerField(
         verbose_name="Turbo Boost Max Technology 3.0 Frequency",
         help_text="The maximum turbo frequency the processor can reach. In hertz.",
         blank=True,
         null=True,
     )
-    single_performance_core_turbo_frequency = models.IntegerField(
+    single_performance_core_turbo_frequency = models.BigIntegerField(
         verbose_name="Single P-core Turbo Frequency",
         help_text="How many hertz a single P-core can reach.",
         blank=True,
         null=True,
     )
-    single_efficiency_core_turbo_frequency = models.IntegerField(
+    single_efficiency_core_turbo_frequency = models.BigIntegerField(
         verbose_name="Single E-core Turbo Frequency",
         help_text="How many hertz a single E-core can reach.",
         blank=True,
@@ -170,13 +173,13 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    bus_speed = models.IntegerField(
+    bus_speed = models.TextField(
         verbose_name="Bus Speed",
-        help_text="The bus speed of the processor. In hertz.",
+        help_text="The bus speed of the processor. In giga-transfers per second.",
         blank=True,
         null=True,
     )
-    configurable_tdp_down_frequency = models.IntegerField(
+    configurable_tdp_down_frequency = models.BigIntegerField(
         verbose_name="Configurable TDP-down Frequency",
         help_text="The configurable TDP-down frequency of the processor. In hertz.",
         blank=True,
@@ -188,14 +191,14 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    thermal_velocity_boost_frequency = models.IntegerField(
+    thermal_velocity_boost_frequency = models.BigIntegerField(
         verbose_name="Thermal Velocity Boost Frequency",
         help_text="The thermal velocity boost frequency of the processor. In hertz.",
         blank=True,
         null=True,
     )
-    # TODO: Should this be transfers per second instead?
-    upi_speed = models.IntegerField(
+    # TODO: Should this be converted to a BigIntegerField?
+    upi_speed = models.TextField(
         verbose_name="UPI Speed",
         help_text="The UPI speed of the processor. In giga-transfers per second.",
         blank=True,
@@ -231,13 +234,13 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    p_core_base_frequency = models.IntegerField(
+    p_core_base_frequency = models.BigIntegerField(
         verbose_name="P-Core Base Frequency",
         help_text="The base frequency of the P-Core. In hertz.",
         blank=True,
         null=True,
     )
-    e_core_base_frequency = models.IntegerField(
+    e_core_base_frequency = models.BigIntegerField(
         verbose_name="E-Core Base Frequency",
         help_text="The base frequency of the E-Core. In hertz.",
         blank=True,
@@ -357,7 +360,7 @@ class Processor(models.Model):
     )
 
     # Memory Specifications
-    max_memory_size = models.TextField(
+    max_memory_size = models.BigIntegerField(
         verbose_name="Max Memory Size",
         help_text="The maximum memory size the processor supports.",
         blank=True,
@@ -369,7 +372,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    max_memory_speed = models.IntegerField(
+    max_memory_speed = models.BigIntegerField(
         verbose_name="Max Memory Speed",
         help_text="The maximum memory speed the processor supports. In hertz.",
         blank=True,
@@ -393,7 +396,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    max_memory_bandwidth = models.IntegerField(
+    max_memory_bandwidth = models.BigIntegerField(
         verbose_name="Max Memory Bandwidth",
         help_text="The maximum memory bandwidth the processor supports. In bytes per second.",
         blank=True,
@@ -469,9 +472,17 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    t_case = models.IntegerField(
+    digital_thermal_sensor_temperature_max = models.FloatField(
+        verbose_name="Digital Thermal Sensor (DTS) max temperature",
+        help_text="Digital Thermal Sensor (DTS) max temperature. In celsius.",
+        blank=True,
+        null=True,
+    )
+    t_case = models.DecimalField(
         verbose_name="T Case",
         help_text="The maximum temperature allowed at the processor Integrated Heat Spreader (IHS).",
+        max_digits=5,
+        decimal_places=2,
         blank=True,
         null=True,
     )
@@ -487,9 +498,11 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    t_junction = models.IntegerField(
+    t_junction = models.DecimalField(
         verbose_name="T Junction",
         help_text="The highest temperature the processor can reach without damaging it. In celsius.",
+        max_digits=5,
+        decimal_places=2,
         blank=True,
         null=True,
     )
@@ -499,21 +512,27 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    thermal_velocity_boost_temperature = models.IntegerField(
+    thermal_velocity_boost_temperature = models.DecimalField(
         verbose_name="Thermal Velocity Boost Temperature",
         help_text="The thermal velocity boost temperature of the processor. In celsius.",
+        max_digits=5,
+        decimal_places=2,
         blank=True,
         null=True,
     )
-    operating_temperature_max = models.IntegerField(
+    operating_temperature_max = models.DecimalField(
         verbose_name="Operating Temperature Max",
         help_text="The maximum operating temperature of the processor. In celsius.",
+        max_digits=5,
+        decimal_places=2,
         blank=True,
         null=True,
     )
-    operating_temperature_min = models.IntegerField(
+    operating_temperature_min = models.DecimalField(
         verbose_name="Operating Temperature Min",
         help_text="The minimum operating temperature of the processor. In celsius.",
+        max_digits=5,
+        decimal_places=2,
         blank=True,
         null=True,
     )
@@ -537,6 +556,13 @@ class Processor(models.Model):
     )
 
     # Advanced Technologies
+    deep_learning_boost_version = models.TextField(
+        verbose_name="Intel Deep Learning Boost (Intel DL Boost) version",
+        help_text="The Intel Deep Learning Boost (Intel DL Boost) version the processor supports.",
+        blank=True,
+        null=True,
+    )
+
     optane_supported = models.BooleanField(
         verbose_name="Intel Optane supported",
         help_text="Whether Intel Optane is supported.",
@@ -929,7 +955,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    maximum_enclave_size_for_sgx = models.IntegerField(
+    maximum_enclave_size_for_sgx = models.BigIntegerField(
         verbose_name="Default Maximum Enclave Page Cache (EPC) Size for Intel SGX",
         help_text="How many bytes the Enclave Page Cache (EPC) can be.",
         blank=True,
@@ -1079,13 +1105,13 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    graphics_base_frequency = models.IntegerField(
+    graphics_base_frequency = models.BigIntegerField(
         verbose_name="Graphics Base Frequency",
         help_text="The graphics base frequency the processor has. In hertz.",
         blank=True,
         null=True,
     )
-    graphics_max_dynamic_frequency = models.IntegerField(
+    graphics_max_dynamic_frequency = models.BigIntegerField(
         verbose_name="Graphics Max Dynamic Frequency",
         help_text="The graphics max dynamic frequency the processor has. In hertz.",
         blank=True,
@@ -1217,6 +1243,15 @@ class Processor(models.Model):
         null=True,
     )
 
+    class Meta:
+        """Meta options for the Processor model."""
+
+        ordering: typing.ClassVar[list[str]] = ["-created"]
+        verbose_name: str = "Intel processor"
+        verbose_name_plural: str = "Intel processors"
+        db_table: str = "intel_processors"
+        db_table_comment: str = "Intel processors and their specifications"
+
     def __str__(self: Processor) -> str:
         """Return CPU name."""
-        return f"{self.name}"
+        return f"{self.pk} - {self.name}"

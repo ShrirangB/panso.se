@@ -1,26 +1,30 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
-from datetime import datetime
 from functools import lru_cache
 from itertools import batched
 from typing import TYPE_CHECKING, Any
 
+import dateparser
 import hishel
 from django.core.management.base import BaseCommand, CommandError
-from loguru import logger
+from rich import print
+from rich.console import Console
+from rich.progress import track
 from selectolax.lexbor import LexborHTMLParser, LexborNode
 
-from intel.management.commands.product_ids import product_ids
+from intel.management.commands._product_ids import product_ids
+from intel.models import Processor
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+    from datetime import datetime
 
     from httpx import Response
 
-storage = hishel.FileStorage(
-    ttl=60 * 60 * 24 * 7,  # 1 week
-)
+storage = hishel.FileStorage(ttl=60 * 60 * 24 * 7)  # 1 week
+err_console = Console(stderr=True)
 
 
 @dataclass(frozen=True)
@@ -33,13 +37,12 @@ class ProcessorData:
 
 def get_html() -> Generator[ProcessorData, Any, None]:
     """Get the HTML from Intel ARK so we can parse it."""
-    # Split the URLs into batches of 100
     for batch in list(batched(product_ids, 100)):
         ids: str = ",".join(batch)
         url: str = f"https://www.intel.com/content/www/us/en/products/compare.html?productIds={ids}"
-        logger.info(f"Visiting {url}")
+        print(f"Visiting {url}")
         with hishel.CacheClient(storage=storage) as client:
-            response: Response = client.get(url)
+            response: Response = client.get(url=url, timeout=60)
             processor_data: ProcessorData = ProcessorData(html=response.text, ids=ids)
             yield processor_data
 
@@ -192,67 +195,145 @@ def float_to_float(f: str) -> float | None:
     return float(f)
 
 
-def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: PLR0912, C901, PLR0915
-    """Add the processor to the database."""
+def bit_to_bit(b: str) -> int | None:
+    """Convert 64-bit to 64.
+
+    Args:
+        b (str): The value to convert.
+
+    Returns:
+        int: The value in int.
+    """
+    if not b:
+        return None
+    if b.isdigit():
+        return int(b)
+    return int(b.replace("-bit", ""))
+
+
+def temp_to_temp(t: str) -> float | None:
+    """Convert 100 °C to 100.
+
+    Args:
+        t (str): The value to convert.
+
+    Returns:
+        float: The value in float.
+    """
+    if not t:
+        return None
+    if t.isdigit():
+        return float(t)
+    return float(t.replace("°C", ""))
+
+
+def dollar_to_cents(d: str) -> int | None:
+    """Convert $100 to 10000.
+
+    Args:
+        d (str): The value to convert.
+
+    Returns:
+        int: The value in int.
+    """
+    if not d:
+        return None
+    if d.isdigit():
+        return int(d)
+    return int(float(d.replace("$", "")) * 100)
+
+
+def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: PLR0912, C901, PLR0915
+    """Create the defaults for the processor.
+
+    Args:
+        data (list[LexborNode]): The data to parse.
+        _id (str): The ID of the processor.
+
+    Returns:
+        dict: The defaults for the processor that we can use to create the processor object.
+    """
     node: LexborNode
     defaults: dict | None = {}
     for node in data:
         node_attributes: dict[str, str | None] = node.attributes
         if not node_attributes:
-            logger.info(f"Could not find attributes for {_id}")
+            err_console.print(f"Could not find attributes for {_id}")
             return None
+
+        if "class" in node_attributes:
+            class_value: str | None = node_attributes["class"]
+            price_regex = r"\$\d+.\d+"
+            if class_value and class_value.startswith("$") and re.match(pattern=price_regex, string=class_value):
+                price: int | None = dollar_to_cents(d=class_value)
+                defaults["recommended_customer_price"] = price
+
         if "data-key" in node_attributes:
+            # TODO: Add OnDemandAvailableUpgrade
+            # TODO: We should check if we are missing any fields.
+
             data_key: str | None = node_attributes["data-key"]
             if not data_key:
-                logger.info(f"Could not find data-key for {_id}")
+                err_console.print(f"Could not find data-key for {_id}")
                 return None
 
-            if data_key == "ProductGroup":  # Intel® Xeon® D Processor
+            # Product Collection - Intel® Xeon® D Processor
+            if data_key == "ProductGroup":
                 defaults["product_collection"] = node.text(strip=True) or None
 
-            if data_key == "MarketSegment":  # Server
+            # Vertical Segment - Server
+            if data_key == "MarketSegment":
                 defaults["vertical_segment"] = node.text(strip=True) or None
 
-            if data_key == "ProcessorNumber":  # D-2738
+            # Processor Number - D-2738
+            if data_key == "ProcessorNumber":
                 defaults["processor_number"] = node.text(strip=True) or None
 
-            if data_key == "Lithography":  # 10 nm
-                defaults["Lithography"] = node.text(strip=True) or None
+            # Lithography - 14 nm
+            if data_key == "Lithography":
+                defaults["lithography"] = node.text(strip=True) or None
 
-            if data_key == "CertifiedUseConditions":  # Automotive, Base Transceiver Station
+            # Use Conditions - Automotive, Base Transceiver Station
+            if data_key == "CertifiedUseConditions":
                 defaults["use_conditions"] = node.text(strip=True) or None
 
-            # TODO: Add l3_cache
-            # TODO: Add recommended_customer_price. We should check if the value starts with "$" and then remove it
-            if data_key == "CoreCount":  # 8
+            # Total Cores - 8
+            if data_key == "CoreCount":
                 defaults["total_cores"] = int(node.text(strip=True)) or None
 
-            if data_key == "PerfCoreCount":  # 8
+            # # of Performance-cores - 8
+            if data_key == "PerfCoreCount":
                 defaults["performance_cores"] = int(node.text(strip=True)) or None
 
-            if data_key == "ThreadCount":  # 16
+            # Total Threads - 16
+            if data_key == "ThreadCount":
                 defaults["total_threads"] = int(node.text(strip=True)) or None
 
-            if data_key == "ClockSpeedMax":  # 2.8 GHz -> 2800000000
+            # of Efficient-cores - 8
+            if data_key == "EffCoreCount":
+                defaults["efficiency_cores"] = int(node.text(strip=True)) or None
+
+            # Max Turbo Frequency - 2.8 GHz (Converts to 2800000000)
+            if data_key == "ClockSpeedMax":
                 defaults["max_turbo_frequency"] = hertz_an_hertz(node.text(strip=True))
 
-            if data_key == "ClockSpeed":  # 2.2 GHz -> 2200000000
+            # Processor Base Frequency - 2.2 GHz (Converts to 2200000000)
+            if data_key == "ClockSpeed":
                 defaults["base_frequency"] = hertz_an_hertz(node.text(strip=True))
 
-            if data_key == "Cache":  # 16.5 MB
+            # Cache - 16.5 MB
+            if data_key == "Cache":
                 defaults["cache"] = node.text(strip=True) or None
 
             if data_key == "UltraPathInterconnectLinks":  # 0
                 defaults["upi_links"] = int(node.text(strip=True)) or None
 
-            if data_key == "MaxTDP":  # 65 W -> 65
+            # TDP - 65 W (Converts to 65)
+            if data_key == "MaxTDP":
                 defaults["tdp"] = watt_to_watt(node.text(strip=True))
 
-            if data_key == "DeepLearningBoostVersion":  # Yes -> True
-                defaults["dl_boost_version"] = bool_to_bool(node.text(strip=True))
-
-            if data_key == "EffCoreCount":  # 8
-                defaults["efficiency_cores"] = int(node.text(strip=True)) or None
+            if data_key == "Bus":
+                defaults["bus_speed"] = node.text(strip=True) or None
 
             if data_key == "TurboBoostMaxTechMaxFreq":  # 4.8 GHz -> 4800000000
                 defaults["turbo_boost_max_technology_3_0_frequency"] = hertz_an_hertz(node.text(strip=True))
@@ -267,7 +348,7 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults["processor_base_power"] = watt_to_watt(node.text(strip=True))
 
             if data_key == "MaxTurboPower":  # 64 W -> 64
-                defaults["max_turbo_power"] = watt_to_watt(node.text(strip=True))
+                defaults["max_turbo_frequency"] = watt_to_watt(node.text(strip=True))
 
             if data_key == "AssuredPowerMin":  # 15 W -> 15
                 defaults["min_assured_power"] = watt_to_watt(node.text(strip=True))
@@ -316,9 +397,15 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
             if data_key == "ESUDate":  # 6/30/2022 12:00:00 AM -> 2022-06-30
                 date_string: str | None = node.text(strip=True) or None
                 if date_string:
-                    datetime_object: datetime = datetime.strptime(date_string, "%m/%d/%Y %I:%M:%S %p").astimezone()
-                    date_part = datetime_object.date()
-                    defaults["end_of_servicing_updates_date"] = date_part
+                    parsed_date: datetime | None = dateparser.parse(
+                        date_string=date_string,
+                        languages=["en"],
+                        settings={"PREFER_DAY_OF_MONTH": "first"},
+                    )
+                    if parsed_date:
+                        defaults["end_of_servicing_updates_date"] = parsed_date
+                    else:
+                        defaults["end_of_servicing_updates_date"] = None
                 else:
                     defaults["end_of_servicing_updates_date"] = None
 
@@ -326,6 +413,7 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults["max_memory_size"] = bytes_to_bytes(node.text(strip=True))
 
             if data_key == "MemoryTypes":  # DDR4
+                # TODO: Don't remove newlines
                 defaults["memory_types"] = node.text(strip=True) or None
 
             if data_key == "MemoryMaxSpeedMhz":  # 2933 MHz -> 2933000000
@@ -345,7 +433,7 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
 
             if data_key == "PhysicalAddressExtension":  # 46-bit
                 # TODO: Should we convert this to an int?
-                defaults["physical_address_extensions"] = node.text(strip=True) or None
+                defaults["physical_address_extensions"] = bit_to_bit(node.text(strip=True))
 
             if data_key == "ScalableSockets":  # 1S
                 defaults["scalability"] = node.text(strip=True) or None
@@ -401,26 +489,32 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
             if data_key == "SocketsSupported":
                 defaults["sockets_supported"] = node.text(strip=True) or None
 
+            if data_key == "PackageCarrier":
+                defaults["package_carrier"] = node.text(strip=True) or None
+
+            if data_key == "DigitalThermalSensorTemperatureMax":
+                defaults["digital_thermal_sensor_temperature_max"] = temp_to_temp(node.text(strip=True))
+
             if data_key == "PackageSize":
                 defaults["package_size"] = node.text(strip=True) or None
 
             if data_key == "MaxCPUs":
                 defaults["max_cpu_configuration"] = int(node.text(strip=True)) or None
 
-            if data_key == "OperatingTemperature":
+            if data_key == "OperatingTemperature":  # -40 to 85
                 defaults["operating_temperature_range"] = node.text(strip=True) or None
 
             if data_key == "OperatingTemperatureMax":
-                defaults["operating_temperature_max"] = int(node.text(strip=True)) or None
+                defaults["operating_temperature_max"] = temp_to_temp(node.text(strip=True))
 
             if data_key == "OperatingTemperatureMin":
-                defaults["operating_temperature_min"] = int(node.text(strip=True)) or None
+                defaults["operating_temperature_min"] = temp_to_temp(node.text(strip=True))
 
             if data_key == "ThermalSolutionSpecification":
                 defaults["thermal_solution_specification"] = node.text(strip=True) or None
 
             if data_key == "TCase":
-                defaults["t_case"] = node.text(strip=True) or None
+                defaults["t_case"] = temp_to_temp(node.text(strip=True))
 
             if data_key == "ResourceDirectorTechVersion":
                 defaults["resource_director_technology"] = bool_to_bool(node.text(strip=True))
@@ -482,8 +576,9 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
             if data_key == "MipiSoundwireVersion":
                 defaults["mipi_soundwire_version"] = float_to_float(node.text(strip=True))
 
+            # Intel® Deep Learning Boost (Intel® DL Boost) on CPU - Yes (Converts to True)
             if data_key == "DeepLearningBoostVersion":
-                defaults["deep_learning_boost"] = bool_to_bool(node.text(strip=True))
+                defaults["deep_learning_boost_version"] = node.text(strip=True) or None
 
             if data_key == "AdaptixTechVersion":
                 defaults["adaptix_technology"] = bool_to_bool(node.text(strip=True))
@@ -540,7 +635,9 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults["platform_firmware_resilience"] = bool_to_bool(node.text(strip=True))
 
             if data_key == "MaxEncSizeSupportIntelSGX":
-                defaults["maximum_enclave_size_for_sgx"] = bytes_to_bytes(node.text(strip=True))
+                # TODO: For some reason this is bigger than 2^32
+                # defaults["maximum_enclave_size_for_sgx"] = bytes_to_bytes(node.text(strip=True))
+                pass
 
             if data_key == "IntelCryptoAcceleration":
                 defaults["crypto_acceleration"] = bool_to_bool(node.text(strip=True))
@@ -664,7 +761,7 @@ def add_to_database(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults[key] = value.replace("®", "")
                 defaults[key] = value.replace("™", "")
                 defaults[key] = value.replace("©", "")
-
+    print(defaults)
     return defaults
 
 
@@ -673,14 +770,35 @@ def parse_html(processor_data: ProcessorData) -> None:
     html: str = processor_data.html
     ids: str = processor_data.ids
     parser: LexborHTMLParser = LexborHTMLParser(html=html)
-    for _id in ids.split(","):
+    old_processor_ids = Processor.objects.values_list("product_id", flat=True)
+    # Convert to a list so we can track it
+    old_processor_ids = list(old_processor_ids)
+
+    for _id in track(sequence=ids.split(sep=","), description="Parsing HTML..."):
+        if int(_id) in old_processor_ids:
+            print(f"Skipping {_id} because we already have it")
+            continue
+
+        print(f"Processing {_id}")
         selector = f'[data-product-id="{_id}"]'
         data: list[LexborNode] = parser.css(selector)
         if not data:
-            logger.info(f"Could not find {_id}")
+            print(f"Could not find {_id}")
             continue
 
-        add_to_database(data, _id=_id)
+        defaults: dict | None = create_defaults(data=data, _id=_id)
+        if not defaults:
+            print(f"Could not create defaults for {_id}")
+            continue
+
+        processor, created = Processor.objects.update_or_create(
+            product_id=_id,
+            defaults=defaults,
+        )
+        if created:
+            print(f"Created {processor}")
+        else:
+            print(f"Updated {processor}")
 
 
 class Command(BaseCommand):

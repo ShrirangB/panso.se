@@ -6,7 +6,7 @@ from pathlib import Path
 import sentry_sdk
 from dotenv import find_dotenv, load_dotenv
 
-load_dotenv(find_dotenv(), verbose=True)
+load_dotenv(dotenv_path=find_dotenv(), verbose=True)
 
 # Run Django in debug mode
 DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
@@ -41,7 +41,7 @@ TIME_ZONE = "Europe/Stockholm"
 USE_TZ = True
 
 # Don't use Django's translation system
-# TODO: We should probably make the site available in other languages
+# TODO: We should probably make the site available in Swedish at some point.
 USE_I18N = False
 
 # Decides which translation is served to all users.
