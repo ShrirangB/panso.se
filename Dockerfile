@@ -20,7 +20,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies and create requirements.txt
-RUN poetry self add poetry-plugin-export && poetry export --format=requirements.txt --output=requirements.txt --only=main
+RUN poetry self add poetry-plugin-export && poetry export --format=requirements.txt --output=requirements.txt --only=main --without-hashes
 
 # Stage 2: Install dependencies and run the Django application
 FROM python:3.12-slim AS runner
