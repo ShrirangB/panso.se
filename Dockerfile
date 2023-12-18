@@ -4,6 +4,7 @@ FROM python:3.12-slim AS builder
 # Set environment variables for Python
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PATH="${PATH}:/root/.local/bin"
 
 # Install system dependencies
 RUN apt-get update && \
@@ -19,7 +20,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies and create requirements.txt
-RUN poetry export --format=requirements.txt --output=requirements.txt --only=main
+RUN poetry self add poetry-plugin-export && poetry export --format=requirements.txt --output=requirements.txt --only=main
 
 # Stage 2: Install dependencies and run the Django application
 FROM python:3.12-slim AS runner
