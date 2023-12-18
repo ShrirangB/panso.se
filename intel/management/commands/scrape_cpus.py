@@ -768,20 +768,31 @@ def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
     return defaults
 
 
-def get_names(processor_data: ProcessorData) -> None:
-    """Get the names of the processors.
+def process_html(processor_data: ProcessorData) -> None:
+    """Process the HTML from Intel ARK.
 
     Args:
         processor_data: The data about the processor.
     """
-    # TODO: Merge this with parse_html()
     html: str = processor_data.html
     ids: str = processor_data.ids
     parser: LexborHTMLParser = LexborHTMLParser(html=html)
-    for _id in track(sequence=ids.split(sep=","), description="Getting names..."):
+    defaults: dict | None = None
+    processors_to_update: list[Processor] = []
+    for _id in track(sequence=ids.split(sep=","), description="Processing HTML..."):
         print(f"Processing {_id}")
         selector = f'[data-product-id="{_id}"]'
         data: list[LexborNode] = parser.css(selector)
+        if not data:
+            print(f"Could not find {_id}")
+            continue
+
+        defaults: dict | None = create_defaults(data=data, _id=_id)
+        if not defaults:
+            print(f"Could not create defaults for {_id}")
+            continue
+
+        # Get the names of the processors
         for child in data:
             arkproductlink: LexborNode | None = child.css_first('[data-component="arkproductlink"]')
             if not arkproductlink:
@@ -804,26 +815,6 @@ def get_names(processor_data: ProcessorData) -> None:
                 print(f"Could not find {_id}")
                 continue
 
-
-def parse_html(processor_data: ProcessorData) -> None:
-    """Parse the HTML from Intel ARK."""
-    html: str = processor_data.html
-    ids: str = processor_data.ids
-    parser: LexborHTMLParser = LexborHTMLParser(html=html)
-    defaults: dict | None = None
-    processors_to_update: list[Processor] = []
-    for _id in track(sequence=ids.split(sep=","), description="Parsing HTML..."):
-        print(f"Processing {_id}")
-        selector = f'[data-product-id="{_id}"]'
-        data: list[LexborNode] = parser.css(selector)
-        if not data:
-            print(f"Could not find {_id}")
-            continue
-
-        defaults: dict | None = create_defaults(data=data, _id=_id)
-        if not defaults:
-            print(f"Could not create defaults for {_id}")
-            continue
         processor = Processor(product_id=_id, **defaults)
         processors_to_update.append(processor)
 
@@ -844,7 +835,7 @@ class Command(BaseCommand):
         """Handle the command."""
         try:
             for data in get_html():
-                parse_html(processor_data=data)
+                process_html(processor_data=data)
         except KeyboardInterrupt:
             msg = "Got keyboard interrupt while scraping Intel ARK"
             raise CommandError(msg) from KeyboardInterrupt
