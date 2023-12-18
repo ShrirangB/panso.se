@@ -65,4 +65,6 @@ convention = "google"
   "ARG",     # Allow unused arguments
   "FBT",     # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
   "PLR2004", # Allow "assert response.status_code == 200" when testing views
+  "D102",    # Allow missing docstrings in tests
+  "PLR6301", # Checks for the presence of unused self parameter in methods definitions.
 ]

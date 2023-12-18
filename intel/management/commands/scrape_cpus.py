@@ -68,19 +68,25 @@ def hertz_an_hertz(hz: str) -> int | None:  # noqa: PLR0911
     Returns:
         int: The value in Hz.
     """
-    if not hz:
-        return None
-    if hz.isdigit():
+    try:
+        if not hz:
+            return None
+        if hz.isdigit():
+            return int(hz)
+        if "THz" in hz:
+            return int(float(hz.replace("THz", "")) * 1_000_000_000_000)
+        if "GHz" in hz:
+            return int(float(hz.replace("GHz", "")) * 1_000_000_000)
+        if "MHz" in hz:
+            return int(float(hz.replace("MHz", "")) * 1_000_000)
+        if "KHz" in hz:
+            return int(float(hz.replace("KHz", "")) * 1_000)
+        if "Hz" in hz:
+            return int(float(hz.replace("Hz", "")))
         return int(hz)
-    if "THz" in hz:
-        return int(float(hz.replace("THz", "")) * 1_000_000_000_000)
-    if "GHz" in hz:
-        return int(float(hz.replace("GHz", "")) * 1_000_000_000)
-    if "MHz" in hz:
-        return int(float(hz.replace("MHz", "")) * 1_000_000)
-    if "KHz" in hz:
-        return int(float(hz.replace("KHz", "")) * 1_000)
-    return int(hz)
+    except ValueError:
+        err_console.print(f"Could not convert '{hz}' to Hz")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -103,19 +109,25 @@ def bytes_to_bytes(b: str) -> int | None:  # noqa: PLR0911
     Returns:
         int: The value in bytes.
     """
-    if not b:
-        return None
-    if b.isdigit():
+    try:
+        if not b:
+            return None
+        if b.isdigit():
+            return int(b)
+        if "TB" in b:
+            return int(float(b.replace("TB", "")) * 1_000_000_000_000)
+        if "GB" in b:
+            return int(float(b.replace("GB", "")) * 1_000_000_000)
+        if "MB" in b:
+            return int(float(b.replace("MB", "")) * 1_000_000)
+        if "KB" in b:
+            return int(float(b.replace("KB", "")) * 1_000)
+        if "B" in b:
+            return int(float(b.replace("B", "")))
         return int(b)
-    if "TB" in b:
-        return int(float(b.replace("TB", "")) * 1_000_000_000_000)
-    if "GB" in b:
-        return int(float(b.replace("GB", "")) * 1_000_000_000)
-    if "MB" in b:
-        return int(float(b.replace("MB", "")) * 1_000_000)
-    if "KB" in b:
-        return int(float(b.replace("KB", "")) * 1_000)
-    return int(b)
+    except ValueError:
+        err_console.print(f"Could not convert '{b}' to bytes")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -128,12 +140,19 @@ def watt_to_watt(w: str) -> int | None:
     Returns:
         int: The value in W.
     """
-    if not w:
-        return None
-    if w.isdigit():
+    try:
+        if not w:
+            return None
+        if w.isdigit():
+            return int(w)
+        if "kW" in w:
+            return int(float(w.replace("kW", "")) * 1_000)
+        if "W" in w:
+            return int(float(w.replace("W", "")))
         return int(w)
-
-    return int(float(w.replace("W", "")))
+    except ValueError:
+        err_console.print(f"Could not convert '{w}' to W")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -146,18 +165,20 @@ def bool_to_bool(b: str) -> bool | None:
     Returns:
         bool: The value in bool.
     """
-    if not b:
+    try:
+        if not b:
+            return None
+        if b == "Yes":
+            return True
+        if b == "No":
+            return False
+    except ValueError:
+        err_console.print(f"Could not convert '{b}' to bool")
         return None
-
-    if b == "Yes":
-        return True
-    if b == "No":
-        return False
-    return None
 
 
 @lru_cache(maxsize=1024)
-def bandwidth_to_bandwidth(b: str) -> int | None:
+def bandwidth_to_bandwidth(b: str) -> int | None:  # noqa: PLR0911
     """Convert 76.8 GB/s to 76800000000.
 
     Args:
@@ -166,17 +187,25 @@ def bandwidth_to_bandwidth(b: str) -> int | None:
     Returns:
         int: The value in bytes.
     """
-    if not b:
-        return None
-    if b.isdigit():
+    try:
+        if not b:
+            return None
+        if b.isdigit():
+            return int(b)
+        if "TB/s" in b:
+            return int(float(b.replace("TB/s", "")) * 1_000_000_000_000)
+        if "GB/s" in b:
+            return int(float(b.replace("GB/s", "")) * 1_000_000_000)
+        if "MB/s" in b:
+            return int(float(b.replace("MB/s", "")) * 1_000_000)
+        if "KB/s" in b:
+            return int(float(b.replace("KB/s", "")) * 1_000)
+        if "B/s" in b:
+            return int(float(b.replace("B/s", "")))
         return int(b)
-    if "GB/s" in b:
-        return int(float(b.replace("GB/s", "")) * 1_000_000_000)
-    if "MB/s" in b:
-        return int(float(b.replace("MB/s", "")) * 1_000_000)
-    if "KB/s" in b:
-        return int(float(b.replace("KB/s", "")) * 1_000)
-    return int(b)
+    except ValueError:
+        err_console.print(f"Could not convert '{b}' to bytes")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -189,11 +218,15 @@ def float_to_float(f: str) -> float | None:
     Returns:
         float: The value in float.
     """
-    if not f:
-        return None
-    if f.isdigit():
+    try:
+        if not f:
+            return None
+        if f.isdigit():
+            return float(f)
         return float(f)
-    return float(f)
+    except ValueError:
+        err_console.print(f"Could not convert '{f}' to float")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -206,15 +239,19 @@ def bit_to_bit(b: str) -> int | None:
     Returns:
         int: The value in int.
     """
-    if not b:
+    try:
+        if not b:
+            return None
+        if b.isdigit():
+            return int(b)
+        return int(b.replace("-bit", ""))
+    except ValueError:
+        err_console.print(f"Could not convert '{b}' to int (bit)")
         return None
-    if b.isdigit():
-        return int(b)
-    return int(b.replace("-bit", ""))
 
 
 @lru_cache(maxsize=1024)
-def temp_to_temp(t: str) -> float | None:
+def temp_to_temp(t: str) -> float | None:  # noqa: PLR0911
     """Convert 100 °C to 100.
 
     Args:
@@ -223,11 +260,29 @@ def temp_to_temp(t: str) -> float | None:
     Returns:
         float: The value in float.
     """
-    if not t:
-        return None
-    if t.isdigit():
+    try:
+        if not t:
+            return None
+        if t.isdigit():
+            return float(t)
+        if "°C" in t:
+            temp = float(t.replace("°C", ""))
+            print(f"Temp in C: {t} -> {temp} Celsius")
+            return temp
+        if "°F" in t:
+            temp: float = (float(t.replace("°F", "")) - 32) * 5.0 / 9.0
+            print(f"Temp in F: {t} -> {temp} Celsius")
+            return temp
+        if "K" in t:
+            temp = float(t.replace("K", "")) - 273.15
+            print(f"Temp in K: {t} -> {temp} Celsius")
+            return temp
+
+        print(f"Could not convert '{t}' to float (temp)")
         return float(t)
-    return float(t.replace("°C", ""))
+    except ValueError:
+        err_console.print(f"Could not convert '{t}' to float (temp)")
+        return None
 
 
 @lru_cache(maxsize=1024)
@@ -240,11 +295,17 @@ def dollar_to_cents(d: str) -> int | None:
     Returns:
         int: The value in int.
     """
-    if not d:
-        return None
-    if d.isdigit():
+    try:
+        if not d:
+            return None
+        if d.isdigit():
+            return int(d)
+        if "$" in d:
+            return int(float(d.replace("$", "")) * 100)
         return int(d)
-    return int(float(d.replace("$", "")) * 100)
+    except ValueError:
+        err_console.print(f"Could not convert '{d}' to int (dollar)")
+        return None
 
 
 def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: PLR0912, C901, PLR0915

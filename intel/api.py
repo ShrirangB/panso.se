@@ -12,7 +12,7 @@ router = Router()
 
 
 @router.get(
-    "/filter",
+    path="/filter",
     summary="Return the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html.",
     description="Return the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html.",
 )
@@ -24,11 +24,11 @@ def return_filter_data(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     except ArkFilterData.DoesNotExist:
         return JsonResponse([], safe=False)
     except Exception as e:  # noqa: BLE001
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse(data={"error": str(e)}, status=500)
 
 
 @router.get(
-    "/processors",
+    path="/processors",
     summary="Return a list of ids for all processors.",
     description="Return a list of ids for all processors. You can use this to get the data for all processors with the /processors/{id} endpoint.",  # noqa: E501
 )
@@ -39,11 +39,11 @@ def return_processor_ids(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
         processors = [{"id": p[0], "name": p[1]} for p in processors]
         return JsonResponse(processors, safe=False)
     except Exception as e:  # noqa: BLE001
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse(data={"error": str(e)}, status=500)
 
 
 @router.get(
-    "/processors/{product_id}",
+    path="/processors/{product_id}",
     summary="Return the data for a specific processor.",
     description="Return the data for a specific processor.",
 )
@@ -54,9 +54,9 @@ def return_processor_data(request: HttpRequest, product_id: int) -> JsonResponse
         processor_data: dict[str, Any] = processor.__dict__
         excluded_fields: list[str] = ["created", "modified", "history", "_state"]
         processor_data = {key: value for key, value in processor_data.items() if key not in excluded_fields}
-        return JsonResponse(processor_data, safe=False)
+        return JsonResponse(data=processor_data, safe=False)
 
     except Processor.DoesNotExist:
-        return JsonResponse([], safe=False)
+        return JsonResponse(data=[], safe=False)
     except Exception as e:  # noqa: BLE001
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse(data={"error": str(e)}, status=500)

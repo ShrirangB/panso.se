@@ -30,9 +30,9 @@ router = Router()
 
 
 @router.get(
-    "/products",
+    path="/products",
     summary="Return all Webhallen products as JSON.",
-    description="Return all Webhallen products as JSON.  \n\n **Note:** This will return 130 MB+ of JSON so don't try to load this via the Swagger UI.",  # noqa: E501
+    description="Return all Webhallen products as JSON.\n\n **Note:** This will return 130 MB+ of JSON so don't try to load this via the Swagger UI.",  # noqa: E501
 )
 def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all Webhallen products as JSON."""
@@ -41,10 +41,10 @@ def api_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
             product_json__product__isnull=False,
         ),
     )
-    return JsonResponse(products_data, safe=False)
+    return JsonResponse(data=products_data, safe=False)
 
 
-@router.get("/products/{product_id}")
+@router.get(path="/products/{product_id}")
 def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa: ARG001
     """Return Webhallen product as JSON."""
     try:
@@ -53,16 +53,16 @@ def api_product(request: HttpRequest, product_id: str) -> JsonResponse:  # noqa:
         product_data = product_json.get("product", {})
         return JsonResponse(product_data, safe=False)
     except Http404:
-        return JsonResponse({"error": f"Product with ID {product_id} not found."}, status=404)
+        return JsonResponse(data={"error": f"Product with ID {product_id} not found."}, status=404)
     except Exception as e:  # noqa: BLE001
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse(data={"error": str(e)}, status=500)
 
 
-@router.get("/sitemaps/root")
+@router.get(path="/sitemaps/root")
 def api_sitemaps_root(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.xml."""
     sitemaps_data = list(SitemapRoot.objects.values("loc", "active", "created", "updated"))
-    return JsonResponse(sitemaps_data, safe=False)
+    return JsonResponse(data=sitemaps_data, safe=False)
 
 
 def get_sitemap_data(model: type[models.Model]) -> list[dict[str, str | datetime]]:
@@ -77,61 +77,61 @@ def get_sitemap_data(model: type[models.Model]) -> list[dict[str, str | datetime
     return list(model.objects.values("loc", "priority", "active", "created", "updated"))
 
 
-@router.get("/sitemaps/home")
+@router.get(path="/sitemaps/home")
 def api_sitemaps_home(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.home.xml."""
-    return JsonResponse(get_sitemap_data(SitemapHome), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapHome), safe=False)
 
 
-@router.get("/sitemaps/sections")
+@router.get(path="/sitemaps/sections")
 def api_sitemaps_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.section.xml."""
-    return JsonResponse(get_sitemap_data(SitemapSection), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapSection), safe=False)
 
 
-@router.get("/sitemaps/categories")
+@router.get(path="/sitemaps/categories")
 def api_sitemaps_categories(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.category.xml."""
-    return JsonResponse(get_sitemap_data(SitemapCategory), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapCategory), safe=False)
 
 
-@router.get("/sitemaps/campaigns")
+@router.get(path="/sitemaps/campaigns")
 def api_sitemaps_campaigns(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaign.xml."""
-    return JsonResponse(get_sitemap_data(SitemapCampaign), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapCampaign), safe=False)
 
 
-@router.get("/sitemaps/campaign-lists")
+@router.get(path="/sitemaps/campaign-lists")
 def api_sitemaps_campaign_lists(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.campaignList.xml."""
-    return JsonResponse(get_sitemap_data(SitemapCampaignList), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapCampaignList), safe=False)
 
 
-@router.get("/sitemaps/info-pages")
+@router.get(path="/sitemaps/info-pages")
 def api_sitemaps_info_pages(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.infoPages.xml."""
-    return JsonResponse(get_sitemap_data(SitemapInfoPages), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapInfoPages), safe=False)
 
 
-@router.get("/sitemaps/products")
+@router.get(path="/sitemaps/products")
 def api_sitemaps_products(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.products.xml."""
-    return JsonResponse(get_sitemap_data(SitemapProduct), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapProduct), safe=False)
 
 
-@router.get("/sitemaps/manufacturers")
+@router.get(path="/sitemaps/manufacturers")
 def api_sitemaps_manufacturers(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.manufacturer.xml."""
-    return JsonResponse(get_sitemap_data(SitemapManufacturer), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapManufacturer), safe=False)
 
 
-@router.get("/sitemaps/articles")
+@router.get(path="/sitemaps/articles")
 def api_sitemaps_articles(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all URLs from https://www.webhallen.com/sitemap.article.xml."""
-    return JsonResponse(get_sitemap_data(SitemapArticle), safe=False)
+    return JsonResponse(data=get_sitemap_data(model=SitemapArticle), safe=False)
 
 
-@router.get("/sections")
+@router.get(path="/sections")
 def api_list_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all sections."""
     sections_data = list(
@@ -145,4 +145,4 @@ def api_list_sections(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
             "name",
         ),
     )
-    return JsonResponse(sections_data, safe=False)
+    return JsonResponse(data=sections_data, safe=False)

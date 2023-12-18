@@ -10,17 +10,17 @@ router = Router()
 
 
 @router.get(
-    "/eans",
+    path="/eans",
     summary="Return all EANs.",
     description="Return all EANs as JSON.  \n\n **Note:** This will return a JSON array of 12k+ EANs so don't try to load this via the Swagger UI.",  # noqa: E501
 )
 def list_eans(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all EANs."""
     eans = list(Eans.objects.values("ean", "name", "created", "updated"))
-    return JsonResponse(eans, safe=False)
+    return JsonResponse(data=eans, safe=False)
 
 
-@router.get("/eans/{ean}")
+@router.get(path="/eans/{ean}")
 def get_ean(request: HttpRequest, ean: str) -> JsonResponse:  # noqa: ARG001
     """Return EAN."""
     try:
@@ -31,8 +31,8 @@ def get_ean(request: HttpRequest, ean: str) -> JsonResponse:  # noqa: ARG001
             "created": str(_ean.created),
             "updated": str(_ean.updated),
         }
-        return JsonResponse(ean_data, safe=False)
+        return JsonResponse(data=ean_data, safe=False)
     except Http404:
-        return JsonResponse({"error": f"EAN with ID {ean} not found."}, status=404)
+        return JsonResponse(data={"error": f"EAN with ID {ean} not found."}, status=404)
     except Exception as e:  # noqa: BLE001
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse(data={"error": str(e)}, status=500)
