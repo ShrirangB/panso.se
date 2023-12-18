@@ -34,6 +34,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq-dev \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the generated requirements.txt from the builder stage
