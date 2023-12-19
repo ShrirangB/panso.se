@@ -7,5 +7,5 @@ from . import views
 app_name: str = "webhallen"
 
 urlpatterns: list[URLPattern] = [
-    path("", views.index, name="index"),
+    path(route="", view=views.index, name="index"),
 ]
