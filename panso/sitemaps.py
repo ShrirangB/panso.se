@@ -16,6 +16,7 @@ class WebhallenJSONSitemap(Sitemap):
 
     changefreq: Literal["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"] = "daily"
     priority: float = 0.5
+    protocol = "https"
 
     def items(self: WebhallenJSONSitemap):  # noqa: PLR6301, ANN201
         """Required. A method that returns a sequence or QuerySet of objects.
@@ -50,6 +51,7 @@ class StaticViewSitemap(Sitemap):
 
     priority: float = 0.5
     changefreq: Literal["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"] = "daily"
+    protocol = "https"
 
     def items(self: StaticViewSitemap) -> list[str]:  # noqa: PLR6301
         """Return a list of url names for views to include in this sitemap.
