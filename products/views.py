@@ -18,7 +18,7 @@ def index(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="products/index.html")
+    template = loader.get_template(template_name="index.html")
     context = {}
     return HttpResponse(content=template.render(context, request))
 

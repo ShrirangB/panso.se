@@ -11,27 +11,27 @@
         <meta name="author" content="Panso">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block title %}<title>Panso</title>{% endblock %}
-        <link rel="icon" href="{% static 'products/favicon.ico' %}" sizes="32x32">
-        <link rel="icon" href="{% static 'products/icon.svg' %}" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="{% static 'products/apple-touch-icon.png' %}">
-        <link rel="manifest" href="{% static 'products/manifest.webmanifest' %}">
-        <link rel="stylesheet" href="{% static 'products/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'products/style.css' %}">
+        <link rel="icon" href="{% static 'favicon.ico' %}" sizes="32x32">
+        <link rel="icon" href="{% static 'icon.svg' %}" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
+        <link rel="manifest" href="{% static 'manifest.webmanifest' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
         <!-- Head end -->
     </head>
 
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
-        {% include "products/navbar.html" %}
+        {% include "navbar.html" %}
         <!-- Content -->
         <div class="container-xl mt-3 mb-3">
             {% block content %}<!-- default content -->{% endblock %}
         </div>
         <!-- Content end -->
         <!-- Footer -->
-        {% include "products/footer.html" %}
+        {% include "footer.html" %}
         <!-- Footer end -->
-        <script src="{% static 'products/bootstrap.min.js' %}"></script>
+        <script src="{% static 'bootstrap.min.js' %}"></script>
         <!-- Body end -->
     </body>
 
