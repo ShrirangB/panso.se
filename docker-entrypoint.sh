@@ -33,5 +33,5 @@ echo "Apply database migrations done"
 
 # 3. Start server
 echo "Starting server"
-gunicorn --workers=9 --bind=0.0.0.0:8000 panso.wsgi:application --log-level=info --access-logfile=- --error-logfile=-
+gunicorn --workers=9 --bind=0.0.0.0:8000 panso.wsgi:application --log-level=info --access-logfile=- --error-logfile=- --forwarded-allow-ips="172.*" --proxy-allow-from="172.*"
 echo "Bye"
