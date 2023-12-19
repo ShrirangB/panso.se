@@ -700,9 +700,7 @@ def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
                 defaults["platform_firmware_resilience"] = bool_to_bool(node.text(strip=True))
 
             if data_key == "MaxEncSizeSupportIntelSGX":
-                # TODO: For some reason this is bigger than 2^32
-                # defaults["maximum_enclave_size_for_sgx"] = bytes_to_bytes(node.text(strip=True))
-                pass
+                defaults["maximum_enclave_size_for_sgx"] = bytes_to_bytes(node.text(strip=True))
 
             if data_key == "IntelCryptoAcceleration":
                 defaults["crypto_acceleration"] = bool_to_bool(node.text(strip=True))
