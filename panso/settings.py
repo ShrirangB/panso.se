@@ -71,12 +71,6 @@ USE_X_FORWARDED_HOST = True
 # Set the Referrer Policy HTTP header on all responses that do not already have one.
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-# Redirect all non-HTTPS requests to HTTPS
-SECURE_SSL_REDIRECT = True
-
-# A tuple representing an HTTP header/value combination that signifies a request is secure
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
 # Full Python import path to our main URL configuration.
 ROOT_URLCONF = "panso.urls"
 
