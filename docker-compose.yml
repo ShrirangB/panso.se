@@ -1,11 +1,41 @@
 services:
-  web:
-    container_name: web
+  panso:
+    container_name: panso
     image: ghcr.io/thelovinator1/panso:latest
-    volumes:
-      - /mnt/Fourteen/Docker/Panso/panso/logs:/var/log/nginx/
     restart: always
     networks:
+      - redis
+      - db
+      - web
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - /mnt/Fourteen/Docker/Panso/staticfiles:/app/staticfiles
+  web:
+    container_name: web
+    image: lscr.io/linuxserver/nginx:latest
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+    expose:
+      - 80
+      - 443
+    volumes:
+      - /mnt/Fourteen/Docker/Panso/Nginx:/config
+    networks:
+      - web
       - tunnel
   tunnel:
     container_name: tunnel
@@ -47,9 +77,9 @@ services:
 networks:
   tunnel:
     driver: bridge
-  panso:
-    driver: bridge
   redis:
     driver: bridge
   db:
+    driver: bridge
+  web:
     driver: bridge
