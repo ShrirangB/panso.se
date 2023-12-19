@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -20,6 +22,7 @@ class SitemapRoot(models.Model):
     class Meta:
         """Meta definition for SitemapRoot."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap root"
         verbose_name_plural: str = "Sitemap roots"
         db_table: str = "webhallen_sitemap_root"
@@ -31,6 +34,15 @@ class SitemapRoot(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapRoot) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -51,6 +63,7 @@ class SitemapHome(models.Model):
     class Meta:
         """Meta definition for SitemapHome."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap home"
         verbose_name_plural: str = "Sitemap homes"
         db_table: str = "webhallen_sitemap_home"
@@ -62,6 +75,15 @@ class SitemapHome(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapHome) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -82,6 +104,7 @@ class SitemapSection(models.Model):
     class Meta:
         """Meta definition for SitemapSection."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap section"
         verbose_name_plural: str = "Sitemap sections"
         db_table: str = "webhallen_sitemap_section"
@@ -93,6 +116,15 @@ class SitemapSection(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapSection) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -113,6 +145,7 @@ class SitemapCategory(models.Model):
     class Meta:
         """Meta definition for SitemapCategory."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap category"
         verbose_name_plural: str = "Sitemap categories"
         db_table: str = "webhallen_sitemap_category"
@@ -124,6 +157,15 @@ class SitemapCategory(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapCategory) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -144,6 +186,7 @@ class SitemapCampaign(models.Model):
     class Meta:
         """Meta definition for SitemapCampaign."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap campaign"
         verbose_name_plural: str = "Sitemap campaigns"
         db_table: str = "webhallen_sitemap_campaign"
@@ -155,6 +198,15 @@ class SitemapCampaign(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapCampaign) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -175,6 +227,7 @@ class SitemapCampaignList(models.Model):
     class Meta:
         """Meta definition for SitemapCampaignList."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap campaign list"
         verbose_name_plural: str = "Sitemap campaign lists"
         db_table: str = "webhallen_sitemap_campaign_list"
@@ -186,6 +239,15 @@ class SitemapCampaignList(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapCampaignList) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -206,6 +268,7 @@ class SitemapInfoPages(models.Model):
     class Meta:
         """Meta definition for SitemapInfoPages."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap info page"
         verbose_name_plural: str = "Sitemap info pages"
         db_table: str = "webhallen_sitemap_info_pages"
@@ -217,6 +280,15 @@ class SitemapInfoPages(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapInfoPages) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -237,6 +309,7 @@ class SitemapProduct(models.Model):
     class Meta:
         """Meta definition for SitemapProduct."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap product"
         verbose_name_plural: str = "Sitemap products"
         db_table: str = "webhallen_sitemap_product"
@@ -248,6 +321,15 @@ class SitemapProduct(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapProduct) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -268,6 +350,7 @@ class SitemapManufacturer(models.Model):
     class Meta:
         """Meta definition for SitemapManufacturer."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap manufacturer"
         verbose_name_plural: str = "Sitemap manufacturers"
         db_table: str = "webhallen_sitemap_manufacturer"
@@ -279,6 +362,15 @@ class SitemapManufacturer(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapManufacturer) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc
 
 
@@ -299,6 +391,7 @@ class SitemapArticle(models.Model):
     class Meta:
         """Meta definition for SitemapArticle."""
 
+        ordering: typing.ClassVar[list] = ["-loc"]
         verbose_name: str = "Sitemap article"
         verbose_name_plural: str = "Sitemap articles"
         db_table: str = "webhallen_sitemap_article"
@@ -310,4 +403,13 @@ class SitemapArticle(models.Model):
         Returns:
             str: URL
         """
+        return self.loc
+
+    def get_absolute_url(self: SitemapArticle) -> str:
+        """Return absolute URL.
+
+        Returns:
+            str: URL
+        """
+        # TODO: Should this go to something local?
         return self.loc

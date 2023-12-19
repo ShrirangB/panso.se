@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -28,6 +30,7 @@ class WebhallenJSON(models.Model):
     class Meta:
         """Meta definition for Webhallen."""
 
+        ordering: typing.ClassVar[list] = ["-product_id"]
         verbose_name: str = "Webhallen JSON"
         verbose_name_plural: str = "Webhallen JSON Entries"
         db_table: str = "webhallen_json"
@@ -40,3 +43,7 @@ class WebhallenJSON(models.Model):
             str: Product ID and created
         """
         return f"{self.product_id} - {self.created}"
+
+    def get_absolute_url(self: WebhallenJSON) -> str:
+        """Return a fully-qualified path for a Webhallen JSON entry."""
+        return f"/api/webhallen/products/{self.product_id}"

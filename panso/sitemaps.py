@@ -60,7 +60,7 @@ class StaticViewSitemap(Sitemap):
         Returns:
             list[str]: A list of url names for views to include in this sitemap.
         """
-        return ["product:index", "webhallen:index"]
+        return ["products:index", "webhallen:index", "api-v1:openapi-view"]
 
     def location(self: StaticViewSitemap, item: str) -> str:  # noqa: PLR6301
         """Return the location of the item.

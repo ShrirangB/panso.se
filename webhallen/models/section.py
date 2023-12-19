@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -43,6 +45,7 @@ class WebhallenSection(models.Model):
     class Meta:
         """Meta definition for WebhallenSection."""
 
+        ordering: typing.ClassVar[list] = ["-section_id"]
         verbose_name: str = "Webhallen section"
         verbose_name_plural: str = "Webhallen sections"
         db_table: str = "webhallen_section"

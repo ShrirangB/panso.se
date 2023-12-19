@@ -327,6 +327,8 @@ def create_defaults(data: list[LexborNode], _id: str) -> dict | None:  # noqa: P
             return None
 
         if "class" in node_attributes:
+            # TODO: Fix this for $294.00-$304.00
+            # https://www.intel.com/content/www/us/en/products/sku/236778.html
             class_value: str | None = node_attributes["class"]
             price_regex = r"\$\d+.\d+"
             if class_value and class_value.startswith("$") and re.match(pattern=price_regex, string=class_value):
