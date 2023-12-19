@@ -134,11 +134,10 @@ DATABASES: dict[str, dict[str, str]] = {
 }
 
 # A list containing the settings for all template engines to be used with Django.
-TEMPLATES: list[dict[str, str | list[str] | bool | dict[str, list[str]]]] = [
+TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
+        "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -165,6 +164,7 @@ CACHES: dict[str, dict[str, str]] = {
 # The absolute path to the directory where 'python manage.py collectstatic' will copy static files for deployment
 # TODO: Should we store these on Cloudflare? Or at least in RAM to avoid disk I/O?
 STATIC_ROOT: Path = BASE_DIR / "staticfiles"
+STATICFILES_DIRS: list[Path] = [BASE_DIR / "static"]
 
 # Use WhiteNoise to serve static files. https://whitenoise.readthedocs.io/en/latest/django.html
 STORAGES: dict[str, dict[str, str]] = {
