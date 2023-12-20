@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "actix",
         "appendonly",
         "chartboost",
         "Chipset",
@@ -7,7 +8,9 @@
         "collectstatic",
         "datordelar",
         "Datorkomponenter",
+        "dbname",
         "directx",
+        "dotenvy",
         "giga",
         "githubtest",
         "isready",
