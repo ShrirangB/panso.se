@@ -53,3 +53,63 @@ def bot_ip_list(request: HttpRequest) -> HttpResponse:  # noqa: ARG001
     """bot-ip-list page for Cloudflare verification."""
     ip: str = get_ip()
     return HttpResponse(content=ip, content_type="text/plain")
+
+
+@require_GET
+def about(request: HttpRequest) -> HttpResponse:
+    """/about page.
+
+    Args:
+        request: The request.
+
+    Returns:
+        HttpResponse: The response.
+    """
+    template = loader.get_template(template_name="about.html")
+    context = {}
+    return HttpResponse(content=template.render(context, request))
+
+
+@require_GET
+def contact(request: HttpRequest) -> HttpResponse:
+    """/contact page.
+
+    Args:
+        request: The request.
+
+    Returns:
+        HttpResponse: The response.
+    """
+    template = loader.get_template(template_name="contact.html")
+    context = {}
+    return HttpResponse(content=template.render(context, request))
+
+
+@require_GET
+def privacy(request: HttpRequest) -> HttpResponse:
+    """/privacy page.
+
+    Args:
+        request: The request.
+
+    Returns:
+        HttpResponse: The response.
+    """
+    template = loader.get_template(template_name="privacy.html")
+    context = {}
+    return HttpResponse(content=template.render(context, request))
+
+
+@require_GET
+def terms(request: HttpRequest) -> HttpResponse:
+    """/terms page.
+
+    Args:
+        request: The request.
+
+    Returns:
+        HttpResponse: The response.
+    """
+    template = loader.get_template(template_name="terms.html")
+    context = {}
+    return HttpResponse(content=template.render(context, request))
