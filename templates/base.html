@@ -1,13 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-
     <head>
         {% load static %}
         <!-- Head start -->
         <meta charset="UTF-8">
-        <meta name="description" content="{% block description %}Panso{% endblock %}">
-        <meta name="keywords" content="{% block keywords %}Panso, Panso.se{% endblock %}">
+        <meta name="description"
+              content="{% block description %}Panso{% endblock %}">
+        <meta name="keywords"
+              content="{% block keywords %}Panso, Panso.se{% endblock %}">
         <meta name="author" content="Panso">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block title %}<title>Panso</title>{% endblock %}
@@ -19,13 +20,14 @@
         <link rel="stylesheet" href="{% static 'style.css' %}">
         <!-- Head end -->
     </head>
-
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
         <nav class="navbar navbar-expand-md border-bottom border-warning">
             <div class="container-fluid">
-                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseNavbar">
+                <button class="navbar-toggler ms-auto"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse" id="collapseNavbar">
@@ -37,7 +39,7 @@
                         <li class="nav-item nav-link d-none d-md-block">|</li>
                         {# API #}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'api-v1:openapi-view' %}">API</a>
+                            <a class="nav-link" href="{% url 'products:api' %}">API</a>
                         </li>
                     </ul>
                     {# Donate button #}
@@ -59,17 +61,19 @@
         <!-- Footer -->
         <footer class="footer bg-body-tertiary mt-auto">
             <div class="container">
-
                 <footer class="d-flex flex-wrap justify-content-between align-items-center">
-                    <p class="col-md-4 mb-0 text-muted"><a href="{% url 'products:terms' %}" class="text-muted">CC BY-SA
-                            4.0</a></p>
+                    <p class="col-md-4 mb-0 text-muted">
+                        <a href="{% url 'products:terms' %}" class="text-muted">CC BY-SA
+                        4.0</a>
+                    </p>
                     <ul class="nav col-md-4 justify-content-end">
                         <li class="nav-item">
-                            <a href="{% url 'api-v1:openapi-view' %}" class="nav-link px-2 text-muted">API</a>
+                            <a href="{% url 'api-v1:openapi-view' %}"
+                               class="nav-link px-2 text-muted">API</a>
                         </li>
                         <li class="nav-item">
                             <a href="https://github.com/TheLovinator1/panso.se"
-                                class="nav-link px-2 text-muted">GitHub</a>
+                               class="nav-link px-2 text-muted">GitHub</a>
                         </li>
                         <li class="nav-item">
                             <a href="/sitemap.xml" class="nav-link px-2 text-muted">Sitemap</a>
@@ -88,5 +92,4 @@
         <script src="{% static 'bootstrap.min.js' %}"></script>
         <!-- Body end -->
     </body>
-
 </html>

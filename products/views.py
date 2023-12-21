@@ -113,3 +113,18 @@ def terms(request: HttpRequest) -> HttpResponse:
     template = loader.get_template(template_name="terms.html")
     context = {}
     return HttpResponse(content=template.render(context, request))
+
+
+@require_GET
+def api_view(request: HttpRequest) -> HttpResponse:
+    """/api page.
+
+    Args:
+        request: The request.
+
+    Returns:
+        HttpResponse: The response.
+    """
+    template = loader.get_template(template_name="api.html")
+    context = {}
+    return HttpResponse(content=template.render(context, request))

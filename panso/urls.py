@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.conf import settings
-from django.contrib import admin
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
@@ -27,9 +26,9 @@ sitemaps: dict[str, type[Sitemap]] = {
 
 # TODO: Cache views
 urlpatterns: list = [
-    path(route="admin/", view=admin.site.urls),
-    path(route="api/", view=api.urls),  # type: ignore  # noqa: PGH003
+    # path(route="admin/", view=admin.site.urls),
     path(route="", view=include(arg="products.urls")),
+    path(route="api/v1/", view=api.urls),  # type: ignore  # noqa: PGH003
     path(route="webhallen/", view=include(arg="webhallen.urls")),
     path(
         route="sitemap.xml",

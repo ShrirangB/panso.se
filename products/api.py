@@ -16,7 +16,7 @@ router = Router()
 )
 def list_eans(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
     """Return all EANs."""
-    eans = list(Eans.objects.values("ean", "name", "created", "updated"))
+    eans = list(Eans.objects.values("ean", "name"))
     return JsonResponse(data=eans, safe=False)
 
 
@@ -28,8 +28,6 @@ def get_ean(request: HttpRequest, ean: str) -> JsonResponse:  # noqa: ARG001
         ean_data: dict[str, str] = {
             "ean": str(_ean.ean),
             "name": str(_ean.name),
-            "created": str(_ean.created),
-            "updated": str(_ean.updated),
         }
         return JsonResponse(data=ean_data, safe=False)
     except Http404:
