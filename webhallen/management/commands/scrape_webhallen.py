@@ -40,13 +40,13 @@ def scrape_product(product_id: str, product_url: str) -> dict:
         raise e from None
 
     if response.text.startswith("<!DOCTYPE html>"):
-        msg: str = f"Probably 404? https://www.webhallen.com/api/product/{product_id}"
+        msg: str = f"Probably 404? https://www.webhallen.com/api/v1/product/{product_id}"
         err_console.print(msg)
         raise httpx.HTTPError(msg)
 
     product_json = response.json()
     if not product_json:
-        msg: str = f"Empty JSON response for https://www.webhallen.com/api/product/{product_id}"
+        msg: str = f"Empty JSON response for https://www.webhallen.com/api/v1/product/{product_id}"
         err_console.print(f"Error getting product {product_id}: {msg}")
         raise httpx.HTTPError(msg)
 
@@ -70,7 +70,7 @@ def scrape_products() -> None:
             err_console.print(f"Could not get product ID from {loc}")
             continue
 
-        product_url: str = f"https://www.webhallen.com/api/product/{product_id}"
+        product_url: str = f"https://www.webhallen.com/api/v1/product/{product_id}"
         print(f"GET {product_url}")
 
         product_json: dict = scrape_product(product_id, product_url)

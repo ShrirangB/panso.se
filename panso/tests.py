@@ -17,19 +17,20 @@ class PansoTests(TestCase):
         url: str = reverse("api-v1:openapi-view")
         response: HttpResponse = self.client.get(url)
         assert response.status_code == 200
-        response2: HttpResponse = self.client.get("/api/docs")
+        response2: HttpResponse = self.client.get("/api/v1/docs")
         assert response2.status_code == 200
 
-    def test_admin(self: PansoTests) -> None:
-        """Test that the admin is available."""
-        url: str = reverse("admin:index")
-        response: HttpResponse = self.client.get(url)
-        assert response.status_code == 302
-        response2: HttpResponse = self.client.get("/admin/")
-        assert response2.status_code == 302
+    # TODO: Re-add admin page.
+    # def test_admin(self: PansoTests) -> None:
+    #     """Test that the admin is available."""
+    #     url: str = reverse("admin:index")
+    #     response: HttpResponse = self.client.get(url)
+    #     assert response.status_code == 302
+    #     response2: HttpResponse = self.client.get("/admin/")
+    #     assert response2.status_code == 302
 
-        url: str = reverse("admin:login")
-        response3: HttpResponse = self.client.get(url)
-        assert response3.status_code == 200
-        response4: HttpResponse = self.client.get("/admin/login/")
-        assert response4.status_code == 200
+    #     url: str = reverse("admin:login")
+    #     response3: HttpResponse = self.client.get(url)
+    #     assert response3.status_code == 200
+    #     response4: HttpResponse = self.client.get("/admin/login/")
+    #     assert response4.status_code == 200

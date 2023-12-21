@@ -84,20 +84,20 @@ class PansoAPITests(TestCase):
 
     def test_api_eans(self: PansoAPITests) -> None:
         """Test the API endpoint for all EANs."""
-        response: HttpResponse = self.client.get("/api/eans")
+        response: HttpResponse = self.client.get("/api/v1/eans")
         assert response.status_code == 200
         assert response["Content-Type"] == "application/json"
         assert response.json() == []
 
     def test_api_ean(self: PansoAPITests) -> None:
         """Test the API endpoint for a single EAN."""
-        response: HttpResponse = self.client.get("/api/eans/1")
+        response: HttpResponse = self.client.get("/api/v1/eans/1")
         assert response.status_code == 404
         assert response["Content-Type"] == "application/json"
         assert response.json() == {"error": "EAN with ID 1 not found."}
 
         # TODO: Implement this when we have some EANs in the test database.
-        # response2: HttpResponse = self.client.get("/api/eans/5907814951762")
+        # response2: HttpResponse = self.client.get("/api/v1/eans/5907814951762")
         # assert response2.status_code == 200
         # assert response2["Content-Type"] == "application/json"
         # response_json = response2.json()

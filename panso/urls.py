@@ -26,7 +26,7 @@ sitemaps: dict[str, type[Sitemap]] = {
 
 # TODO: Cache views
 urlpatterns: list = [
-    # path(route="admin/", view=admin.site.urls),
+    # path(route="admin/", view=admin.site.urls),     # TODO: Re-add admin page.
     path(route="", view=include(arg="products.urls")),
     path(route="api/v1/", view=api.urls),  # type: ignore  # noqa: PGH003
     path(route="webhallen/", view=include(arg="webhallen.urls")),

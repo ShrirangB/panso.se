@@ -46,4 +46,4 @@ class WebhallenJSON(models.Model):
 
     def get_absolute_url(self: WebhallenJSON) -> str:
         """Return a fully-qualified path for a Webhallen JSON entry."""
-        return f"/api/webhallen/products/{self.product_id}"
+        return f"/api/v1/webhallen/products/{self.product_id}"

@@ -27,14 +27,14 @@ class IntelTests(TestCase):
     # TODO: Test that we get the correct data from the API.
     def test_get_filter_data(self: IntelTests) -> None:
         """Test that the filter data is available."""
-        response: HttpResponse = self.client.get("/api/intel/filter")
+        response: HttpResponse = self.client.get("/api/v1/intel/filter")
         assert response.status_code == 200
         assert response["Content-Type"] == "application/json"
         assert response.json() == []
 
     def test_get_processor_ids(self: IntelTests) -> None:
         """Test that the processor ids are available."""
-        response: HttpResponse = self.client.get("/api/intel/processors")
+        response: HttpResponse = self.client.get("/api/v1/intel/processors")
         assert response.status_code == 200
         assert response["Content-Type"] == "application/json"
         assert response.json() == []
