@@ -7,8 +7,13 @@
         <article>
             <header>
                 <h1>Privacy Policy</h1>
-                <p>Last Updated: 2023-12-20</p>
             </header>
+            <p>
+                Last Updated:
+                <time datetime="2020-12-20">
+                    2023-12-20
+                </time>
+            </p>
             <section>
                 <h2>What information do we collect?</h2>
                 <h3>Cloudflare</h3>
@@ -35,14 +40,22 @@
                     <li>
                         The <a href="https://en.wikipedia.org/wiki/Stack_trace">stack trace</a>
                     </li>
-                    <li>Browser information (For example: Firefox 122.0)</li>
                     <li>
-                        User agent (For example: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101
-                        Firefox/122.0)
+                        Browser information (For example: <code>Firefox 122.0</code>)
                     </li>
-                    <li>Operating system information (For example: Windows >=10)</li>
-                    <li>URL (For example: https://panso.se/about/)</li>
-                    <li>Headers (For example: Accept-Language: en-US,en;q=0.5)</li>
+                    <li>
+                        User agent (For example: <code>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101
+                        Firefox/122.0</code>)
+                    </li>
+                    <li>
+                        Operating system information (For example: <code>Windows >=10</code>)
+                    </li>
+                    <li>
+                        URL (For example: <code>https://panso.se/about/</code>)
+                    </li>
+                    <li>
+                        Headers (For example: <code>Accept-Language: en-US,en;q=0.5</code>)
+                    </li>
                 </ul>
             </section>
             <section>
@@ -70,7 +83,7 @@
                 <h2>User Rights</h2>
                 <p>
                     You have the right to access, correct, or delete your information. For any privacy-related inquiries,
-                    please <a href="#">contact us</a>.
+                    please <a href="{% url 'products:contact' %}">contact us</a>.
                 </p>
             </section>
             <section>
@@ -83,16 +96,17 @@
             <section>
                 <h2>Changes to the Privacy Policy</h2>
                 <p>
-                    This privacy policy may be updated. Check the "Last Updated" date below for the latest version. We will
-                    notify you of any material changes.
+                    This privacy policy may be updated. Check the "Last Updated" date at the top of this document to see
+                    when it was last updated.
+                    We will notify you of any material changes.
                     <br>
-                    You can also check the git commit history for changes to this document <a href="#">here</a>.
+                    You can also check the git commit history for changes to this document <a href="https://github.com/TheLovinator1/panso.se/commits/master/templates/privacy.html">here</a>.
                 </p>
             </section>
             <section>
                 <h2>Contact Information</h2>
                 <p>
-                    For privacy concerns or questions, please <a href="#">contact us</a>.
+                    For privacy concerns or questions, please <a href="{% url 'products:contact' %}">contact us</a>.
                 </p>
             </section>
         </article>
