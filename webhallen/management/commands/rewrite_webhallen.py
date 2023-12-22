@@ -253,7 +253,7 @@ def get_manufacturer(product_json: dict) -> str | None:
     return manufacturer
 
 
-def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915
+def convert_json_to_model() -> None:  # noqa: C901, PLR0912, PLR0915, PLR0914
     """Convert Webhallen product JSON to a Django model."""
     products = WebhallenJSON.objects.all()
     for json in track(products, description="Processing...", total=products.count()):
