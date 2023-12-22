@@ -30,6 +30,7 @@ urlpatterns: list = [
     path(route="", view=include(arg="products.urls")),
     path(route="api/v1/", view=api.urls),  # type: ignore  # noqa: PGH003
     path(route="webhallen/", view=include(arg="webhallen.urls")),
+    path(route="intel/", view=include(arg="intel.urls")),
     path(
         route="sitemap.xml",
         view=cache_page(timeout=86400)(sitemaps_views.index),

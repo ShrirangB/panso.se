@@ -97,6 +97,8 @@ INSTALLED_APPS: list[str] = [
     "products.apps.ProductsConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
+    "django_tables2",  # https://github.com/jieter/django-tables2
+    "django_filters",  # https://github.com/carltongibson/django-filter
     "simple_history",  # https://github.com/jazzband/django-simple-history
     "whitenoise.runserver_nostatic",  # https://whitenoise.readthedocs.io/en/latest/index.html
     # Django

@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
     <head>
-        {% load static %}
         <!-- Head start -->
         <meta charset="UTF-8">
         <meta name="description"
@@ -32,17 +31,18 @@
                 </button>
                 <div class="navbar-collapse collapse" id="collapseNavbar">
                     <ul class="navbar-nav">
-                        {# Home #}
+                        <!-- Home -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'products:index' %}">Home</a>
                         </li>
+                        <!-- | -->
                         <li class="nav-item nav-link d-none d-md-block">|</li>
-                        {# API #}
+                        <!-- API -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'products:api' %}">API</a>
                         </li>
                     </ul>
-                    {# Donate button #}
+                    <!-- Donate button, top right corner -->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item d-none d-md-block">
                             <a class="nav-link" href="https://github.com/sponsors/TheLovinator1">Donate ❤️</a>
@@ -57,30 +57,34 @@
         </div>
         <!-- Content end -->
         <!-- Footer -->
-        {% load static %}
-        <!-- Footer -->
         <footer class="footer bg-body-tertiary mt-auto">
             <div class="container">
                 <footer class="d-flex flex-wrap justify-content-between align-items-center">
+                    <!-- License -->
                     <p class="col-md-4 mb-0 text-muted">
-                        <a href="{% url 'products:terms' %}" class="text-muted">CC BY-SA
-                        4.0</a>
+                        <a href="{% url 'products:terms' %}" class="text-muted">CC BY-SA 4.0</a>
                     </p>
+                    <!-- Links, right side of footer -->
                     <ul class="nav col-md-4 justify-content-end">
+                        <!-- API link -->
                         <li class="nav-item">
                             <a href="{% url 'api-v1:openapi-view' %}"
                                class="nav-link px-2 text-muted">API</a>
                         </li>
+                        <!-- GitHub link -->
                         <li class="nav-item">
                             <a href="https://github.com/TheLovinator1/panso.se"
                                class="nav-link px-2 text-muted">GitHub</a>
                         </li>
+                        <!-- Sitemap link -->
                         <li class="nav-item">
                             <a href="/sitemap.xml" class="nav-link px-2 text-muted">Sitemap</a>
                         </li>
+                        <!-- Privacy link -->
                         <li class="nav-item">
                             <a href="{% url 'products:privacy' %}" class="nav-link px-2 text-muted">Privacy</a>
                         </li>
+                        <!-- Contact link -->
                         <li class="nav-item">
                             <a href="{% url 'products:contact' %}" class="nav-link px-2 text-muted">Contact</a>
                         </li>

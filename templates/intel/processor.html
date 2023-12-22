@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}<title>Intel processors - Panso</title>{% endblock %}
+{% block description %}Intel processors on Panso. This page is under construction.{% endblock %}
+{% block keywords %}Panso, Panso.se, Intel, Intel Ark, Intel API{% endblock %}
+{% block content %}
+    <div class="container">
+        <article>
+            <header>
+                <h1>{{ processor.name }}</h1>
+            </header>
+            <section>
+                {% load django_tables2 %}
+                {% render_table table %}
+            </section>
+        </article>
+    </div>
+{% endblock %}
