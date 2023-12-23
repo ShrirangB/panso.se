@@ -76,6 +76,7 @@ def processors(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response.
     """
     # TODO: If the filter is empty we should rewrite the URL to /intel/processors
+    # TODO: If a filter is empty we should remove it from the URL (e.g. /intel/processors?name=foo&lithography=) -> /intel/processors?name=foo # noqa: E501
     # Table filtering for django-filter
     f = ProcessorFilter(request.GET, queryset=Processor.objects.all())
     table = ProcessorTable(f.qs)
