@@ -68,8 +68,11 @@
                     <ul class="nav col-md-4 justify-content-end">
                         <!-- API link -->
                         <li class="nav-item">
+                            <a href="{% url 'products:api' %}" class="nav-link px-2 text-muted">API</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{% url 'api-v1:openapi-view' %}"
-                               class="nav-link px-2 text-muted">API</a>
+                               class="nav-link px-2 text-muted">Swagger</a>
                         </li>
                         <!-- GitHub link -->
                         <li class="nav-item">
