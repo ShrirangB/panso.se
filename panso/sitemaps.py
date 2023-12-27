@@ -62,7 +62,14 @@ class StaticViewSitemap(Sitemap):
         Returns:
             list[str]: A list of url names for views to include in this sitemap.
         """
-        return ["products:index", "webhallen:index", "api-v1:openapi-view"]
+        # TODO: Add redoc and swagger
+        return [
+            "products:index",
+            "products:privacy",
+            "products:terms",
+            "products:contact",
+            "products:api",
+        ]
 
     def location(self: StaticViewSitemap, item: str) -> str:  # noqa: PLR6301
         """Return the location of the item.

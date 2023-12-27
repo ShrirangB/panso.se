@@ -65,14 +65,16 @@
                         <a href="{% url 'products:terms' %}" class="text-muted">CC BY-SA 4.0</a>
                     </p>
                     <!-- Links, right side of footer -->
-                    <ul class="nav col-md-4 justify-content-end">
+                    <ul class="nav col-md-6 justify-content-end">
                         <!-- API link -->
                         <li class="nav-item">
                             <a href="{% url 'products:api' %}" class="nav-link px-2 text-muted">API</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'api-v1:openapi-view' %}"
-                               class="nav-link px-2 text-muted">Swagger</a>
+                            <a href="/api/v1/docs/swagger" class="nav-link px-2 text-muted">Swagger</a>
+                        </li>
+                        <li>
+                            <a href="/api/v1/docs/redoc" class="nav-link px-2 text-muted">Redoc</a>
                         </li>
                         <!-- GitHub link -->
                         <li class="nav-item">
