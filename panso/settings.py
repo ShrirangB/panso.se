@@ -3,24 +3,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-import sentry_sdk
 from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(dotenv_path=find_dotenv(), verbose=True)
 
 # Run Django in debug mode
 DEBUG: bool = os.getenv(key="DEBUG", default="True").lower() == "true"
-
-# Use Sentry for error reporting
-USE_SENTRY: bool = os.getenv(key="USE_SENTRY", default="True").lower() == "true"
-if USE_SENTRY:
-    sentry_sdk.init(
-        dsn="https://9b2528b38dbd535184b0b2420c80aea4@o4505228040339456.ingest.sentry.io/4506312539439104",
-        environment="Development" if DEBUG else "Production",
-        send_default_pii=True,
-        traces_sample_rate=1.0,
-        profiles_sample_rate=1.0,
-    )
 
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
