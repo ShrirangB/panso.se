@@ -81,6 +81,7 @@ INTERNAL_IPS: list[str] = ["127.0.0.1", "localhost"]
 # Applications include some combination of models, views, templates, template tags, static files, URLs, middleware, etc
 INSTALLED_APPS: list[str] = [
     # First party
+    "amd.apps.AmdConfig",
     "intel.apps.IntelConfig",
     "products.apps.ProductsConfig",
     "webhallen.apps.WebhallenConfig",

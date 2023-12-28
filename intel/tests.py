@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from django.test import TestCase
 
-from intel.management.commands.scrape_cpus import (
+from data_converters import (
     bandwidth_to_bandwidth,
     bit_to_bit,
     bool_to_bool,
