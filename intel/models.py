@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing
 
 from django.db import models
+from django.urls import reverse
 from simple_history.models import HistoricalRecords
 
 
@@ -1255,3 +1256,7 @@ class Processor(models.Model):
     def __str__(self: Processor) -> str:
         """Return CPU name."""
         return f"{self.pk} - {self.name}"
+
+    def get_absolute_url(self: Processor) -> str:
+        """Return absolute URL for a processor."""
+        return reverse("intel:detail", kwargs={"processor_id": self.pk})

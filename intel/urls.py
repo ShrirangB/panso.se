@@ -8,5 +8,5 @@ app_name: str = "intel"
 
 urlpatterns: list[URLPattern] = [
     path(route="", view=views.index, name="index"),
-    path(route="processors/<int:processor_id>", view=views.processor, name="processor"),
+    path(route="processors/<int:processor_id>", view=views.processor, name="detail"),
 ]
