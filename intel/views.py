@@ -18,12 +18,10 @@ class ProcessorTable(tables.Table):
 
     class Meta:
         model = Processor
-        template_name: str = "django_tables2/bootstrap5.html"
         fields: ClassVar[list[str]] = [
             "name",
             "lithography",
             "total_cores",
-            "tdp",
             "performance_cores",
             "efficiency_cores",
         ]

@@ -171,3 +171,5 @@ STATICFILES_DIRS: list[Path] = [BASE_DIR / "static"]
 STORAGES: dict[str, dict[str, str]] = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
