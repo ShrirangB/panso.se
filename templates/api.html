@@ -3,255 +3,280 @@
 {% block description %}Panso API{% endblock %}
 {% block keywords %}Panso, Panso.se, API, Webhallen, Products{% endblock %}
 {% block content %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select the article element
+        var article = document.querySelector('article');
+
+        // Select the TOC element
+        var toc = document.getElementById('toc');
+
+        // Find all headings inside the article
+        var headings = article.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+        // Loop through headings and create TOC links
+        headings.forEach(function (heading) {
+            var link = document.createElement('a');
+            link.href = '#' + heading.id;
+            link.classList.add('text-decoration-none', 'text-reset'); // Bootstrap utility classes
+            link.textContent = heading.textContent;
+
+            var listItem = document.createElement('li');
+            listItem.appendChild(link);
+
+            // Determine the heading level and add the corresponding class
+            var level = parseInt(heading.tagName.charAt(1));
+            listItem.classList.add('toc-level-' + level);
+
+            toc.querySelector('.toc-list').appendChild(listItem);
+        });
+    });
+    </script>
     <div class="container">
-        <article>
-            <header>
-                <h1>API</h1>
-            </header>
-            <section>
-                <p>
-                    There are also API docs from <a class="text-reset" href="/api/v1/docs/swagger">Swagger</a> and <a class="text-reset" href="/api/v1/docs/redoc">ReDoc</a>.
-                </p>
-                <p>All APIs are GET requests and return JSON. There are currently no rate limits.</p>
-            </section>
-            <section>
-                <h2>Webhallen</h2>
-                <p>We have the following APIs for Webhallen:</p>
-                <ul>
-                    <li>
-                        <code>
-                            <a class="text-reset" href="https://panso.se/api/v1/webhallen/products">https://panso.se/api/v1/webhallen/products</a>
-                        </code>
-                    </li>
-                    <ul>
-                        <li>Returns the JSON for each product on Webhallen. Note that this is 9 MB (132 MB uncompressed).</li>
-                    </ul>
-                    <li>
-                        <code>
-                            <a class="text-reset"
-                               href="https://panso.se/api/v1/webhallen/products/364071">https://panso.se/api/v1/webhallen/products/364071</a>
-                        </code>
-                    </li>
+        <div class="row">
+            <nav id="toc" class="col-md-3">
+                <ul class="toc-list">
+                    <span class="toc-title">Table of Contents</span>
+                    <!-- Table of Contents will be generated here -->
+                </ul>
+            </nav>
+            <article class="col-md-9">
+                <header class="mb-5">
+                    <h1 class="display-1">Panso.se API</h1>
+                </header>
+                <section class="mb-5">
+                    <p>
+                        There are also API docs from <a class="text-reset" href="/api/v1/docs/swagger">Swagger</a> and <a class="text-reset" href="/api/v1/docs/redoc">ReDoc</a>.
+                    </p>
+                    <p>All APIs are GET requests and return JSON. There are currently no rate limits.</p>
+                    <h2 id="webhallen" class="display-2">Webhallen</h2>
+                    <p>We have the following APIs for Webhallen:</p>
                     <ul>
                         <li>
-                            Returns the JSON for the product with the given ID. In this example, 364071 is for <a class="text-reset" href="https://www.webhallen.com/se/product/364071">ASUS ProArt GeForce RTX 4070 12GB GDDR6X OC Edition</a>.
+                            <code>
+                                <a class="text-reset" href="https://panso.se/api/v1/webhallen/products">https://panso.se/api/v1/webhallen/products</a>
+                            </code>
                         </li>
+                        <ul>
+                            <li>Returns the JSON for each product on Webhallen. Note that this is 9 MB (132 MB uncompressed).</li>
+                        </ul>
+                        <li>
+                            <code>
+                                <a class="text-reset"
+                                   href="https://panso.se/api/v1/webhallen/products/364071">https://panso.se/api/v1/webhallen/products/364071</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>
+                                Returns the JSON for the product with the given ID. In this example, 364071 is for <a class="text-reset" href="https://www.webhallen.com/se/product/364071">ASUS ProArt GeForce RTX 4070 12GB GDDR6X OC Edition</a>.
+                            </li>
+                        </ul>
                     </ul>
-                </ul>
-            </section>
-            <section>
-                <h3>Sitemaps</h3>
-                <table>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/root">https://panso.se/api/v1/webhallen/sitemaps/root</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset" href="https://www.webhallen.com/sitemap.xml">https://www.webhallen.com/sitemap.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/home">https://panso.se/api/v1/webhallen/sitemaps/home</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset" href="https://www.webhallen.com/sitemap.home.xml">https://www.webhallen.com/sitemap.home.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/sections">https://panso.se/api/v1/webhallen/sitemaps/sections</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.section.xml">https://www.webhallen.com/sitemap.section.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/categories">https://panso.se/api/v1/webhallen/sitemaps/categories</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.category.xml">https://www.webhallen.com/sitemap.category.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/campaigns">https://panso.se/api/v1/webhallen/sitemaps/campaigns</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.campaign.xml">https://www.webhallen.com/sitemap.campaign.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/campaign-lists">https://panso.se/api/v1/webhallen/sitemaps/campaign-lists</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.campaignList.xml">https://www.webhallen.com/sitemap.campaignList.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/info-pages">https://panso.se/api/v1/webhallen/sitemaps/info-pages</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.infoPages.xml">https://www.webhallen.com/sitemap.infoPages.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/products">https://panso.se/api/v1/webhallen/sitemaps/products</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.product.xml">https://www.webhallen.com/sitemap.product.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/manufacturers">https://panso.se/api/v1/webhallen/sitemaps/manufacturers</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.manufacturer.xml">https://www.webhallen.com/sitemap.manufacturer.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://panso.se/api/v1/webhallen/sitemaps/articles">https://panso.se/api/v1/webhallen/sitemaps/articles</a>
-                            </code>
-                        </td>
-                        <td>mirror of</td>
-                        <td>
-                            <code>
-                                <a class="text-reset"
-                                   href="https://www.webhallen.com/sitemap.article.xml">https://www.webhallen.com/sitemap.article.xml</a>
-                            </code>
-                        </td>
-                    </tr>
-                </table>
-            </section>
-            <section>
-                <header>
-                    <h2>Panso</h2>
-                </header>
-                <p>We have the following APIs for Panso:</p>
-                <ul>
-                    <li>
-                        <code>
-                            <a class="text-reset" href="https://panso.se/api/v1/eans">https://panso.se/api/v1/eans</a>
-                        </code>
-                    </li>
-                    <ul>
-                        <li>Returns a list of all EANs in the database. EAN and name for each product.</li>
-                    </ul>
-                    <li>
-                        <code>
-                            <a class="text-reset" href="https://panso.se/api/v1/eans/7340004613787">https://panso.se/api/v1/eans/7340004613787</a>
-                        </code>
-                    </li>
-                    <ul>
-                        <li>Returns the name for the corresponding EAN.</li>
-                    </ul>
-                </ul>
-            </section>
-            <section>
-                <header>
-                    <h2>Intel</h2>
-                </header>
-                <p>We have the following APIs for Intel:</p>
-                <ul>
-                    <li>
-                        <code>
-                            <a class="text-reset" href="https://panso.se/api/v1/intel/filter">https://panso.se/api/v1/intel/filter</a>
-                        </code>
-                    </li>
-                    <ul>
-                        <li>Returns the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html</li>
-                    </ul>
-                    <li>
-                        <code>
-                            <a class="text-reset" href="https://panso.se/api/v1/intel/processors">https://panso.se/api/v1/intel/processors</a>
-                        </code>
-                    </li>
-                    <ul>
-                        <li>Returns a list of Intel processors.</li>
-                    </ul>
-                    <li>
-                        <code>
-                            <a class="text-reset"
-                               href="https://panso.se/api/v1/intel/processors/225916">https://panso.se/api/v1/intel/processors/225916</a>
-                        </code>
-                    </li>
+                    <h3 id="sitemaps" class="display-3">Webhallen Sitemaps</h3>
+                    <table>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/root">https://panso.se/api/v1/webhallen/sitemaps/root</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset" href="https://www.webhallen.com/sitemap.xml">https://www.webhallen.com/sitemap.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/home">https://panso.se/api/v1/webhallen/sitemaps/home</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset" href="https://www.webhallen.com/sitemap.home.xml">https://www.webhallen.com/sitemap.home.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/sections">https://panso.se/api/v1/webhallen/sitemaps/sections</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.section.xml">https://www.webhallen.com/sitemap.section.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/categories">https://panso.se/api/v1/webhallen/sitemaps/categories</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.category.xml">https://www.webhallen.com/sitemap.category.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/campaigns">https://panso.se/api/v1/webhallen/sitemaps/campaigns</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.campaign.xml">https://www.webhallen.com/sitemap.campaign.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/campaign-lists">https://panso.se/api/v1/webhallen/sitemaps/campaign-lists</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.campaignList.xml">https://www.webhallen.com/sitemap.campaignList.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/info-pages">https://panso.se/api/v1/webhallen/sitemaps/info-pages</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.infoPages.xml">https://www.webhallen.com/sitemap.infoPages.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/products">https://panso.se/api/v1/webhallen/sitemaps/products</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.product.xml">https://www.webhallen.com/sitemap.product.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/manufacturers">https://panso.se/api/v1/webhallen/sitemaps/manufacturers</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.manufacturer.xml">https://www.webhallen.com/sitemap.manufacturer.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://panso.se/api/v1/webhallen/sitemaps/articles">https://panso.se/api/v1/webhallen/sitemaps/articles</a>
+                                </code>
+                            </td>
+                            <td>mirror of</td>
+                            <td>
+                                <code>
+                                    <a class="text-reset"
+                                       href="https://www.webhallen.com/sitemap.article.xml">https://www.webhallen.com/sitemap.article.xml</a>
+                                </code>
+                            </td>
+                        </tr>
+                    </table>
+                    <h2 id="panso" class="display-2">Panso</h2>
+                    <p>We have the following APIs for Panso:</p>
                     <ul>
                         <li>
-                            Returns data about the processor with the given ID. 225916 is for <a class="text-reset"
+                            <code>
+                                <a class="text-reset" href="https://panso.se/api/v1/eans">https://panso.se/api/v1/eans</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>Returns a list of all EANs in the database. EAN and name for each product.</li>
+                        </ul>
+                        <li>
+                            <code>
+                                <a class="text-reset" href="https://panso.se/api/v1/eans/7340004613787">https://panso.se/api/v1/eans/7340004613787</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>Returns the name for the corresponding EAN.</li>
+                        </ul>
+                    </ul>
+                    <h2 id="intel" class="display-2">Intel</h2>
+                    <p>We have the following APIs for Intel:</p>
+                    <ul>
+                        <li>
+                            <code>
+                                <a class="text-reset" href="https://panso.se/api/v1/intel/filter">https://panso.se/api/v1/intel/filter</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>Returns the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html</li>
+                        </ul>
+                        <li>
+                            <code>
+                                <a class="text-reset" href="https://panso.se/api/v1/intel/processors">https://panso.se/api/v1/intel/processors</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>Returns a list of Intel processors.</li>
+                        </ul>
+                        <li>
+                            <code>
+                                <a class="text-reset"
+                                   href="https://panso.se/api/v1/intel/processors/225916">https://panso.se/api/v1/intel/processors/225916</a>
+                            </code>
+                        </li>
+                        <ul>
+                            <li>
+                                Returns data about the processor with the given ID. 225916 is for <a class="text-reset"
     href="https://ark.intel.com/content/www/us/en/ark/products/225916/intel-core-i9-10900k-processor-20m-cache-up-to-5-30-ghz.html">Intel Core i9-10900K Processor</a>.
-                        </li>
+                            </li>
+                        </ul>
                     </ul>
-                </ul>
-            </section>
-        </article>
+                </section>
+            </article>
+        </div>
     </div>
 {% endblock %}

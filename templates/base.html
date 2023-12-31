@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'style.css' %}">
         <!-- Head end -->
+        {% block extrahead %}{% endblock %}
     </head>
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->
@@ -40,6 +41,12 @@
                         <!-- API -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'products:api' %}">API</a>
+                        </li>
+                        <!-- | -->
+                        <li class="nav-item nav-link d-none d-md-block">|</li>
+                        <!-- Intel -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'intel:index' %}">Intel</a>
                         </li>
                     </ul>
                     <!-- Donate button, top right corner -->

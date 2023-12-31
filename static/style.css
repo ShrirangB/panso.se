@@ -3,3 +3,29 @@
     max-width: 1280px;
     padding: 0 15px;
 }
+
+#toc {
+    position: sticky;
+    top: 0;
+    padding-top: 1rem;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.toc-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.toc-level-2 {
+    margin-left: 1rem;
+}
+
+.toc-level-3 {
+    margin-left: 2rem;
+}
+
+.toc-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
