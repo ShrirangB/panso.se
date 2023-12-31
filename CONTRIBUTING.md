@@ -6,7 +6,6 @@ Welcome to panso.se! We appreciate your interest in contributing. All contributi
 
 You can also download the project as a zip file here: [panso.se-master.zip](https://codeload.github.com/TheLovinator1/panso.se/zip/refs/heads/master)
 
-
 1. Fork the repository.
 2. Clone your fork: `git clone https://github.com/TheLovinator1/panso.se`
 3. Create a new branch for your feature or bug fix: `git checkout -b feature-name`

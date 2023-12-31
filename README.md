@@ -22,34 +22,11 @@ The source code for [panso.se](https://panso.se).
 - Run `python manage.py test` to run all tests
     - Run `python manage.py test --keepdb` to keep the test database to speed up tests
 
-## Commands
-
-Remember to run `poetry shell` before running any commands.
-
-- `python manage.py scrape_webhallen`
-  - Downloads all the URLs from https://www.webhallen.com/sitemap.product.xml and downloads the JSON for each product from the Webhallen API.
-- `python manage.py scrape_sitemaps`
-  - Downloads the URLs from these sitemaps add adds them to the database:
-  - https://www.webhallen.com/sitemap.xml
-  - https://www.webhallen.com/sitemap.home.xml
-  - https://www.webhallen.com/sitemap.section.xml
-  - https://www.webhallen.com/sitemap.category.xml
-  - https://www.webhallen.com/sitemap.campaign.xml
-  - https://www.webhallen.com/sitemap.campaignList.xml
-  - https://www.webhallen.com/sitemap.infoPages.xml
-  - https://www.webhallen.com/sitemap.product.xml
-  - https://www.webhallen.com/sitemap.manufacturer.xml
-  - https://www.webhallen.com/sitemap.article.xml
-- `python manage.py rewrite_webhallen`
-  - Convert our Webhallen JSON to a Django model.
-- `python manage.py add_sections`
-  - Loop through all JSON objects and create a new Django model for each section.
-- `python manage.py add_eans`
-  - Loop through all JSON objects and create a new Django model for each [EAN](https://en.wikipedia.org/wiki/International_Article_Number).
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+We have a [CONTRIBUTING.md](CONTRIBUTING.md) file with more information.
 
 ## License
 

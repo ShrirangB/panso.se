@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from django.core.management.base import BaseCommand, CommandError
+from celery import shared_task
 from rich import print
 from rich.progress import track
 
@@ -8,6 +8,14 @@ from products.models import Eans
 from webhallen.models import WebhallenJSON
 
 
+@shared_task(
+    bind=True,
+    name="create_eans",
+    max_retries=7,
+    retry_backoff=5,
+    soft_time_limit=60,
+    queue="webhallen",
+)
 def create_eans() -> None:
     """Loop through all JSON objects and create eans."""
     eans_to_create: list[Eans] = []
@@ -32,20 +40,3 @@ def create_eans() -> None:
 
     Eans.objects.bulk_create(eans_to_create, update_fields=["name"], ignore_conflicts=True)
     print(f"Created {len(eans_to_create)} EANs")
-
-
-class Command(BaseCommand):
-    """Loop through all JSON objects and create eans."""
-
-    help: str = __doc__ or ""  # noqa: A003
-    requires_migrations_checks = True
-
-    def handle(self: BaseCommand, *args: str, **options: str) -> None:  # noqa: PLR6301, ARG002
-        """Handle the command."""
-        try:
-            create_eans()
-        except KeyboardInterrupt:
-            msg = "Got keyboard interrupt while creating eans"
-            raise CommandError(msg) from KeyboardInterrupt
-        except Exception as e:  # noqa: BLE001
-            raise CommandError(e) from e

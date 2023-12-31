@@ -6,13 +6,14 @@ from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
 from django.views.decorators.cache import cache_page
 
-from amd.scraping.processors import get_processor_data
+from intel.scrape_intel_ark import get_html, process_html
 from panso.api import api
 from panso.sitemaps import StaticViewSitemap, WebhallenJSONSitemap
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    get_processor_data()
+    for data in get_html():
+        process_html(processor_data=data)
 
     return JsonResponse(data={"status": "ok"}, status=200, safe=False)
 

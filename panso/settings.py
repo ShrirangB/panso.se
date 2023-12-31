@@ -86,6 +86,7 @@ INSTALLED_APPS: list[str] = [
     "products.apps.ProductsConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
+    "django_celery_results",  # https://github.com/celery/django-celery-results
     "django_tables2",  # https://github.com/jieter/django-tables2
     "django_filters",  # https://github.com/carltongibson/django-filter
     "simple_history",  # https://github.com/jazzband/django-simple-history
