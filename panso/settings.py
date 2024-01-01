@@ -86,6 +86,7 @@ INSTALLED_APPS: list[str] = [
     "products.apps.ProductsConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
+    "debug_toolbar",  # https://github.com/jazzband/django-debug-toolbar/
     "django_celery_results",  # https://github.com/celery/django-celery-results
     "django_tables2",  # https://github.com/jieter/django-tables2
     "django_filters",  # https://github.com/carltongibson/django-filter
@@ -105,6 +106,7 @@ INSTALLED_APPS: list[str] = [
 MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

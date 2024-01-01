@@ -30,6 +30,7 @@ django-filter = "^23.5"
 celery = {extras = ["redis"], version = "^5.3.6"}
 django-celery-results = "^2.5.1"
 flower = "^2.0.1"
+django-debug-toolbar = "^4.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.5.0"
