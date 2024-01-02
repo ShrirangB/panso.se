@@ -23,5 +23,9 @@ app_name: str = "intel"
 
 urlpatterns: list[URLPattern] = [
     path(route="", view=cached_view_as(Processor)(views.ProcessorsListView.as_view()), name="index"),
-    path(route="processors/<int:processor_id>", view=views.processor, name="detail"),
+    path(
+        route="processors/<int:processor_id>",
+        view=cached_view_as(Processor, extra="processor_id")(views.processor),
+        name="detail",
+    ),
 ]

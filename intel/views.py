@@ -12,7 +12,6 @@ See:
 
 from __future__ import annotations
 
-from functools import lru_cache
 from typing import ClassVar
 
 from cacheops import cached_view_as
@@ -48,7 +47,7 @@ def index(request: HttpRequest) -> HttpResponse:
     # TODO(TheLovinator): If a filter is empty we should remove it from the URL (e.g. /intel/processors?name=foo&lithography=) -> /intel/processors?name=foo # noqa: E501, TD003
     # Table filtering for django-filter
     f = ProcessorFilter(
-        request.GET,
+        data=request.GET,
         queryset=Processor.objects.all(),
     )
 
@@ -83,7 +82,6 @@ class ProcessorFilter(FilterSet):
         ]
 
 
-@lru_cache(maxsize=128)
 def render_field(verbose_name: str, help_text: str, field: str) -> str:
     """Render a field.
 
@@ -106,8 +104,7 @@ def render_field(verbose_name: str, help_text: str, field: str) -> str:
     """  # noqa: E501
 
 
-@lru_cache(maxsize=128)
-def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901
+def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901, PLR0912
     """Generate HTML for CPU information.
 
     Args:
@@ -134,12 +131,25 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901
         if verbose_name in excluded_names:
             continue
 
-        hertz_list: list[str] = ["base_frequency", "max_frequency", "max_turbo_frequency", "max_memory_speed"]
+        hertz_list: list[str] = [
+            "base_frequency",
+            "max_frequency",
+            "max_turbo_frequency",
+            "max_memory_speed",
+            "single_performance_core_turbo_frequency",
+            "single_efficiency_core_turbo_frequency",
+            "p_core_base_frequency",
+            "e_core_base_frequency",
+            "graphics_base_frequency",
+            "graphics_max_dynamic_frequency",
+            "turbo_boost_2_0_frequency",
+            "turbo_boost_max_technology_3_0_frequency",
+        ]
         if field.name in hertz_list:
             # Convert from hertz to gigahertz
             field_value = f"{int(field_value) / 1000000000} GHz"
 
-        size_list: list[str] = ["l1_cache", "l2_cache", "l3_cache", "max_memory_size"]
+        size_list: list[str] = ["l1_cache", "l3_cache", "max_memory_size"]
         if field.name in size_list:
             # Convert from bytes to terabytes if larger than 1000 GB
             if int(field_value) >= 1_000_000_000_000:  # noqa: PLR2004
@@ -153,10 +163,15 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901
             # Remove .0
             field_value = field_value.replace(".0", "")
 
-        watt_list: list[str] = ["tdp"]
+        watt_list: list[str] = ["tdp", "processor_base_power"]
         if field.name in watt_list:
             # Convert to watts
             field_value = f"{int(field_value)} W"
+
+        bandwidth_list: list[str] = ["max_memory_bandwidth"]
+        if field.name in bandwidth_list:
+            # Convert from bytes to gigabytes
+            field_value = f"{int(field_value) / 1000000000} GB/s"
 
         temperature_list: list[str] = [
             "digital_thermal_sensor_temperature_max",
@@ -189,7 +204,6 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901
     """
 
 
-@cached_view_as(Processor)
 def processor(request: HttpRequest, processor_id: int) -> HttpResponse:
     """/intel/processors/{processor_id} page.
 
@@ -201,6 +215,6 @@ def processor(request: HttpRequest, processor_id: int) -> HttpResponse:
         HttpResponse: The response.
     """
     template: Template = loader.get_template(template_name="intel/processor.html")
-    processor = Processor.objects.get(pk=processor_id)
+    processor: Processor = Processor.objects.get(pk=processor_id)
     context = {"processor": processor, "cpu_information": generate_cpu_information_html(processor)}
     return HttpResponse(content=template.render(context, request))

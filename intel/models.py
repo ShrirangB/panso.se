@@ -283,7 +283,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    maximum_turbo_power = models.IntegerField(
+    max_turbo_power = models.IntegerField(
         verbose_name="Maximum Turbo Power",
         help_text="The maximum turbo power. In watts.",
         blank=True,
@@ -377,6 +377,8 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
+    # TODO(TheLovinator): #48 Don't remove newline characters
+    # https://github.com/TheLovinator1/panso.se/issues/48
     memory_types = models.TextField(
         verbose_name="Memory Types",
         help_text="The memory types the processor supports.",

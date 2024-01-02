@@ -5,6 +5,9 @@ These are used in intel/scrape_intel_ark.py.
 
 from __future__ import annotations
 
+# TODO(TheLovinator): #47 Check so we don't have duplicates.
+# https://github.com/TheLovinator1/panso.se/issues/47
+
 mapping: dict[str, str] = {
     "ProductGroup": "product_collection",
     "MarketSegment": "vertical_segment",
@@ -136,7 +139,7 @@ bool_bois: dict[str, str] = {
 watt_bois: dict[str, str] = {
     "MaxTDP": "tdp",
     "ProcessorBasePower": "processor_base_power",
-    "MaxTurboPower": "max_turbo_frequency",
+    "MaxTurboPower": "max_turbo_power",
     "AssuredPowerMin": "min_assured_power",
     "AssuredPowerMax": "max_assured_power",
 }
