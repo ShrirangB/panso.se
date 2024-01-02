@@ -113,6 +113,7 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901, P
     Returns:
         str: The HTML.
     """
+    # TODO(TheLovinator): Move things out of this function into their own functions  # noqa: TD003
     # Get all fields from the Processor model
     fields = Processor._meta.get_fields()  # noqa: SLF001
 
