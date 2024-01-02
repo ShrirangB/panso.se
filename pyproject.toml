@@ -54,6 +54,7 @@ ignore = [
   "ERA001", # Found commented-out code
   "FIX002", # Line contains TODO
   "DJ001",  # Allow TextField to be nullable
+  "D104",   # Missing docstring in public package # TODO(TheLovinator): Fix this
   # TODO: #25 We should probably remove DJ001 and every model that has null=True
   # https://github.com/TheLovinator1/panso.se/issues/25
 ]
