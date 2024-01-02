@@ -327,6 +327,8 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
+    # TODO(TheLovinator): #49 This is only "View now" on the details page.
+    # https://github.com/TheLovinator1/panso.se/issues/49
     datasheet = models.URLField(
         verbose_name="Datasheet",
         help_text="The datasheet of the processor.",
