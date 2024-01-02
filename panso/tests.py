@@ -1,3 +1,10 @@
+"""This file gets run when you run the command `python manage.py test`.
+
+https://docs.djangoproject.com/en/5.0/topics/testing/
+"""
+# TODO(TheLovinator): #26 Add more tests.
+# https://github.com/TheLovinator1/panso.se/issues/26
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -18,7 +25,9 @@ class PansoTests(TestCase):
         response2: HttpResponse = self.client.get(path="/api/v1/docs/swagger")
         assert response2.status_code == 200
 
-    # TODO: Re-add admin page.
+    # TODO(TheLovinator): #32 Re-add admin page.
+    # https://github.com/TheLovinator1/panso.se/issues/32
+
     # def test_admin(self: PansoTests) -> None:
     #     """Test that the admin is available."""
     #     url: str = reverse("admin:index")

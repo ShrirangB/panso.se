@@ -1,3 +1,8 @@
+"""This file contains our Django settings that configuration our Django installation.
+
+https://docs.djangoproject.com/en/5.0/topics/settings/
+"""
+
 from __future__ import annotations
 
 import os
@@ -29,7 +34,8 @@ TIME_ZONE = "Europe/Stockholm"
 USE_TZ = True
 
 # Don't use Django's translation system
-# TODO: We should probably make the site available in Swedish at some point.
+# TODO(TheLovinator): #20 We should probably make the site available in Swedish at some point.
+# https://github.com/TheLovinator1/panso.se/issues/20
 USE_I18N = False
 
 # Decides which translation is served to all users.
@@ -86,9 +92,9 @@ INSTALLED_APPS: list[str] = [
     "products.apps.ProductsConfig",
     "webhallen.apps.WebhallenConfig",
     # Third party
+    "cacheops",  # https://github.com/Suor/django-cacheops
     "debug_toolbar",  # https://github.com/jazzband/django-debug-toolbar/
     "django_celery_results",  # https://github.com/celery/django-celery-results
-    "django_tables2",  # https://github.com/jieter/django-tables2
     "django_filters",  # https://github.com/carltongibson/django-filter
     "simple_history",  # https://github.com/jazzband/django-simple-history
     "whitenoise.runserver_nostatic",  # https://whitenoise.readthedocs.io/en/latest/index.html
@@ -153,8 +159,9 @@ TEMPLATES = [
 ]
 
 # Use Redis for caching
-# TODO: Use a Unix socket instead of TCP/IP for Redis.
-# TODO: Disallow specific commands. See https://redis.io/docs/management/security/#disallowing-specific-commands
+# TODO(TheLovinator): #21 Use a Unix socket instead of TCP/IP for Redis.  # noqa: TD003
+# TODO(TheLovinator): #21 Disallow specific commands. See https://redis.io/docs/management/security/#disallowing-specific-commands
+# https://github.com/TheLovinator1/panso.se/issues/21
 REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
 REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="")
 CACHES: dict[str, dict[str, str]] = {
@@ -165,7 +172,8 @@ CACHES: dict[str, dict[str, str]] = {
 }
 
 # The absolute path to the directory where 'python manage.py collectstatic' will copy static files for deployment
-# TODO: Should we store these on Cloudflare? Or at least in RAM to avoid disk I/O?
+# TODO(TheLovinator): #22 Should we store these on Cloudflare? Or at least in RAM to avoid disk I/O?
+# https://github.com/TheLovinator1/panso.se/issues/22
 STATIC_ROOT: Path = BASE_DIR / "staticfiles"
 STATICFILES_DIRS: list[Path] = [BASE_DIR / "static"]
 
@@ -174,4 +182,25 @@ STORAGES: dict[str, dict[str, str]] = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
-DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
+# TODO(TheLovinator): #21 Use a separate Redis database for cache and Celery?  # noqa: TD003
+# TODO(TheLovinator): #21 Cacheops has support for Sentinel, should we use it?
+# https://github.com/TheLovinator1/panso.se/issues/21
+CACHEOPS_REDIS: dict[str, str | int] = {
+    "host": REDIS_HOST,
+    "port": 6379,
+    "db": 1,
+    "socket_timeout": 3,
+    "password": REDIS_PASSWORD,
+}
+
+# Cache everything for a year by default
+CACHEOPS_DEFAULTS: dict[str, int] = {"timeout": 60 * 60 * 24 * 365}
+
+# Tell cacheops to degrade gracefully on redis fail
+CACHEOPS_DEGRADE_ON_FAILURE = True
+CACHEOPS: dict[str, dict[str, str]] = {
+    "products.*": {"ops": "all"},
+    "webhallen.*": {"ops": "all"},
+    "intel.*": {"ops": "all"},
+    "amd.*": {"ops": "all"},
+}

@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
-# TODO: We should not hardcode this list, but instead get it from the website
-# TODO: We should check if ids not on this list are on the website (and warn?)
+# TODO(TheLovinator): #27 We should not hardcode this list, but instead get it from the website
+# https://github.com/TheLovinator1/panso.se/issues/27
+
+# TODO(TheLovinator): #28 Warn if Intel adds or removes product from Intel ARK
+# https://github.com/TheLovinator1/panso.se/issues/28
+
+# TODO(TheLovinator): #29 Check every product ID that is not in this list if there exists a product with that ID
+# https://github.com/TheLovinator1/panso.se/issues/29
 product_ids: list[str] = [
     "77976",
     "77978",

@@ -1,3 +1,10 @@
+"""This file gets run when you run the command `python manage.py test`.
+
+https://docs.djangoproject.com/en/5.0/topics/testing/
+"""
+# TODO(TheLovinator): #26 Add more tests.
+# https://github.com/TheLovinator1/panso.se/issues/26
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -24,7 +31,8 @@ class WebhallenTests(TestCase):
 class WebhallenAPITests(TestCase):
     """Tests for the webhallen API."""
 
-    # TODO: Add product data to the test database and test the API endpoint.
+    # TODO(TheLovinator): #31 Add product data to the test database and test the API endpoint.
+    # https://github.com/TheLovinator1/panso.se/issues/31
     def test_api_products(self: WebhallenAPITests) -> None:
         """Test the API endpoint for all products."""
         response: HttpResponse = self.client.get("/api/v1/webhallen/products")
@@ -34,7 +42,8 @@ class WebhallenAPITests(TestCase):
 
     def test_api_product(self: WebhallenAPITests) -> None:
         """Test the API endpoint for a single product."""
-        # TODO: Implement this test. See the comment at the top of this file.
+        # TODO(TheLovinator): #31 Add product data to the test database and test the API endpoint.
+        # https://github.com/TheLovinator1/panso.se/issues/31
 
     def test_api_sitemaps_root(self: WebhallenAPITests) -> None:
         """Test the API endpoint for the root sitemap."""

@@ -1,3 +1,20 @@
+"""Celery tasks for Webhallen.
+
+Tasks:
+    - scrape_sitemap_root
+        Scrape the root sitemap.
+    - scrape_sitemap
+        Scrape a sitemap.xml and store the data in the specified model.
+    - scrape_product
+        Scrape a single product from Webhallen API and return the JSON.
+    - scrape_products
+        Scrape products from Webhallen sitemap and save them to the database.
+    - create_sections
+        Loop through all JSON objects and create sections.
+    - scrape_sitemaps
+        Scrape all sitemaps.
+"""
+
 from __future__ import annotations
 
 import re
@@ -68,7 +85,7 @@ def scrape_sitemap(url: str, model_class: type[models.Model], model_name: str) -
     print(f"Done scraping {model_name}, {len(sitemap_objects)} urls found")
 
 
-# TODO: Remove Rich and use logging instead
+# TODO(TheLovinator): Remove Rich and use logging instead  # noqa: TD003
 err_console = Console(stderr=True)
 
 
@@ -118,8 +135,8 @@ def scrape_product(product_id: str, product_url: str) -> dict:
 )
 def scrape_products() -> None:
     """Scrape products from Webhallen sitemap and save them to the database."""
-    # TODO: Use Celery jobs to scrape products in parallel
-    # TODO: Use Celery Beat to scrape products every 24 hours
+    # TODO(TheLovinator): #39 Use Celery Beat to scrape products every 24 hours
+    # https://github.com/TheLovinator1/panso.se/issues/39
     sitemap = "https://www.webhallen.com/sitemap.product.xml"
     sm = SiteMapParser(sitemap)
     json_exporter = JSONExporter(sm)
@@ -197,7 +214,8 @@ def get_section_icon_url(icon: str | None, name: str | None) -> str | None:
     Returns:
         str: URL to section icon
     """
-    # TODO: Save icon to disk and return URL?
+    # TODO(TheLovinator): #40 Save icon to disk and return URL?
+    # https://github.com/TheLovinator1/panso.se/issues/40
     icon_hex_color: str = "1A1A1D"
     if not icon:
         if name != "Presentkort":
@@ -281,7 +299,8 @@ def create_sections() -> None:
 )
 def scrape_sitemaps() -> None:
     """Scrape all sitemaps."""
-    # TODO: Should we use Celery jobs instead of loop?
+    # TODO(TheLovinator): #41 Should we use Celery jobs instead of loop?
+    # https://github.com/TheLovinator1/panso.se/issues/41
     sitemaps = [
         ("https://www.webhallen.com/sitemap.product.xml", SitemapProduct, "sitemap.product.xml"),
         ("https://www.webhallen.com/sitemap.manufacturer.xml", SitemapManufacturer, "sitemap.manufacturer.xml"),

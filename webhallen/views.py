@@ -1,3 +1,12 @@
+"""This module contains the views for the webhallen application.
+
+Paths:
+    /webhallen/ index page.
+
+See:
+    https://docs.djangoproject.com/en/5.0/topics/http/views/
+"""
+
 from __future__ import annotations
 
 from django.http import HttpRequest, HttpResponse

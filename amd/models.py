@@ -1,3 +1,10 @@
+"""AMD models.
+
+Current models:
+    - Processor
+        A AMD processor.
+"""
+
 from __future__ import annotations
 
 import typing
@@ -215,6 +222,8 @@ class Processor(models.Model):
     )
 
     class Meta:
+        """https://docs.djangoproject.com/en/5.0/ref/models/options/."""
+
         ordering: typing.ClassVar[list[str]] = ["launch_date"]
         verbose_name: str = "Processor"
         verbose_name_plural: str = "Processors"

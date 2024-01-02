@@ -1,9 +1,19 @@
+"""The models for the Intel app.
+
+This file contains the models for the Intel app. The models are:
+    - ArkFilterData
+        The data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html.
+    - Processor
+        A Intel processor.
+"""
+
 from __future__ import annotations
 
 import typing
 
 from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 from simple_history.models import HistoricalRecords
 
 
@@ -198,7 +208,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    # TODO: Should this be converted to a BigIntegerField?
+    # TODO(TheLovinator): Should this be converted to a BigIntegerField?  # noqa: TD003
     upi_speed = models.TextField(
         verbose_name="UPI Speed",
         help_text="The UPI speed of the processor. In giga-transfers per second.",
@@ -260,7 +270,7 @@ class Processor(models.Model):
         null=True,
     )
 
-    # TODO: Is this the same as Intel Deep Learning Boost on CPU?
+    # TODO(TheLovinator): Is this the same as Intel Deep Learning Boost on CPU?  # noqa: TD003
     deep_learning_boost = models.BooleanField(
         verbose_name="Intel Deep Learning Boost (Intel DL Boost)",
         help_text="Whether Intel Deep Learning Boost (Intel DL Boost) is supported.",
@@ -822,7 +832,7 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    # TODO: Is this the same as the other QuickAssist?
+    # TODO(TheLovinator): Is this the same as the other QuickAssist?  # noqa: TD003
     quick_assist_technology = models.BooleanField(
         verbose_name="Quick Assist Technology",
         help_text="Whether quick assist technology is supported.",
@@ -879,8 +889,8 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    # TODO: Intel.com has "Newer processors such as 11th Generation Intel® Core™ Processors consider the Execute Disable Bit feature to be Legacy and thus it may not be listed in the processor specification page (ARK). However, it is still supported." # noqa: E501
-    #   Should we set this to True for all newer processors?
+    # TODO(TheLovinator): #45 Should we set this to True for all newer processors?
+    # https://github.com/TheLovinator1/panso.se/issues/45
     execute_disable_bit = models.BooleanField(
         verbose_name="Execute Disable Bit",
         help_text="The Execute Disable Bit is a hardware-based security feature that can reduce exposure to viruses and malicious-code attacks, and prevent harmful software from executing and propagating on the server or network.",  # noqa: E501
@@ -929,9 +939,8 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    # TODO: Software Guard Extensions is "Yes with Intel® SPS" or "No"
-    #   Should this be a boolean and a separate field with what it supports?
-    #   Is it always with Intel SPS?
+    # TODO(TheLovinator): #46 Should this be a boolean and a separate field with what it supports?
+    # https://github.com/TheLovinator1/panso.se/issues/46
     software_guard_extensions = models.TextField(
         verbose_name="Intel Software Guard Extensions (Intel SGX)",
         help_text="Whether Intel Software Guard Extensions (Intel SGX) is supported.",
@@ -1160,7 +1169,6 @@ class Processor(models.Model):
         blank=True,
         null=True,
     )
-    # TODO: Should this be a float?
     directx_support = models.TextField(
         verbose_name="DirectX Support",
         help_text="The DirectX support the processor has.",
@@ -1258,5 +1266,10 @@ class Processor(models.Model):
         return f"{self.pk} - {self.name}"
 
     def get_absolute_url(self: Processor) -> str:
+        """Return absolute URL for a processor."""
+        return self.cached_absolute_url
+
+    @cached_property
+    def cached_absolute_url(self: Processor) -> str:
         """Return absolute URL for a processor."""
         return reverse("intel:detail", kwargs={"processor_id": self.pk})

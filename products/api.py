@@ -1,3 +1,12 @@
+"""We use Django Ninja to create a REST API for the data we have scraped from Intel's website.
+
+See https://django-ninja.dev/ for more information.
+
+API endpoints:
+- /api/v1/eans
+- /api/v1/eans/{ean}
+"""
+
 from __future__ import annotations
 
 from django.http import Http404, HttpRequest, JsonResponse
@@ -7,6 +16,9 @@ from ninja import Router
 from products.models import Eans
 
 router = Router()
+
+# TODO(TheLovinator): #30 We should add more OpenAPI documentation for each endpoint.
+# https://github.com/TheLovinator1/panso.se/issues/30
 
 
 @router.get(

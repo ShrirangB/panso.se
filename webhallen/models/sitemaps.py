@@ -1,9 +1,27 @@
+"""Models for Webhallen sitemaps.
+
+Models:
+    - SitemapRoot
+    - SitemapHome
+    - SitemapSection
+    - SitemapCategory
+    - SitemapCampaign
+    - SitemapCampaignList
+    - SitemapInfoPages
+    - SitemapProduct
+    - SitemapManufacturer
+    - SitemapArticle
+"""
+
 from __future__ import annotations
 
 import typing
 
 from django.db import models
 from simple_history.models import HistoricalRecords
+
+# TODO(TheLovinator): #43 We should have one endpoint for sitemap with Webhallen's URLs and one with our own internal URLs. # noqa: E501
+# https://github.com/TheLovinator1/panso.se/issues/43
 
 
 class SitemapRoot(models.Model):
@@ -42,7 +60,7 @@ class SitemapRoot(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -83,7 +101,7 @@ class SitemapHome(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -124,7 +142,7 @@ class SitemapSection(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -165,7 +183,7 @@ class SitemapCategory(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -206,7 +224,7 @@ class SitemapCampaign(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -247,7 +265,7 @@ class SitemapCampaignList(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -288,7 +306,7 @@ class SitemapInfoPages(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -329,7 +347,7 @@ class SitemapProduct(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -370,7 +388,7 @@ class SitemapManufacturer(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc
 
 
@@ -411,5 +429,5 @@ class SitemapArticle(models.Model):
         Returns:
             str: URL
         """
-        # TODO: Should this go to something local?
+        # TODO(TheLovinator): Should this go to something local?  # noqa: TD003
         return self.loc

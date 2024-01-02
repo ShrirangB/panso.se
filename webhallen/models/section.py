@@ -1,3 +1,11 @@
+"""This module contains the model for the scraped Webhallen sections.
+
+Section examples:
+    https://www.webhallen.com/se/section/18-Fyndvaror
+    https://www.webhallen.com/se/section/3-Datorer-Tillbehor
+    https://www.webhallen.com/se/section/8-Datorkomponenter
+"""
+
 from __future__ import annotations
 
 import typing

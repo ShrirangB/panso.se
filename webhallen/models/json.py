@@ -1,3 +1,5 @@
+"""Model for Webhallen JSON data."""
+
 from __future__ import annotations
 
 import typing

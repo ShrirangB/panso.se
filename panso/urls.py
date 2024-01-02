@@ -1,3 +1,26 @@
+"""Where all the URL routes are defined.
+
+Contains the following routes:
+    - /admin/
+        - Admin page
+    - /
+        - Home page
+    - /api/v1/
+        - API endpoints
+    - /webhallen/
+        - Things scraped from https://www.webhallen.com/
+    - /intel/
+        - Things scraped from https://ark.intel.com/
+    - /sitemap.xml
+        - Our main sitemap, contains links to all other sitemaps.
+    - /sitemap-webhallen.xml
+        - Sitemap for Webhallen. Add more sections in panso/sitemaps.py
+    - /testboi/
+        - So we can test stuff without creating a new URL route.
+See:
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+"""
+
 from __future__ import annotations
 
 from django.contrib.sitemaps import Sitemap
@@ -23,11 +46,15 @@ sitemaps: dict[str, type[Sitemap]] = {
     "webhallen": WebhallenJSONSitemap,
 }
 
-# TODO: Cache more views.
+# TODO(TheLovinator): #33 Cache more views.
+# https://github.com/TheLovinator1/panso.se/issues/33
 urlpatterns: list = [
+    # TODO(TheLovinator): #32 Re-add admin page.
+    # https://github.com/TheLovinator1/panso.se/issues/32
     # /admin/
     # Admin page
-    # path(route="admin/", view=admin.site.urls),     # TODO: Re-add admin page.
+    # path(route="admin/", view=admin.site.urls),
+    #
     # /
     # Home page
     path(

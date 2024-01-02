@@ -1,3 +1,32 @@
+"""URL Configuration for /.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+
+
+URLs:
+    - /
+        - The home page.
+    - /privacy
+        - The privacy policy page.
+    - /terms
+        - The license page. Can be found by clicking "CC BY-SA 4.0" in the footer.
+    - /contact
+        - The contact page.
+    - /api
+        - The API documentation page.
+    - /robots.txt
+        - The robots.txt page.
+    - /favicon.ico
+        - The favicon.ico icon.
+    - /icon-512.png
+        - The 512x512 logo. Used for manifest.webmanifest.
+    - /icon-192.png
+        - The 192x192 logo. Used for manifest.webmanifest.
+    - /bot-ip-list.txt
+        - The list of IP addresses for web crawlers. Used for Cloudflare Verified Bots.
+"""
+
 from __future__ import annotations
 
 from django.urls import URLPattern, path
@@ -6,6 +35,10 @@ from django.views.generic.base import RedirectView
 from . import views
 
 app_name: str = "products"
+
+
+# TODO(TheLovinator): #33 We should cache the views.
+# https://github.com/TheLovinator1/panso.se/issues/33
 
 urlpatterns: list[URLPattern] = [
     path(route="", view=views.index, name="index"),

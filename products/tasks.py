@@ -1,3 +1,10 @@
+"""Celery tasks for our main panso.se application.
+
+Tasks:
+    - create_eans
+        Loop through all JSON objects and create eans.
+"""
+
 from __future__ import annotations
 
 from celery import shared_task

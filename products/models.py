@@ -1,3 +1,10 @@
+"""Models that are used in the main panso.se application.
+
+Models:
+    - Eans (https://en.wikipedia.org/wiki/International_Article_Number)
+        All our EANs in our database and the corresponding product name.
+"""
+
 from __future__ import annotations
 
 from django.db import models

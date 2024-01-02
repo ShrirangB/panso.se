@@ -1,3 +1,10 @@
+"""Celery tasks for the intel app.
+
+Tasks:
+    scrape_intel_ark: Scrape https://www.intel.com/content/www/us/en/products/compare.html.
+    get_data_from_ark: Get the data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html.
+"""
+
 from __future__ import annotations
 
 from celery import shared_task

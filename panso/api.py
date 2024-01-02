@@ -1,3 +1,17 @@
+"""We use Django Ninja to create a REST API for the data we have scraped from Intel's website.
+
+This contains our API client.
+
+Each Django app has its own router that we add here.
+
+We have docs here:
+    https://panso.se/api
+    https://panso.se/api/v1/docs/redoc
+    https://panso.se/api/v1/docs/swagger
+
+See https://django-ninja.dev/ for more information.
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal

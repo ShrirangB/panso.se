@@ -1,3 +1,36 @@
+"""We use Django Ninja to create a REST API for the data we have scraped from Intel's website.
+
+See https://django-ninja.dev/ for more information.
+
+API endpoints:
+- /api/v1/webhallen/products
+    - Return all Webhallen products as JSON.
+- /api/v1/webhallen/products/{product_id}
+    - Return Webhallen product as JSON.
+- /api/v1/webhallen/sitemaps/root
+    - Return all URLs from https://www.webhallen.com/sitemap.xml.
+- /api/v1/webhallen/sitemaps/home
+    - Return all URLs from https://www.webhallen.com/sitemap.home.xml.
+- /api/v1/webhallen/sitemaps/sections
+    - Return all URLs from https://www.webhallen.com/sitemap.section.xml.
+- /api/v1/webhallen/sitemaps/categories
+    - Return all URLs from https://www.webhallen.com/sitemap.category.xml.
+- /api/v1/webhallen/sitemaps/campaigns
+    - Return all URLs from https://www.webhallen.com/sitemap.campaign.xml.
+- /api/v1/webhallen/sitemaps/campaign-lists
+    - Return all URLs from https://www.webhallen.com/sitemap.campaignList.xml.
+- /api/v1/webhallen/sitemaps/info-pages
+    - Return all URLs from https://www.webhallen.com/sitemap.infoPages.xml.
+- /api/v1/webhallen/sitemaps/products
+    - Return all URLs from https://www.webhallen.com/sitemap.products.xml.
+- /api/v1/webhallen/sitemaps/manufacturers
+    - Return all URLs from https://www.webhallen.com/sitemap.manufacturer.xml.
+- /api/v1/webhallen/sitemaps/articles
+    - Return all URLs from https://www.webhallen.com/sitemap.article.xml.
+- /api/v1/webhallen/sections
+    - Return all sections.
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -27,6 +60,9 @@ if TYPE_CHECKING:
     from django.db import models
 
 router = Router()
+
+# TODO(TheLovinator): #30 We should add more OpenAPI documentation for each endpoint.
+# https://github.com/TheLovinator1/panso.se/issues/30
 
 
 @router.get(

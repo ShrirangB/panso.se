@@ -1,3 +1,5 @@
+"""Scrape Intel ARK and create/update a database entry for each processor."""
+
 from __future__ import annotations
 
 import re
@@ -79,8 +81,8 @@ def get_recommended_customer_price(node_attributes: dict[str, str | None]) -> in
         int: The recommended customer price.
     """
     if "class" in node_attributes:
-        # TODO: Fix this for $294.00-$304.00
-        # https://www.intel.com/content/www/us/en/products/sku/236778.html
+        # TODO(TheLovinator): #34 Fix this for $294.00-$304.00
+        # https://github.com/TheLovinator1/panso.se/issues/34
         class_value: str | None = node_attributes["class"]
         price_regex = r"\$\d+.\d+"
         if class_value and class_value.startswith("$") and re.match(pattern=price_regex, string=class_value):
@@ -169,8 +171,11 @@ def get_data_keys(node: LexborNode, _id: str, defaults: dict) -> dict:
     Returns:
         dict: The defaults.
     """
-    # TODO: Add OnDemandAvailableUpgrade
-    # TODO: We should check if we are missing any data keys on the product page or if we have empty values in our model.
+    # TODO(TheLovinator): #36 Add OnDemandAvailableUpgrade
+    # https://github.com/TheLovinator1/panso.se/issues/36
+
+    # TODO(TheLovinator): #38 We should check if we are missing any data keys on the product page or if we have empty values in our model. # noqa: E501
+    # https://github.com/TheLovinator1/panso.se/issues/38
     if "data-key" not in node.attributes:
         return defaults
 
@@ -282,10 +287,10 @@ def process_html(processor_data: ProcessorData) -> None:
                 with transaction.atomic():
                     processor, created = Processor.objects.update_or_create(product_id=_id, defaults=defaults)
                     if created:
-                        # TODO: Send email/Discord message
+                        # TODO(TheLovinator): #37 Send email/Discord message
+                        # https://github.com/TheLovinator1/panso.se/issues/37
                         print(f"Added {processor}")
             except Error as e:
-                # TODO: Send email/Discord message
                 print(f"Could not add {_id}")
                 print(e)
                 continue

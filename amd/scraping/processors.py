@@ -1,3 +1,5 @@
+"""Scrape all processor data from AMD's website."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -12,6 +14,9 @@ if TYPE_CHECKING:
     from httpx import Response
 
 storage = hishel.FileStorage(ttl=60 * 60 * 24 * 7)  # 1 week
+
+# TODO(TheLovinator): #35 We should email/send Discord webhook if AMD adds or removes product from their site.
+# https://github.com/TheLovinator1/panso.se/issues/35
 
 
 def get_processor_data() -> None:  # noqa: C901, PLR0915, PLR0912
@@ -43,8 +48,9 @@ def get_processor_data() -> None:  # noqa: C901, PLR0915, PLR0912
                 continue
 
             if "view-name-table-column" in header:
-                # TODO: Remove (OEM Only) from the name?
-                # TODO: There are several processors with "Microsoft Surface® Edition" in the name. Should we remove that and add it as a separate field?  # noqa: E501
+                # TODO(TheLovinator): #24 Remove (OEM Only) from the name?  # noqa: TD003
+                # TODO(TheLovinator): #24 Remove "Microsoft Surface® Edition" from the name?
+                # https://github.com/TheLovinator1/panso.se/issues/24
                 defaults["name"] = cell.text(strip=True) or None
 
             elif "view-product-type-table-column" in header:

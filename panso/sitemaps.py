@@ -1,3 +1,14 @@
+"""This file contains Django sitemap classes for generating XML sitemaps in a web application.
+
+WebhallenJSONSitemap:
+    Sitemap for Webhallen JSON for each product.
+StaticViewSitemap:
+    Static views. For example, the index page, about page, and contact page.
+
+Docs:
+    https://docs.djangoproject.com/en/5.0/ref/contrib/sitemaps/
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
@@ -62,7 +73,8 @@ class StaticViewSitemap(Sitemap):
         Returns:
             list[str]: A list of url names for views to include in this sitemap.
         """
-        # TODO: Add redoc and swagger
+        # TODO(TheLovinator): #23 Add redoc and swagger docs to sitemap
+        # https://github.com/TheLovinator1/panso.se/issues/23
         return [
             "products:index",
             "products:privacy",

@@ -1,4 +1,10 @@
-# Create your tests here.
+"""This file gets run when you run the command `python manage.py test`.
+
+https://docs.djangoproject.com/en/5.0/topics/testing/
+"""
+# TODO(TheLovinator): #26 Add more tests.
+# https://github.com/TheLovinator1/panso.se/issues/26
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -24,7 +30,8 @@ if TYPE_CHECKING:
 class IntelTests(TestCase):
     """Tests things for the Intel app."""
 
-    # TODO: Test that we get the correct data from the API.
+    # TODO(TheLovinator): #31 Add Intel CPUs to the test database and test the API endpoint.
+    # https://github.com/TheLovinator1/panso.se/issues/31
     def test_get_filter_data(self: IntelTests) -> None:
         """Test that the filter data is available."""
         response: HttpResponse = self.client.get("/api/v1/intel/filter")

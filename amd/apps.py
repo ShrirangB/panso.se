@@ -1,3 +1,5 @@
+"""Django application configuration for AMD."""
+
 from django.apps import AppConfig
 
 

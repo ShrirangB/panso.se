@@ -1,3 +1,16 @@
+"""We use Django Ninja to create a REST API for the data we have scraped from Intel's website.
+
+See https://django-ninja.dev/ for more information.
+
+API endpoints:
+- /api/v1/intel/filter
+    - Return the filter data from https://ark.intel.com/content/www/us/en/ark/search/featurefilter.html.
+- /api/v1/intel/processors
+    - Return a list of ids for all processors. You can use this to get the data for all processors with the /processors/{id} endpoint.
+- /api/v1/intel/processors/{product_id}
+    - Return the data for a specific processor.
+"""  # noqa: E501
+
 from __future__ import annotations
 
 from typing import Any
@@ -9,6 +22,9 @@ from ninja import Router
 from intel.models import ArkFilterData, Processor
 
 router = Router()
+
+# TODO(TheLovinator): #30 We should add more OpenAPI documentation for each endpoint.
+# https://github.com/TheLovinator1/panso.se/issues/30
 
 
 @router.get(

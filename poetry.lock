@@ -497,6 +497,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-cacheops"
+version = "7.0.2"
+description = "A slick ORM cache with automatic granular event-driven invalidation for Django."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-cacheops-7.0.2.tar.gz", hash = "sha256:77a37c73d7facfc7299365ed66a12be7a487dd745dd86c1d33ca2ebfd3b32878"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+funcy = ">=1.8,<3.0"
+redis = ">=3.0.0"
+
+[[package]]
 name = "django-celery-results"
 version = "2.5.1"
 description = "Celery result backends for Django."
@@ -570,23 +585,6 @@ files = [
     {file = "django-simple-history-3.4.0.tar.gz", hash = "sha256:19bd1a87e1e2eba34dfd43eab1fcf2da5752221f343232f2372b2121c7e3b97d"},
     {file = "django_simple_history-3.4.0-py3-none-any.whl", hash = "sha256:992dcca3cddc0b67b470fc91f77292e2d2a6010d37c9eac3536e9d80e8754032"},
 ]
-
-[[package]]
-name = "django-tables2"
-version = "2.7.0"
-description = "Table/data-grid framework for Django"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-tables2-2.7.0.tar.gz", hash = "sha256:4113fcc575eb438a12e83a4d4ea01452e4800d970e8bdd0e4122ac171af1900d"},
-    {file = "django_tables2-2.7.0-py2.py3-none-any.whl", hash = "sha256:99e06d966ca8ac69fd74092eb45c79a280dd5ca0ccb81395d96261f62128e1af"},
-]
-
-[package.dependencies]
-Django = ">=3.2"
-
-[package.extras]
-tablib = ["tablib"]
 
 [[package]]
 name = "djlint"
@@ -667,6 +665,17 @@ humanize = "*"
 prometheus-client = ">=0.8.0"
 pytz = "*"
 tornado = ">=5.0.0,<7.0.0"
+
+[[package]]
+name = "funcy"
+version = "2.0"
+description = "A fancy and practical functional tools"
+optional = false
+python-versions = "*"
+files = [
+    {file = "funcy-2.0-py2.py3-none-any.whl", hash = "sha256:53df23c8bb1651b12f095df764bfb057935d49537a56de211b098f4c79614bb0"},
+    {file = "funcy-2.0.tar.gz", hash = "sha256:3963315d59d41c6f30c04bc910e10ab50a3ac4a225868bfa96feed133df075cb"},
+]
 
 [[package]]
 name = "greenlet"
@@ -2568,4 +2577,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "8454f1ab9b12edf8204f55380281947a16e9a5408b47adb1267cdc0ca4fd543d"
+content-hash = "38fd098bfd93e1bb021e30961e2f417e693a26887e508096b9222b5bab958317"

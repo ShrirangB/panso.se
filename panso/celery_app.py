@@ -1,3 +1,8 @@
+"""TL;DR: Celery is a distributed task queue system for handling asynchronous tasks in Python.
+
+We use it for web scraping and other tasks that take a long time to complete and need to be run in the background.
+"""
+
 import os
 
 from celery import Celery

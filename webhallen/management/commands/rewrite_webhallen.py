@@ -1,3 +1,5 @@
+"""Convert Webhallen product JSON to a Django model."""
+
 from __future__ import annotations
 
 import datetime
@@ -64,7 +66,8 @@ def convert_timestamp_to_datetime(timestamp: int | None, date_format: str | None
         return datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC).strftime("%B %Y")
 
     if date_format == "Q \\k\\v\\a\\r\\t\\a\\l\\e\\t Y":
-        # TODO: Implement this
+        # TODO(TheLovinator): #44 Implement this
+        # https://github.com/TheLovinator1/panso.se/issues/44
         err_console.print(f"Found Q kvartalet Y for {timestamp}")
     err_console.print(f"Unknown date format: {date_format}")
     return ""

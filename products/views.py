@@ -1,3 +1,24 @@
+"""The views for the main panso.se application.
+
+URLs:
+    - index /
+        - The index page.
+    - privacy /privacy
+        - The privacy policy page.
+    - terms /terms
+        - The license page. Can be found by clicking "CC BY-SA 4.0" in the footer.
+    - contact /contact
+        - The contact page.
+    - api_view /api
+        - The API documentation page.
+    - robots_txt /robots.txt
+        - The robots.txt page.
+    - get_ip /bot-ip-list.txt
+        - The list of IP addresses for web crawlers. Used for Cloudflare Verified Bots.
+    - about /about
+        - The about page.
+"""
+
 from __future__ import annotations
 
 from functools import lru_cache

@@ -1,3 +1,10 @@
+"""This file gets run when you run the command `python manage.py test`.
+
+https://docs.djangoproject.com/en/5.0/topics/testing/
+"""
+# TODO(TheLovinator): #26 Add more tests.
+# https://github.com/TheLovinator1/panso.se/issues/26
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -96,7 +103,9 @@ class PansoAPITests(TestCase):
         assert response["Content-Type"] == "application/json"
         assert response.json() == {"error": "EAN with ID 1 not found."}
 
-        # TODO: Implement this when we have some EANs in the test database.
+        # TODO(TheLovinator): #31 Add EANs to the test database and test the API endpoint.
+        # https://github.com/TheLovinator1/panso.se/issues/31
+
         # response2: HttpResponse = self.client.get("/api/v1/eans/5907814951762")
         # assert response2.status_code == 200
         # assert response2["Content-Type"] == "application/json"

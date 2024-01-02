@@ -1,3 +1,5 @@
+"""Django application configuration for Webhallen."""
+
 from django.apps import AppConfig
 
 

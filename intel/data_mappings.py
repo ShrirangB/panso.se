@@ -1,3 +1,8 @@
+"""We use these dictionaries to map Intel's key on the website to our key in the database.
+
+These are used in intel/scrape_intel_ark.py.
+"""
+
 from __future__ import annotations
 
 mapping: dict[str, str] = {

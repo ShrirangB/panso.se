@@ -1,3 +1,5 @@
+"""Django application configuration for Intel."""
+
 from django.apps import AppConfig
 
 
