@@ -50,7 +50,13 @@ sitemaps: dict[str, type[Sitemap]] = {
 }
 
 admin_page_path: str = os.getenv(key="ADMIN_PAGE_PATH", default="admin/")
+
+# Remove leading slash if present
 admin_page_path = admin_page_path.lstrip("/")
+
+# Add trailing slash if missing
+if not admin_page_path.endswith("/"):
+    admin_page_path = admin_page_path + "/"
 
 # TODO(TheLovinator): #33 Cache more views.
 # https://github.com/TheLovinator1/panso.se/issues/33
