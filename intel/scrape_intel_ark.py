@@ -102,7 +102,7 @@ def get_data_from_html(html: str, _id: str) -> list[LexborNode] | None:
         list[LexborNode]: The data from the HTML.
     """
     parser: LexborHTMLParser = LexborHTMLParser(html=html)
-    selector = f'[data-product-id="{_id}"]'
+    selector: str = f'[data-product-id="{_id}"]'
     data: list[LexborNode] = parser.css(selector)
     if not data:
         print(f"Could not find {_id}")

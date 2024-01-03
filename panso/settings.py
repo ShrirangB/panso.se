@@ -198,9 +198,11 @@ CACHEOPS_DEFAULTS: dict[str, int] = {"timeout": 60 * 60 * 24 * 365}
 
 # Tell cacheops to degrade gracefully on redis fail
 CACHEOPS_DEGRADE_ON_FAILURE = True
-CACHEOPS: dict[str, dict[str, str]] = {
+CACHEOPS = {
+    "auth.*": {"ops": ("fetch", "get")},
     "products.*": {"ops": "all"},
     "webhallen.*": {"ops": "all"},
     "intel.*": {"ops": "all"},
     "amd.*": {"ops": "all"},
+    "*.*": {},
 }

@@ -43,11 +43,20 @@ class WebhallenSection(models.Model):
         excluded_fields=["created", "updated"],
     )
 
+    # TODO(TheLovinator): #50 Fix meta_title being empty
+    # https://github.com/TheLovinator1/panso.se/issues/50
     meta_title = models.TextField(null=True, blank=True, help_text="Meta title")
+
+    # TODO(TheLovinator): #51 This is False for all sections, please fix.
+    # https://github.com/TheLovinator1/panso.se/issues/51
     active = models.BooleanField(null=True, help_text="Active")
+
     icon = models.TextField(null=True, blank=True, help_text="Icon")
     icon_url = models.URLField(null=True, blank=True, help_text="Icon URL")
     name = models.TextField(null=True, blank=True, help_text="Name")
+
+    # TODO(TheLovinator): #52 URL is broken for everything except Presentkort
+    # https://github.com/TheLovinator1/panso.se/issues/52
     url = models.URLField(null=True, blank=True, help_text="URL")
 
     class Meta:

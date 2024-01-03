@@ -20,6 +20,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_PAGE_PATH=${ADMIN_PAGE_PATH}
     volumes:
       - /mnt/Fourteen/Docker/Panso/staticfiles:/app/staticfiles
   celery:
@@ -43,6 +44,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_PAGE_PATH=${ADMIN_PAGE_PATH}
     volumes:
       - /mnt/Fourteen/Docker/Panso/staticfiles:/app/staticfiles
     command: celery -A panso worker -l INFO
@@ -67,6 +69,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_PAGE_PATH=${ADMIN_PAGE_PATH}
     volumes:
       - /mnt/Fourteen/Docker/Panso/staticfiles:/app/staticfiles
     command: celery -A panso flower

@@ -23,6 +23,9 @@ See:
 
 from __future__ import annotations
 
+import os
+
+from django.contrib import admin
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
@@ -46,15 +49,15 @@ sitemaps: dict[str, type[Sitemap]] = {
     "webhallen": WebhallenJSONSitemap,
 }
 
+admin_page_path: str = os.getenv(key="ADMIN_PAGE_PATH", default="admin/")
+admin_page_path = admin_page_path.lstrip("/")
+
 # TODO(TheLovinator): #33 Cache more views.
 # https://github.com/TheLovinator1/panso.se/issues/33
 urlpatterns: list = [
-    # TODO(TheLovinator): #32 Re-add admin page.
-    # https://github.com/TheLovinator1/panso.se/issues/32
     # /admin/
     # Admin page
-    # path(route="admin/", view=admin.site.urls),
-    #
+    path(route=admin_page_path, view=admin.site.urls),
     # /
     # Home page
     path(
