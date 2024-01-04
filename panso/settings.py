@@ -164,12 +164,22 @@ TEMPLATES = [
 # https://github.com/TheLovinator1/panso.se/issues/21
 REDIS_PASSWORD: str = os.getenv(key="REDIS_PASSWORD", default="")
 REDIS_HOST: str = os.getenv(key="REDIS_HOST", default="")
-CACHES: dict[str, dict[str, str]] = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379",
-    },
-}
+
+# Don't cache if running in debug mode
+# https://docs.djangoproject.com/en/5.0/topics/cache/#dummy-caching-for-development
+if not DEBUG:
+    CACHES: dict[str, dict[str, str]] = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379",
+        },
+    }
+else:
+    CACHES: dict[str, dict[str, str]] = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        },
+    }
 
 # The absolute path to the directory where 'python manage.py collectstatic' will copy static files for deployment
 # TODO(TheLovinator): #22 Should we store these on Cloudflare? Or at least in RAM to avoid disk I/O?
@@ -206,3 +216,6 @@ CACHEOPS = {
     "amd.*": {"ops": "all"},
     "*.*": {},
 }
+
+# Don't cache if running in debug mode
+CACHEOPS_ENABLED = bool(not DEBUG)
