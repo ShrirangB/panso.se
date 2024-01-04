@@ -12,7 +12,7 @@ See:
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from cacheops import cached_as, cached_view_as
 from django.http import HttpRequest, HttpResponse
@@ -31,6 +31,20 @@ class ProcessorsListView(ListView):
     context_object_name = "processors"
     paginate_by = 100
 
+    def get_context_data(self: ProcessorsListView, **kwargs: dict) -> dict[str, Any]:
+        """Add the canonical URL to the context.
+
+        Args:
+            self: The ProcessorsListView instance.
+            **kwargs: The keyword arguments.
+
+        Returns:
+            dict: The new context.
+        """
+        context: dict = super().get_context_data(**kwargs)
+        context["canonical_url"] = "https://panso.se/intel/"
+        return context
+
 
 @cached_view_as(Processor)
 def index(request: HttpRequest) -> HttpResponse:
@@ -42,6 +56,9 @@ def index(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
+    template: Template = loader.get_template(template_name="intel/index.html")
+    canonical_url: str = "https://panso.se/intel"
+
     # TODO(TheLovinator): Make name clickable to go to /intel/processors/{processor_id}  # noqa: TD003
     # TODO(TheLovinator): If the filter is empty we should rewrite the URL to /intel/processors  # noqa: TD003
     # TODO(TheLovinator): If a filter is empty we should remove it from the URL (e.g. /intel/processors?name=foo&lithography=) -> /intel/processors?name=foo # noqa: E501, TD003
@@ -50,9 +67,11 @@ def index(request: HttpRequest) -> HttpResponse:
         data=request.GET,
         queryset=Processor.objects.all(),
     )
-
-    template: Template = loader.get_template(template_name="intel/index.html")
-    return HttpResponse(content=template.render({"filter": f}, request=request))
+    context: dict[str, ProcessorFilter | str] = {
+        "filter": f,
+        "canonical_url": canonical_url,
+    }
+    return HttpResponse(content=template.render(context=context, request=request))
 
 
 class ProcessorFilter(FilterSet):
@@ -218,6 +237,11 @@ def processor(request: HttpRequest, processor_id: int) -> HttpResponse:
         HttpResponse: The response.
     """
     template: Template = loader.get_template(template_name="intel/processor.html")
+    canonical_url: str = f"https://panso.se/intel/processors/{processor_id}"
     processor: Processor = Processor.objects.get(pk=processor_id)
-    context = {"processor": processor, "cpu_information": generate_cpu_information_html(processor)}
-    return HttpResponse(content=template.render(context, request))
+    context: dict[str, Processor | str] = {
+        "processor": processor,
+        "cpu_information": generate_cpu_information_html(processor=processor),
+        "canonical_url": canonical_url,
+    }
+    return HttpResponse(content=template.render(context=context, request=request))

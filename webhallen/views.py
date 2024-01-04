@@ -28,7 +28,7 @@ def index(request: HttpRequest) -> HttpResponse:
     """
     template: Template = loader.get_template(template_name="webhallen/index.html")
     sections = WebhallenSection.objects.all()
-    sections = sorted(sections, key=lambda section: section.section_id)
-
-    context: dict[str, list[WebhallenSection]] = {"sections": sections}
-    return HttpResponse(content=template.render(context, request))
+    sections_sorted: list[WebhallenSection] = sorted(sections, key=lambda section: section.section_id)
+    canonical_url: str = "https://panso.se/webhallen/"
+    context: dict[str, list[WebhallenSection] | str] = {"sections": sections_sorted, "canonical_url": canonical_url}
+    return HttpResponse(content=template.render(context=context, request=request))

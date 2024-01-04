@@ -17,8 +17,10 @@
         <link rel="manifest" href="{% static 'manifest.webmanifest' %}">
         <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'style.css' %}">
+        <!-- Canonical link -->
+        {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
+        <!-- Canonical link end -->
         <!-- Head end -->
-        {% block extrahead %}{% endblock %}
     </head>
     <body class="d-flex flex-column vh-100">
         <!-- Body start -->

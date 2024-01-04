@@ -26,8 +26,7 @@ from functools import lru_cache
 import httpx
 from cacheops import cached_view
 from django.http import HttpRequest, HttpResponse
-from django.template import loader
-from loguru import logger
+from django.template import Template, loader
 
 
 @cached_view
@@ -40,9 +39,10 @@ def index(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="index.html")
-    context = {}
-    return HttpResponse(content=template.render(context, request))
+    template: Template = loader.get_template(template_name="index.html")
+    canonical_url: str = "https://panso.se/"
+    context: dict[str, str] = {"canonical_url": canonical_url}
+    return HttpResponse(content=template.render(context=context, request=request))
 
 
 robots_txt_content = """User-agent: *
@@ -62,11 +62,9 @@ def robots_txt(request: HttpRequest) -> HttpResponse:  # noqa: ARG001
 def get_ip() -> str:
     """Get the IP address of the current server."""
     try:
-        ip: str = httpx.get("https://checkip.amazonaws.com", timeout=5).text.strip()
+        ip: str = httpx.get(url="https://checkip.amazonaws.com", timeout=5).text.strip()
     except httpx.HTTPError:
         ip = ""
-
-    logger.info(ip)
     return ip
 
 
@@ -75,21 +73,6 @@ def bot_ip_list(request: HttpRequest) -> HttpResponse:  # noqa: ARG001
     """bot-ip-list page for Cloudflare verification."""
     ip: str = get_ip()
     return HttpResponse(content=ip, content_type="text/plain")
-
-
-@cached_view
-def about(request: HttpRequest) -> HttpResponse:
-    """/about page.
-
-    Args:
-        request: The request.
-
-    Returns:
-        HttpResponse: The response.
-    """
-    template = loader.get_template(template_name="about.html")
-    context = {}
-    return HttpResponse(content=template.render(context, request))
 
 
 @cached_view
@@ -102,8 +85,9 @@ def contact(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="contact.html")
-    context = {}
+    template: Template = loader.get_template(template_name="contact.html")
+    canonical_url: str = "https://panso.se/contact"
+    context: dict[str, str] = {"canonical_url": canonical_url}
     return HttpResponse(content=template.render(context, request))
 
 
@@ -117,8 +101,9 @@ def privacy(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="privacy.html")
-    context = {}
+    template: Template = loader.get_template(template_name="privacy.html")
+    canonical_url: str = "https://panso.se/privacy"
+    context: dict[str, str] = {"canonical_url": canonical_url}
     return HttpResponse(content=template.render(context, request))
 
 
@@ -132,8 +117,9 @@ def terms(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="terms.html")
-    context = {}
+    template: Template = loader.get_template(template_name="terms.html")
+    canonical_url: str = "https://panso.se/terms"
+    context: dict[str, str] = {"canonical_url": canonical_url}
     return HttpResponse(content=template.render(context, request))
 
 
@@ -147,6 +133,7 @@ def api_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response.
     """
-    template = loader.get_template(template_name="api.html")
-    context = {}
+    template: Template = loader.get_template(template_name="api.html")
+    canonical_url: str = "https://panso.se/api"
+    context: dict[str, str] = {"canonical_url": canonical_url}
     return HttpResponse(content=template.render(context, request))
