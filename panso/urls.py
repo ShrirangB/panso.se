@@ -25,16 +25,18 @@ from __future__ import annotations
 
 import os
 
+from cacheops import cached_view, cached_view_as
 from django.contrib import admin
 from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
-from django.views.decorators.cache import cache_page
 
+from intel.models import Processor
 from intel.scrape_intel_ark import get_html, process_html
 from panso.api import api
-from panso.sitemaps import StaticViewSitemap, WebhallenJSONSitemap
+from panso.sitemaps import IntelProcessorSitemap, StaticViewSitemap, WebhallenJSONSitemap
+from webhallen.models.json import WebhallenJSON
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
@@ -47,6 +49,7 @@ def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
 sitemaps: dict[str, type[Sitemap]] = {
     "static": StaticViewSitemap,
     "webhallen": WebhallenJSONSitemap,
+    "intel": IntelProcessorSitemap,
 }
 
 admin_page_path: str = os.getenv(key="ADMIN_PAGE_PATH", default="admin/")
@@ -98,7 +101,7 @@ urlpatterns: list = [
     # Sitemap
     path(
         route="sitemap.xml",
-        view=cache_page(timeout=86400)(sitemaps_views.index),
+        view=cached_view()(sitemaps_views.index),
         kwargs={"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.index",
     ),
@@ -106,7 +109,7 @@ urlpatterns: list = [
     # Sitemap for other sections. Add more sections in panso/sitemaps.py
     path(
         route="sitemap-<section>.xml",
-        view=cache_page(timeout=86400)(sitemaps_views.sitemap),
+        view=cached_view_as(WebhallenJSON, Processor)(sitemaps_views.sitemap),
         kwargs={"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),

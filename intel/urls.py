@@ -18,9 +18,6 @@ from . import views
 
 app_name: str = "intel"
 
-# TODO(TheLovinator): #33 We should cache the views.
-# https://github.com/TheLovinator1/panso.se/issues/33
-
 urlpatterns: list[URLPattern] = [
     path(route="", view=cached_view_as(Processor)(views.ProcessorsListView.as_view()), name="index"),
     path(
