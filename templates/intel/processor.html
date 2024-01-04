@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %}<title>{{ processor.name }}</title>{% endblock %}
-{% block description %}{{ processor.name }} - {{ processor.description }}{% endblock %}
+{% block description %}{{ processor.name }}{% endblock %}
 {% block keywords %}Panso, Panso.se, Intel, Intel Ark, Intel API{% endblock %}
 {% block content %}
     <div class="container">
         <article>
+            <!-- {{ processor }} -->
             <header>
                 <h1 class="display-1">{{ processor.name }}</h1>
             </header>

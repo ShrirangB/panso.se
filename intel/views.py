@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from cacheops import cached_view_as
+from cacheops import cached_as, cached_view_as
 from django.http import HttpRequest, HttpResponse
 from django.template import Template, loader
 from django.views.generic import ListView
@@ -104,6 +104,7 @@ def render_field(verbose_name: str, help_text: str, field: str) -> str:
     """  # noqa: E501
 
 
+@cached_as(Processor, keep_fresh=True)
 def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901, PLR0912
     """Generate HTML for CPU information.
 
@@ -205,6 +206,7 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901, P
     """
 
 
+@cached_view_as(Processor, extra="processor_id")
 def processor(request: HttpRequest, processor_id: int) -> HttpResponse:
     """/intel/processors/{processor_id} page.
 

@@ -36,10 +36,6 @@ from . import views
 
 app_name: str = "products"
 
-
-# TODO(TheLovinator): #33 We should cache the views.
-# https://github.com/TheLovinator1/panso.se/issues/33
-
 urlpatterns: list[URLPattern] = [
     path(route="", view=views.index, name="index"),
     path(route="privacy", view=views.privacy, name="privacy"),

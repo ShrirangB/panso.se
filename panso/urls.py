@@ -61,8 +61,6 @@ admin_page_path = admin_page_path.lstrip("/")
 if not admin_page_path.endswith("/"):
     admin_page_path = admin_page_path + "/"
 
-# TODO(TheLovinator): #33 Cache more views.
-# https://github.com/TheLovinator1/panso.se/issues/33
 urlpatterns: list = [
     # /admin/
     # Admin page

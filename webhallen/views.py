@@ -9,12 +9,14 @@ See:
 
 from __future__ import annotations
 
+from cacheops import cached_view
 from django.http import HttpRequest, HttpResponse
 from django.template import Template, loader
 
 from webhallen.models import WebhallenSection
 
 
+@cached_view
 def index(request: HttpRequest) -> HttpResponse:
     """/webhallen/ index page.
 
