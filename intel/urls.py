@@ -12,6 +12,7 @@ from __future__ import annotations
 from cacheops import cached_view_as
 from django.urls import URLPattern, path
 
+from intel.feeds import AtomLatestProcessorsFeed, LatestProcessorsFeed
 from intel.models import Processor
 
 from . import views
@@ -30,4 +31,6 @@ urlpatterns: list[URLPattern] = [
         view=views.processor,
         name="detail",
     ),
+    path(route="rss", view=LatestProcessorsFeed()),
+    path(route="atom", view=AtomLatestProcessorsFeed()),
 ]

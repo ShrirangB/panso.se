@@ -301,3 +301,39 @@ class DollarConversionTest(TestCase):
     def test_conversion_invalid_input(self: DollarConversionTest) -> None:
         result: int | None = dollar_to_cents("invalid input")
         assert not result
+
+
+class FeedTests(TestCase):
+    """Tests things for the Intel app."""
+
+    def test_get_feed(self: FeedTests) -> None:
+        """Test that the feed is available."""
+        response: HttpResponse = self.client.get("/intel/rss")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/rss+xml; charset=utf-8"
+        assert response.content
+
+    def test_get_feed_atom(self: FeedTests) -> None:
+        """Test that the feed is available."""
+        response: HttpResponse = self.client.get("/intel/atom")
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/atom+xml; charset=utf-8"
+        assert response.content
+
+    def test_rss_link(self: FeedTests) -> None:
+        """Test that the feeds are linked in the HTML."""
+        response: HttpResponse = self.client.get("/intel/")
+        assert (
+            b"""<link rel="alternate"
+                  type="application/atom+xml"
+                  href="https://panso.se/intel/atom"
+                  title="Atom">"""
+            in response.content
+        )
+        assert (
+            b"""<link rel="alternate"
+                  type="application/rss+xml"
+                  href="https://panso.se/intel/rss"
+                  title="RSS">"""
+            in response.content
+        )

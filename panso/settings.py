@@ -99,6 +99,7 @@ INSTALLED_APPS: list[str] = [
     "simple_history",  # https://github.com/jazzband/django-simple-history
     "whitenoise.runserver_nostatic",  # https://whitenoise.readthedocs.io/en/latest/index.html
     # Django
+    "django.contrib.sites",
     "django.contrib.admin",
     "django.contrib.sitemaps",
     "django.contrib.auth",
@@ -219,3 +220,6 @@ CACHEOPS: dict[str, dict[str, str | tuple[str, str]]] = {
 
 # Don't cache if running in debug mode
 CACHEOPS_ENABLED = bool(not DEBUG)
+
+# Our site ID
+SITE_ID = 1

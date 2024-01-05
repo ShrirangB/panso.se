@@ -20,6 +20,22 @@
         <!-- Canonical link -->
         {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
         <!-- Canonical link end -->
+        <!-- RSS link -->
+        {% if rss_url %}
+            <link rel="alternate"
+                  type="application/rss+xml"
+                  href="{{ rss_url }}"
+                  title="RSS">
+        {% endif %}
+        <!-- RSS link end -->
+        <!-- Atom link -->
+        {% if atom_url %}
+            <link rel="alternate"
+                  type="application/atom+xml"
+                  href="{{ atom_url }}"
+                  title="Atom">
+        {% endif %}
+        <!-- Atom link end -->
         <!-- Head end -->
     </head>
     <body class="d-flex flex-column vh-100">

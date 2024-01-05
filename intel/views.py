@@ -44,35 +44,9 @@ class ProcessorsListView(ListView):
         """
         context: dict = super().get_context_data(**kwargs)
         context["canonical_url"] = "https://panso.se/intel/"
+        context["rss_url"] = "https://panso.se/intel/rss"
+        context["atom_url"] = "https://panso.se/intel/atom"
         return context
-
-
-@cached_view_as(Processor)
-def index(request: HttpRequest) -> HttpResponse:
-    """/intel/ page.
-
-    Args:
-        request: The request.
-
-    Returns:
-        HttpResponse: The response.
-    """
-    template: Template = loader.get_template(template_name="intel/index.html")
-    canonical_url: str = "https://panso.se/intel"
-
-    # TODO(TheLovinator): Make name clickable to go to /intel/processors/{processor_id}  # noqa: TD003
-    # TODO(TheLovinator): If the filter is empty we should rewrite the URL to /intel/processors  # noqa: TD003
-    # TODO(TheLovinator): If a filter is empty we should remove it from the URL (e.g. /intel/processors?name=foo&lithography=) -> /intel/processors?name=foo # noqa: E501, TD003
-    # Table filtering for django-filter
-    f = ProcessorFilter(
-        data=request.GET,
-        queryset=Processor.objects.all(),
-    )
-    context: dict[str, ProcessorFilter | str] = {
-        "filter": f,
-        "canonical_url": canonical_url,
-    }
-    return HttpResponse(content=template.render(context=context, request=request))
 
 
 class ProcessorFilter(FilterSet):
@@ -243,10 +217,14 @@ def processor(request: HttpRequest, processor_id: int, slug: str | None = None) 
 
     template: Template = loader.get_template(template_name="intel/processor.html")
     canonical_url: str = f"https://panso.se/intel/processors/{processor_id}/{slug}/"
+    rss_url: str = canonical_url + "rss"
+    atom_url: str = canonical_url + "atom"
     processor: Processor = Processor.objects.get(pk=processor_id)
     context: dict[str, Processor | str] = {
         "processor": processor,
         "cpu_information": generate_cpu_information_html(processor=processor),
         "canonical_url": canonical_url,
+        "rss_url": rss_url,
+        "atom_url": atom_url,
     }
     return HttpResponse(content=template.render(context=context, request=request))
