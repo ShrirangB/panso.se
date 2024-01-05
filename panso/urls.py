@@ -31,17 +31,23 @@ from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps import views as sitemaps_views
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
+from django.utils.text import slugify
 
 from intel.models import Processor
-from intel.scrape_intel_ark import get_html, process_html
 from panso.api import api
 from panso.sitemaps import IntelProcessorSitemap, StaticViewSitemap, WebhallenJSONSitemap
 from webhallen.models.json import WebhallenJSON
 
 
 def testboi(request: HttpRequest) -> JsonResponse:  # noqa: D103, ARG001
-    for data in get_html():
-        process_html(processor_data=data)
+    # Update the slug field using the slugify function
+    processors_to_update: list[Processor] = []
+    for processor in Processor.objects.filter(slug="fname"):
+        processor_name: str = processor.name or "Unknown processor"
+        processor.slug = slugify(processor_name)
+        processors_to_update.append(processor)
+
+    Processor.objects.bulk_update(processors_to_update, fields=["slug"])
 
     return JsonResponse(data={"status": "ok"}, status=200, safe=False)
 

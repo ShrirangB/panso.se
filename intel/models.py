@@ -14,6 +14,7 @@ import typing
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
 
 
@@ -50,14 +51,16 @@ class Processor(models.Model):
         help_text="The product ID of the processor.",
         primary_key=True,
     )
-
     name = models.TextField(
         verbose_name="Name",
         help_text="The name of the processor.",
         blank=True,
         null=True,
     )
-
+    slug = models.SlugField(
+        verbose_name="Slug",
+        help_text="Slug used for the URL.",
+    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     history = HistoricalRecords(
@@ -1269,6 +1272,13 @@ class Processor(models.Model):
         """Return CPU name."""
         return f"{self.pk} - {self.name}"
 
+    def save(self: Processor, *args, **kwargs) -> None:  # noqa: ANN003, ANN002
+        """Save the processor and set the slug if it doesn't exist."""
+        if not self.slug:
+            processor_name: str = self.name or "Unknown processor"
+            self.slug = slugify(value=processor_name, allow_unicode=False)
+        super().save(*args, **kwargs)
+
     def get_absolute_url(self: Processor) -> str:
         """Return absolute URL for a processor."""
         return self.cached_absolute_url
@@ -1276,4 +1286,10 @@ class Processor(models.Model):
     @cached_property
     def cached_absolute_url(self: Processor) -> str:
         """Return absolute URL for a processor."""
-        return reverse("intel:detail", kwargs={"processor_id": self.pk})
+        return reverse(
+            viewname="intel:detail",
+            kwargs={
+                "processor_id": self.pk,
+                "slug": self.slug,
+            },
+        )

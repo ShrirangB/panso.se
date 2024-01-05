@@ -16,6 +16,7 @@ from typing import Any, ClassVar
 
 from cacheops import cached_as, cached_view_as
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.template import Template, loader
 from django.views.generic import ListView
 from django_filters import CharFilter, FilterSet, NumberFilter
@@ -226,18 +227,22 @@ def generate_cpu_information_html(processor: Processor) -> str:  # noqa: C901, P
 
 
 @cached_view_as(Processor, extra="processor_id")
-def processor(request: HttpRequest, processor_id: int) -> HttpResponse:
+def processor(request: HttpRequest, processor_id: int, slug: str | None = None) -> HttpResponse:
     """/intel/processors/{processor_id} page.
 
     Args:
         request: The request.
         processor_id: The processor ID.
+        slug: The processor slug. Optional.
 
     Returns:
         HttpResponse: The response.
     """
+    if not slug:
+        return redirect(to=Processor.objects.get(pk=processor_id), permanent=True)
+
     template: Template = loader.get_template(template_name="intel/processor.html")
-    canonical_url: str = f"https://panso.se/intel/processors/{processor_id}"
+    canonical_url: str = f"https://panso.se/intel/processors/{processor_id}/{slug}/"
     processor: Processor = Processor.objects.get(pk=processor_id)
     context: dict[str, Processor | str] = {
         "processor": processor,
