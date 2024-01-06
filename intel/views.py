@@ -15,6 +15,7 @@ from __future__ import annotations
 from typing import Any, ClassVar
 
 from cacheops import cached_as, cached_view_as
+from django.core.serializers import serialize
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template import Template, loader
@@ -228,3 +229,23 @@ def processor(request: HttpRequest, processor_id: int, slug: str | None = None) 
         "atom_url": atom_url,
     }
     return HttpResponse(content=template.render(context=context, request=request))
+
+
+@cached_view_as(Processor)
+def export_as_xml(request: HttpRequest) -> HttpResponse:  # noqa: ARG001
+    """Export all processors as XML."""
+    serialized_data = serialize("xml", Processor.objects.all())
+    response = HttpResponse(serialized_data, content_type="application/xml")
+    response["Content-Disposition"] = 'attachment; filename="exported_data.xml"'
+
+    return response
+
+
+@cached_view_as(Processor)
+def export_as_json(request: HttpRequest) -> HttpResponse:  # noqa: ARG001
+    """Export all processors as JSON."""
+    serialized_data = serialize("json", Processor.objects.all())
+    response = HttpResponse(serialized_data, content_type="application/json")
+    response["Content-Disposition"] = 'attachment; filename="exported_data.json"'
+
+    return response

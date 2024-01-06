@@ -33,4 +33,6 @@ urlpatterns: list[URLPattern] = [
     ),
     path(route="rss", view=LatestProcessorsFeed()),
     path(route="atom", view=AtomLatestProcessorsFeed()),
+    path(route="xml", view=views.export_as_xml, name="export_as_xml"),
+    path(route="json", view=views.export_as_json, name="export_as_json"),
 ]
